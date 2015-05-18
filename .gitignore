@@ -1,3 +1,12 @@
+# Ignore all existing themes except for Starman
+themes/*
+!themes/starman
+
+# Editor files
+*~
+\#*\#
+.\#*
+
 # Compiled Lua sources
 luac.out
 
