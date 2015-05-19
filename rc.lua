@@ -360,7 +360,7 @@ globalkeys = awful.util.table.join(
    awful.key({ modkey, "Shift"   }, "Return",
       function ()
          -- Get PWD of focused client and spawn new terminal session there
-         pid = string.gsub(awful.util.pread('pgrep -P ' .. client.focus.pid), '[\r\n]+$', '')
+         pid = string.gsub(awful.util.pread('pgrep -P ' .. math.floor(client.focus.pid)), '[\r\n]+$', '')
          pwd = string.gsub(awful.util.pread('readlink /proc/' .. pid .. '/cwd'), '[\r\n]+$', '')
          if string.len(pwd) > 0 then
             awful.util.spawn(terminal .. ' -cd "' .. pwd .. '"')
