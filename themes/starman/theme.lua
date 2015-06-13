@@ -21,6 +21,8 @@ theme = {}
 theme.name = "starman"
 theme.confdir = awful.util.getdir("config") .. "/themes/" .. theme.name
 theme.wallpaper = theme.confdir .. "/starman-background.png"
+-- theme.wallpaper = theme.confdir .. "/starman-background-2.png"
+-- theme.wallpaper = theme.confdir .. "/starman-background-3.png"
 -- }}}
 
 -- {{{ Styles
