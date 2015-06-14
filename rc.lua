@@ -187,6 +187,7 @@ end
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 icons = awful.util.getdir("config") .. "/tag_icons/"
+-- icons = awful.util.getdir("config") .. "/tag_icons_3/"
 tags = {
    names = { "", "", "", "", "", "" },
    layout = { layouts[2], layouts[4], layouts[2], layouts[6], layouts[6], layouts[2]},
