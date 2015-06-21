@@ -36,9 +36,18 @@ function awesify.create_musicbox()
    return music_box
 end
 
+function awesify.sanitize(raw_string)
+   raw_string = string.gsub(raw_string, "&", "&amp;")
+   raw_string = string.gsub(raw_string, "<", "&lt;")
+   raw_string = string.gsub(raw_string, ">", "&gt;")
+   raw_string = string.gsub(raw_string, "'", "&apos;")
+   raw_string = string.gsub(raw_string, "\"", "&quot;")
+   return raw_string
+end
+
 function awesify.update_music(data, appname, replaces_id, icon, track, album, actions, hints, expire)
-   local safe_track = string.gsub(track, "&", "+")
-   local safe_album = string.gsub(album, "&", "+")
+   local safe_track = awesify.sanitize(track)
+   local safe_album = awesify.sanitize(album)
    music_box:set_markup(safe_track .. " <span color=\"white\">" .. safe_album .. "</span>")
    play_timer:start()
    
