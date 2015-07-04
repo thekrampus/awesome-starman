@@ -178,8 +178,11 @@ local layouts =
 
 -- {{{ Wallpaper
 if beautiful.wallpaper then
-   for s = 1, screen.count() do
-      gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+   gears.wallpaper.maximized(beautiful.wallpaper, 1, true)
+end
+if beautiful.smallpaper then
+   for s = 2, screen.count() do
+      gears.wallpaper.maximized(beautiful.smallpaper, s, true)
    end
 end
 -- }}}
