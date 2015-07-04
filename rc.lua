@@ -178,8 +178,11 @@ local layouts =
 
 -- {{{ Wallpaper
 if beautiful.wallpaper then
-   for s = 1, screen.count() do
-      gears.wallpaper.maximized(beautiful.wallpaper, s, true)
+   gears.wallpaper.maximized(beautiful.wallpaper, 1, true)
+end
+if beautiful.smallpaper then
+   for s = 2, screen.count() do
+      gears.wallpaper.maximized(beautiful.smallpaper, s, true)
    end
 end
 -- }}}
@@ -301,8 +304,10 @@ for s = 1, screen.count() do
    -- Widgets that are aligned to the right
    local right_layout = wibox.layout.fixed.horizontal()
    -- if s == 1 then right_layout:add(wibox.widget.systray()) end
-   right_layout:add(awesify.create_playbox())
-   right_layout:add(awesify.create_musicbox())
+   if s == 1 then
+      right_layout:add(awesify.create_playbox())
+      right_layout:add(awesify.create_musicbox())
+   end
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
 
@@ -345,8 +350,6 @@ globalkeys = awful.util.table.join(
    -- Layout manipulation
    awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end),
    awful.key({ modkey, "Shift"   }, "Left", function () awful.client.swap.byidx( -1)    end),
-   awful.key({ modkey, "Control" }, "Right", function () awful.screen.focus_relative( 1) end),
-   awful.key({ modkey, "Control" }, "Left", function () awful.screen.focus_relative(-1) end),
    awful.key({ modkey, "Shift"   }, "/", awful.client.urgent.jumpto),
    awful.key({ modkey, "Control" }, "Tab",
       function ()
@@ -410,7 +413,8 @@ clientkeys = awful.util.table.join(
    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end),
    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end),
-   awful.key({ modkey,           }, "o",      awful.client.movetoscreen                        ),
+   awful.key({ modkey, "Shift"   }, "`",      awful.client.movetoscreen                        ),
+   awful.key({ modkey,           }, "`",      function (c) awful.screen.focus_relative(1)   end),
    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end),
    awful.key({ modkey,           }, "n",
       function (c)
