@@ -55,9 +55,9 @@ function run_and_notify(options)
    if type(options.cmd) ~= "string" then
       naughty.notify({text = "<span color\"red\">bad run_and_notify in rc.lua</span>"})
    else
-      outstr = awful.util.pread(options.cmd)
+      outstr = awful.util.pread(options.cmd .. " 2>&1")
       if options.notify then
-         naughty.notify({title = options.cmd .. " OUTPUT:", text = outstr})
+         naughty.notify({title = options.cmd, text = outstr})
       end
    end
 end
@@ -209,11 +209,18 @@ end
 myawesomemenu = {
    { "manual", terminal .. " -e man awesome" },
    { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "check config", function() run_and_notify({cmd="awesome -k", notify=true}) end},
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
 
+toolmenu = {
+   { "htop", terminal .. " -e htop" },
+   { "dmesg", terminal .. " -e dmesg -wH" }
+}
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                             { "tools", toolmenu },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", terminal } }
                        })
