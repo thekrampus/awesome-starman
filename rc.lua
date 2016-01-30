@@ -135,8 +135,13 @@ function minwidth_list_update(w, buttons, label, data, objects)
    end
 end
 
+function irc_loadout()
+   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
+   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/nmtcs.conf")
+end
+
 function spawn_loadout()
-   awful.util.spawn(terminal .. " -e irssi")
+   irc_loadout()
    awful.util.spawn("spotify")
    awful.util.spawn("steam")
 end
@@ -192,7 +197,7 @@ end
 icons = beautiful.icondir
 tags = {
    names = { "", "", "", "", "", "" },
-   layout = { layouts[2], layouts[4], layouts[2], layouts[6], layouts[6], layouts[2]},
+   layout = { layouts[2], layouts[2], layouts[2], layouts[6], layouts[6], layouts[5]},
    icons = { icons .. "prime.png", icons .. "irc.png", icons .. "net.png", icons .. "jams.png", icons .. "games.png", icons .. "epsilon.png"}
 }
 for s = 1, screen.count() do
@@ -221,6 +226,7 @@ toolmenu = {
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                              { "tools", toolmenu },
+                             { "spawn irc", spawn_irc },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", terminal } }
                        })
