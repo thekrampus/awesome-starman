@@ -226,7 +226,7 @@ toolmenu = {
 
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                              { "tools", toolmenu },
-                             { "spawn irc", spawn_irc },
+                             { "spawn irc", irc_loadout },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", terminal } }
                        })
