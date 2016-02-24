@@ -220,6 +220,7 @@ myawesomemenu = {
 }
 
 toolmenu = {
+   { "dropbox status", "/home/rob/Files/dropbox_notify.sh"},
    { "htop", terminal .. " -e htop" },
    { "dmesg", terminal .. " -e dmesg -wH" }
 }
