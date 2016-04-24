@@ -17,7 +17,7 @@ local menubar = require("menubar")
 
 -- Custom extensions
 local awesify = require("awesify")
-
+local x_macros = require("x_macros")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -219,7 +219,10 @@ toolmenu = {
    { "dmesg", terminal .. " -e dmesg -wH" }
 }
 
+macromenu = x_macros.build_menu()
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                             { "x_macros", macromenu },
                              { "tools", toolmenu },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", terminal } }
@@ -406,6 +409,9 @@ globalkeys = awful.util.table.join(
    -- Print Screen
    awful.key({ }, "Print", function() awful.util.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end),
 
+   -- Macro Hotkey
+   awful.key({ modkey }, "e", x_macros.hot_macro),
+   
    -- Spotify controls
    awful.key({ modkey }, "Home", awesify.playpause),
    awful.key({ modkey }, "Prior", awesify.next),
