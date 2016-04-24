@@ -417,7 +417,7 @@ globalkeys = awful.util.table.join(
    awful.key({ }, "Print", function() awful.util.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end),
 
    -- Macro Hotkey
-   awful.key({ modkey }, "e", x_macros.hot_macro),
+   awful.key({ modkey, "Shift" }, "e", x_macros.hot_macro),
    
    -- Spotify controls
    awful.key({ modkey }, "Home", awesify.playpause),
