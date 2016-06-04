@@ -20,12 +20,9 @@ hi2 = "#c4c0c0"
 theme = {}
 theme.name = "starman"
 theme.confdir = awful.util.getdir("config") .. "/themes/" .. theme.name
-theme.wallpaper = theme.confdir .. "/starman-background.png"
--- theme.wallpaper = theme.confdir .. "/starman-background-2.png"
--- theme.wallpaper = theme.confdir .. "/starman-background-3.png"
--- theme.smallpaper = theme.confdir .. "/starman-background-3-small.png"
-theme.icondir = awful.util.getdir("config") .. "/tag_icons/"
--- theme.icondir = awful.util.getdir("config") .. "/tag_icons_3/"
+theme.wallpaper = theme.confdir .. "/starman-background-3-big.png"
+theme.smallpaper = theme.confdir .. "/starman-background-3.png"
+theme.icondir = awful.util.getdir("config") .. "/tag_icons_3/"
 -- }}}
 
 -- {{{ Styles
@@ -43,9 +40,14 @@ theme.bg_systray = bg1
 
 -- {{{ Borders
 theme.border_width  = 2
-theme.border_normal = "[0]#000000"
-theme.border_focus  = "[0]#000000"
+theme.border_normal = bg1
+theme.border_focus = bg1
+-- theme.border_normal = "[0]#000000"
+-- theme.border_focus  = "[0]#000000"
 theme.border_marked = theme.bg_urgent
+
+-- Transparent padding
+theme.border_padding = 15
 -- }}}
 
 -- {{{ Titlebars
@@ -83,9 +85,10 @@ theme.mouse_finder_color = "#CC9393"
 -- {{{ Menu
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
--- menu_[border_color|border_width]
+-- menu_[border_color|border_width|border_padding]
 theme.menu_height = 15
 theme.menu_width  = 100
+theme.menu_border_padding = 4
 -- }}}
 
 -- {{{ Icons
@@ -97,7 +100,7 @@ theme.menu_width  = 100
 
 -- {{{ Misc
 theme.awesome_icon           = theme.confdir .. "/awesome-icon.png"
-theme.menu_submenu_icon      = "/usr/share/awesome/themes/default/submenu.png"
+-- theme.menu_submenu_icon      = "/usr/share/awesome/themes/default/submenu.png"
 -- }}}
 
 -- {{{ Layout

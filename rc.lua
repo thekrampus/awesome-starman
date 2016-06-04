@@ -135,8 +135,13 @@ function minwidth_list_update(w, buttons, label, data, objects)
    end
 end
 
+function irc_loadout()
+   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
+   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/nmtcs.conf")
+end
+
 function spawn_loadout()
-   awful.util.spawn(terminal .. " -e irssi")
+   irc_loadout()
    awful.util.spawn("spotify")
    awful.util.spawn("steam")
 end
@@ -145,6 +150,12 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/themes/starman/theme.lua")
+
+-- Custom layout patching
+awful.layout.suit.tile = require("patch.tile")
+awful.layout.suit.spiral = require("patch.spiral")
+awful.layout.suit.max = require("patch.max")
+awful.menu = require("patch.menu")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -192,7 +203,7 @@ end
 icons = beautiful.icondir
 tags = {
    names = { "", "", "", "", "", "" },
-   layout = { layouts[2], layouts[4], layouts[2], layouts[6], layouts[6], layouts[2]},
+   layout = { layouts[2], layouts[2], layouts[2], layouts[6], layouts[6], layouts[5]},
    icons = { icons .. "prime.png", icons .. "irc.png", icons .. "net.png", icons .. "jams.png", icons .. "games.png", icons .. "epsilon.png"}
 }
 for s = 1, screen.count() do
@@ -215,6 +226,7 @@ myawesomemenu = {
 }
 
 toolmenu = {
+   { "dropbox status", "/home/rob/Files/dropbox_notify.sh"},
    { "htop", terminal .. " -e htop" },
    { "dmesg", terminal .. " -e dmesg -wH" }
 }
@@ -224,6 +236,7 @@ macromenu = x_macros.build_menu()
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                              { "x_macros", macromenu },
                              { "tools", toolmenu },
+                             { "spawn irc", irc_loadout },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", terminal } }
                        })
@@ -328,7 +341,8 @@ for s = 1, screen.count() do
 
    mywibox[s]:set_widget(layout)
 
-   awful.screen.padding(screen[s], {top=2, left=2, right=2, bottom=2})
+   local b = beautiful.border_padding or 0
+   awful.screen.padding(screen[s], {top=b, left=b, right=b, bottom=b})
 end
 -- }}}
 
@@ -412,7 +426,7 @@ globalkeys = awful.util.table.join(
    awful.key({ }, "Print", function() awful.util.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end),
 
    -- Macro Hotkey
-   awful.key({ modkey }, "e", x_macros.hot_macro),
+   awful.key({ modkey, "Shift" }, "e", x_macros.hot_macro),
    
    -- Spotify controls
    awful.key({ modkey }, "Home", awesify.playpause),
@@ -516,9 +530,9 @@ awful.rules.rules = {
    { rule = { name = "irssi" },
      properties = { tag = tags[1][2] } },
    { rule = { class = "Spotify" },
-     properties = { tag = tags[1][4] } },
+     properties = { tag = tags[2][4] } },
    { rule = { class = "Steam" },
-     properties = { tag = tags[1][5] } }
+     properties = { tag = tags[2][5] } }
 }
 -- }}}
 
