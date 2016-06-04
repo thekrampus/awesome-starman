@@ -190,7 +190,10 @@ local layouts =
 -- {{{ Wallpaper
 if beautiful.smallpaper then
    gears.wallpaper.maximized(beautiful.smallpaper, 1, true)
+else
+   gears.wallpaper.maximized(beautiful.wallpaper, 1, true)
 end
+
 if beautiful.wallpaper then
    for s = 2, screen.count() do
       gears.wallpaper.maximized(beautiful.wallpaper, s, true)
