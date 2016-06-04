@@ -1,6 +1,5 @@
 -- A dbus-based spotify widget for awesome
 local music_box_width = 30
-local play_box_period = 0.2
 local wibox = require("wibox")
 local awful = require("awful")
 local naughty = require("naughty")
@@ -9,10 +8,13 @@ local play_box = {}
 local play_timer = {}
 local awesify = {}
 
-local play_animation = {'⣸', '⣴', '⣦', '⣇', '⡏', '⠟', '⠻', '⢹'}
+-- local play_animation = {'⣸', '⣴', '⣦', '⣇', '⡏', '⠟', '⠻', '⢹'}; local play_anim_len = 8; local play_box_period = 0.2; local stop_sym = '⣿';
+-- local play_animation = {'⢸', '⣰', '⣤', '⣆', '⡇', '⠏', '⠛', '⠹'}; local play_anim_len = 8; local play_box_period = 0.2; local stop_sym = '⣿';
+-- local play_animation = {'⠁', '⠂', '⠄', '⡈', '⡐', '⡠', '⣁', '⣂', '⣌', '⣔', '⣥', '⣮', '⣷', '⣿', '⣶', '⣤', '⣀', ' '}; local play_anim_len = 18; local play_box_period = 0.2; local stop_sym = '⣿'
+-- local play_animation = {'⣀', '⡠', '⡠', '⠔', '⠔', '⠔', '⠊', '⠊', '⠊', '⠊', '⠉', '⠉', '⠉', '⠉', '⠉', '⠉', '⠑', '⠑', '⠑', '⠑', '⠢', '⠢', '⠢', '⢄', '⢄'}; local play_anim_len = 25; local play_box_period = 0.03; local stop_sym = '⣀';
+-- local play_animation = {' ⣸', '⢀⣰', '⣀⣠', '⣄⣀', '⣆⡀', '⣇ ', '⡏ ', '⠏⠁', '⠋⠉', '⠉⠙', '⠈⠹', ' ⢹'}; local play_anim_len = 12; local play_box_period = 0.16; local stop_sym = '⣿⣿';
+local play_animation = {' ⡱', '⢀⡰', '⢄⡠', '⢆⡀', '⢎ ', '⠎⠁', '⠊⠑', '⠈⠱'}; local play_anim_len = 8; local play_box_period = 0.16667; local stop_sym = '⢾⡷';
 local music_playing = false
-local play_anim_len = 8
-local stop_sym = '⣿'
 local play_index = 1
 
 function awesify.create_playbox()
