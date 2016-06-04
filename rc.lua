@@ -151,6 +151,12 @@ end
 -- Themes define colours, icons, and wallpapers
 beautiful.init(awful.util.getdir("config") .. "/themes/starman/theme.lua")
 
+-- Custom layout patching
+awful.layout.suit.tile = require("patch.tile")
+awful.layout.suit.spiral = require("patch.spiral")
+awful.layout.suit.max = require("patch.max")
+awful.menu = require("patch.menu")
+
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
@@ -335,7 +341,8 @@ for s = 1, screen.count() do
 
    mywibox[s]:set_widget(layout)
 
-   awful.screen.padding(screen[s], {top=2, left=2, right=2, bottom=2})
+   local b = beautiful.border_padding
+   awful.screen.padding(screen[s], {top=b, left=b, right=b, bottom=b})
 end
 -- }}}
 
@@ -523,9 +530,9 @@ awful.rules.rules = {
    { rule = { name = "irssi" },
      properties = { tag = tags[1][2] } },
    { rule = { class = "Spotify" },
-     properties = { tag = tags[1][4] } },
+     properties = { tag = tags[2][4] } },
    { rule = { class = "Steam" },
-     properties = { tag = tags[1][5] } }
+     properties = { tag = tags[2][5] } }
 }
 -- }}}
 
