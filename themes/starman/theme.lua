@@ -22,11 +22,11 @@ theme.name = "starman"
 theme.confdir = awful.util.getdir("config") .. "/themes/" .. theme.name
 theme.wallpaper = theme.confdir .. "/starman-background-3-big.png"
 theme.smallpaper = theme.confdir .. "/starman-background-3.png"
-theme.icondir = awful.util.getdir("config") .. "/tag_icons_3/"
+theme.icondir = awful.util.getdir("config") .. "/tag_icons/"
 -- }}}
 
 -- {{{ Styles
-theme.font      = "lemon 8"
+theme.font      = "lemon,profont 10px"
 
 -- {{{ Colors
 theme.fg_normal  = fg2

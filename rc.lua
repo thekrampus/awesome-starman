@@ -99,11 +99,12 @@ function minwidth_list_update(w, buttons, label, data, objects)
          ib = wibox.widget.imagebox()
          tb = wibox.widget.textbox()
          bgb = wibox.widget.background()
-         m = wibox.layout.margin(tb) -- width 4 -> 0
+         m = wibox.layout.margin(tb, 4, 4)
          l = wibox.layout.fixed.horizontal()
 
          -- All of this is added in a fixed widget
          l:fill_space(true)
+         l:add(m) -- add margin on left and right
          l:add(ib)
          l:add(m)
 
