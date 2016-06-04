@@ -334,6 +334,8 @@ for s = 1, screen.count() do
    layout:set_right(right_layout)
 
    mywibox[s]:set_widget(layout)
+
+   awful.screen.padding(screen[s], {top=2, left=2, right=2, bottom=2})
 end
 -- }}}
 
