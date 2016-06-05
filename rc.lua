@@ -520,6 +520,7 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
+local auxm = screen.count()
 awful.rules.rules = {
    -- All clients will match this rule.
    { rule = { },
@@ -536,9 +537,9 @@ awful.rules.rules = {
    { rule = { name = "irssi" },
      properties = { tag = tags[1][2] } },
    { rule = { class = "Spotify" },
-     properties = { tag = tags[2][4] } },
+     properties = { tag = tags[auxm][4] } },
    { rule = { class = "Steam" },
-     properties = { tag = tags[2][5] } }
+     properties = { tag = tags[auxm][5] } }
 }
 -- }}}
 
