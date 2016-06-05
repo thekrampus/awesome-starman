@@ -16,8 +16,9 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 
 -- Custom extensions
-local awesify = require("awesify")
-local x_macros = require("x_macros")
+local awesify = require("extensions.awesify")
+local styleclock = require("extensions.styleclock")
+local x_macros = require("extensions.x_macros")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -251,7 +252,8 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 -- Create a textclock widget
-mytextclock = awful.widget.textclock()
+-- mytextclock = awful.widget.textclock()
+mytextclock = styleclock()
 
 -- Create a wibox for each screen and add it
 mywibox = {}
