@@ -611,6 +611,6 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 -- {{{ Naughty
 -- Hook awesify into Spotify; suppress default notifications
-naughty.config.presets.spotify = {callback = awesify.update_music}
+naughty.config.presets.spotify = {callback = function() return false end}
 table.insert(naughty.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
 -- }}}
