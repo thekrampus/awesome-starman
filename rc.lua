@@ -207,9 +207,9 @@ end
 -- Define a tag table which hold all screen tags.
 icons = beautiful.icondir
 tags = {
-   names = { "", "", "", "", "", "" },
-   layout = { layouts[2], layouts[2], layouts[2], layouts[6], layouts[6], layouts[5]},
-   icons = { icons .. "prime.png", icons .. "irc.png", icons .. "net.png", icons .. "jams.png", icons .. "games.png", icons .. "epsilon.png"}
+   names = { "", "", "", "", "", "", "" },
+   layout = { layouts[2], layouts[2], layouts[2], layouts[6], layouts[5], layouts[2], layouts[5] },
+   icons = { icons .. "prime.png", icons .. "irc.png", icons .. "net.png", icons .. "jams.png", icons .. "games.png", icons .. "lambda.png", icons .. "epsilon.png"}
 }
 for s = 1, screen.count() do
    -- Each screen has its own tag table.
@@ -533,7 +533,8 @@ awful.rules.rules = {
    { rule = { class = "pinentry" },
      properties = { floating = true } },
    { rule = { class = "gimp" },
-     properties = { floating = true } },
+     properties = { floating = true,
+                    tag = tags[auxm][1] } },
    { rule = { name = "irssi" },
      properties = { tag = tags[1][2] } },
    { rule = { class = "Spotify" },
