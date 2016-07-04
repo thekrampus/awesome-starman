@@ -19,6 +19,7 @@ local menubar = require("menubar")
 local awesify = require("extensions.awesify")
 local styleclock = require("extensions.styleclock")
 local x_macros = require("extensions.x_macros")
+local client_ext = require("extensions.client_ext")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -460,7 +461,8 @@ clientkeys = awful.util.table.join(
       function (c)
          c.maximized_horizontal = not c.maximized_horizontal
          c.maximized_vertical   = not c.maximized_vertical
-   end)
+   end),
+   awful.key({ modkey, "Shift"   }, "f", client_ext.drag_float, client_ext.drop_float)
 )
 
 -- Compute the maximum number of digit we need, limited to 9
