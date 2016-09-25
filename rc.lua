@@ -542,7 +542,9 @@ awful.rules.rules = {
    { rule = { class = "Spotify" },
      properties = { tag = tags[auxm][4] } },
    { rule = { class = "Steam" },
-     properties = { tag = tags[auxm][5] } }
+     properties = { tag = tags[auxm][5] } },
+   { rule = { class = "gvncviewer"},
+     properties = { floating = true } }
 }
 -- }}}
 
