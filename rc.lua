@@ -18,6 +18,7 @@ local menubar = require("menubar")
 -- Custom extensions
 local awesify = require("extensions.awesify")
 local styleclock = require("extensions.styleclock")
+local cpu_meter = require("extensions.cpu_meter")
 local x_macros = require("extensions.x_macros")
 local client_ext = require("extensions.client_ext")
 
@@ -256,6 +257,9 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- mytextclock = awful.widget.textclock()
 mytextclock = styleclock()
 
+-- Create a cpu meter widget
+mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
+
 -- Create a wibox for each screen and add it
 mywibox = {}
 mypromptbox = {}
@@ -336,6 +340,7 @@ for s = 1, screen.count() do
    if s == 1 then
       right_layout:add(awesify.create_playbox())
       right_layout:add(awesify.create_musicbox())
+      right_layout:add(mycpumeter)
    end
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
