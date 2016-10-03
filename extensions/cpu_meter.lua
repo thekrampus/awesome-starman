@@ -19,7 +19,25 @@ local temp_crit = 105
 
 local usage_glyphs = {'⣀', '⣤', '⣶', '⣿'}
 
-local last_stat = nil
+-- Buffer stats as a FIFO
+local stats = { buffer={}, capacity = 2, tail = 1 }
+
+function stats.getn()
+   return #stats.buffer
+end
+
+function stats.push(item)
+   stats.buffer[stats.tail] = item
+   stats.tail = (stats.tail % stats.capacity) + 1
+end
+
+function stats.peek()
+   if stats.getn() < stats.capacity then
+      return stats.buffer[1]
+   else
+      return stats.buffer[stats.tail]
+   end
+end
 
 -- function cpu_meter.parseTemp(output, sensor)
 --    local readings = string.match(output, sensor .. ":\n(.-)\n[^%s]")
@@ -47,24 +65,19 @@ function cpu_meter.parseUsage(output)
       stat[core] = {idle=idle, total=total}
    end
 
-   if last_stat == nil then
-      for k,v in pairs(stat) do
+   stats.push(stat)
+   last_stat = stats.peek()
+   
+   for k,v in pairs(stat) do
+      local d_idle = v['idle'] - last_stat[k]['idle']
+      local d_total = v['total'] - last_stat[k]['total']
+      if d_total == 0 then
          usage[k] = 0
-      end
-   else
-      for k,v in pairs(stat) do
-         local d_idle = v['idle'] - last_stat[k]['idle']
-         local d_total = v['total'] - last_stat[k]['total']
-         if d_total == 0 then
-            usage[k] = 0
-         else
-            usage[k] = 1.0 - (d_idle / d_total)
-         end
+      else
+         usage[k] = 1.0 - (d_idle / d_total)
       end
    end
 
-   last_stat = stat
-   
    return usage
 end
 
