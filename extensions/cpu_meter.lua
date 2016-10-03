@@ -21,20 +21,20 @@ local usage_glyphs = {'⣀', '⣤', '⣶', '⣿'}
 
 local last_stat = nil
 
-function cpu_meter.parseTemp(output, sensor)
-   local readings = string.match(output, sensor .. ":\n(.-)\n[^%s]")
-   local input = tonumber(string.match(readings, "[%w]+_input:%s+([%d%.]+)"))
-   local max = tonumber(string.match(readings, "[%w]+_max:%s+([%d%.]+)"))
-   local crit = tonumber(string.match(readings, "[%w]+_crit:%s+([%d%.]+)"))
-   local crit_alarm = tonumber(string.match(readings, "[%w]+_crit_alarm:%s+([%d%.]+)"))
-   return input, temp_elevated, max, crit
-end
-
 -- function cpu_meter.parseTemp(output, sensor)
 --    local readings = string.match(output, sensor .. ":\n(.-)\n[^%s]")
 --    local input = tonumber(string.match(readings, "[%w]+_input:%s+([%d%.]+)"))
---    return input, temp_elevated, temp_max, temp_crit
+--    local max = tonumber(string.match(readings, "[%w]+_max:%s+([%d%.]+)"))
+--    local crit = tonumber(string.match(readings, "[%w]+_crit:%s+([%d%.]+)"))
+--    local crit_alarm = tonumber(string.match(readings, "[%w]+_crit_alarm:%s+([%d%.]+)"))
+--    return input, temp_elevated, max, crit
 -- end
+
+function cpu_meter.parseTemp(output, sensor)
+   local readings = string.match(output, sensor .. ":\n(.-)\n[^%s]")
+   local input = tonumber(string.match(readings, "[%w]+_input:%s+([%d%.]+)"))
+   return input, temp_elevated, temp_max, temp_crit
+end
 
 
 function cpu_meter.parseUsage(output)
