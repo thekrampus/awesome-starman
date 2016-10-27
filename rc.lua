@@ -19,6 +19,7 @@ local menubar = require("menubar")
 local awesify = require("extensions.awesify")
 local styleclock = require("extensions.styleclock")
 local cpu_meter = require("extensions.cpu_meter")
+local mem_meter = require("extensions.mem_meter")
 local x_macros = require("extensions.x_macros")
 local client_ext = require("extensions.client_ext")
 
@@ -38,7 +39,7 @@ do
                              -- Make sure we don't go into an endless error loop
                              if in_error then return end
                              in_error = true
-                             
+
                              naughty.notify({ preset = naughty.config.presets.critical,
                                               title = "Oops, an error happened!",
                                               text = err })
@@ -257,8 +258,9 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- mytextclock = awful.widget.textclock()
 mytextclock = styleclock()
 
--- Create a cpu meter widget
+-- Create cpu_meter and mem_meter widgets
 mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
+mymemmeter = mem_meter(5)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -341,6 +343,7 @@ for s = 1, screen.count() do
       right_layout:add(awesify.create_playbox())
       right_layout:add(awesify.create_musicbox())
       right_layout:add(mycpumeter)
+      right_layout:add(mymemmeter)
    end
    right_layout:add(mytextclock)
    right_layout:add(mylayoutbox[s])
@@ -422,7 +425,7 @@ globalkeys = awful.util.table.join(
 
    -- Prompt
    awful.key({ modkey },            "space",     function () mypromptbox[mouse.screen]:run() end),
-   
+
    awful.key({ modkey }, "x",
       function ()
          awful.prompt.run({ prompt = "Run Lua code: " },
@@ -438,7 +441,7 @@ globalkeys = awful.util.table.join(
 
    -- Macro Hotkey
    awful.key({ modkey, "Shift" }, "e", x_macros.hot_macro),
-   
+
    -- Spotify controls
    awful.key({ modkey }, "Home", awesify.playpause),
    awful.key({ modkey }, "Prior", awesify.next),
