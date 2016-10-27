@@ -21,7 +21,7 @@ local pct_high = 0.7
 
 local timeout_default = 1
 
-local usage_glyph = '|'
+local usage_glyph = ':'
 
 local readout_string = string.format('[<span color="%s">%s</span><span color="%s">%s</span><span color="%s">%s</span><span color="%s">%s</span>]',
                                      color_used, "%s",

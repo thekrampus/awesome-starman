@@ -260,7 +260,7 @@ mytextclock = styleclock()
 
 -- Create cpu_meter and mem_meter widgets
 mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
-mymemmeter = mem_meter(5)
+mymemmeter = mem_meter(10, 5)
 
 -- Create a wibox for each screen and add it
 mywibox = {}
