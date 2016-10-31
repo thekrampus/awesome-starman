@@ -37,7 +37,7 @@ do
                              -- Make sure we don't go into an endless error loop
                              if in_error then return end
                              in_error = true
-                             
+
                              naughty.notify({ preset = naughty.config.presets.critical,
                                               title = "Oops, an error happened!",
                                               text = err })
@@ -152,7 +152,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
-beautiful.init(awful.util.getdir("config") .. "/themes/starman/theme.lua")
+beautiful.init(awful.util.getdir("config") .. "/themes/section-9/theme.lua")
 
 -- Custom layout patching
 awful.layout.suit.tile = require("patch.tile")
@@ -422,7 +422,7 @@ globalkeys = awful.util.table.join(
 
    -- Prompt
    awful.key({ modkey },            "space",     function () mypromptbox[mouse.screen]:run() end),
-   
+
    awful.key({ modkey }, "x",
       function ()
          awful.prompt.run({ prompt = "Run Lua code: " },
@@ -438,7 +438,7 @@ globalkeys = awful.util.table.join(
 
    -- Macro Hotkey
    awful.key({ modkey, "Shift" }, "e", x_macros.hot_macro),
-   
+
    -- Spotify controls
    awful.key({ modkey }, "Home", awesify.playpause),
    awful.key({ modkey }, "Prior", awesify.next),

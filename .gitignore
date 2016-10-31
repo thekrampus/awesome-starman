@@ -1,6 +1,7 @@
-# Ignore all existing themes except for Starman
+# Ignore all existing themes except for Starman and section-9
 themes/*
 !themes/starman
+!themes/section-9
 
 # Editor files
 *~
@@ -47,4 +48,3 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-
