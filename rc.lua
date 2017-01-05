@@ -142,7 +142,6 @@ end
 
 function irc_loadout()
    awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
-   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/nmtcs.conf")
 end
 
 function spawn_loadout()
@@ -160,6 +159,7 @@ beautiful.init(awful.util.getdir("config") .. "/themes/starman/theme.lua")
 awful.layout.suit.tile = require("patch.tile")
 awful.layout.suit.spiral = require("patch.spiral")
 awful.layout.suit.max = require("patch.max")
+awful.layout.suit.fair = require("patch.fair")
 awful.menu = require("patch.menu")
 
 -- This is used later as the default terminal and editor to run.
@@ -182,7 +182,7 @@ local layouts =
       awful.layout.suit.tile.left,
       --awful.layout.suit.tile.bottom,
       awful.layout.suit.tile.top,
-      --awful.layout.suit.fair,
+      awful.layout.suit.fair,
       --awful.layout.suit.fair.horizontal,
       awful.layout.suit.spiral,
       --awful.layout.suit.spiral.dwindle,
@@ -211,7 +211,7 @@ end
 icons = beautiful.icondir
 tags = {
    names = { "", "", "", "", "", "", "" },
-   layout = { layouts[2], layouts[2], layouts[2], layouts[6], layouts[5], layouts[2], layouts[5] },
+   layout = { layouts[2], layouts[2], layouts[2], layouts[7], layouts[6], layouts[2], layouts[6] },
    icons = { icons .. "prime.png", icons .. "irc.png", icons .. "net.png", icons .. "jams.png", icons .. "games.png", icons .. "lambda.png", icons .. "epsilon.png"}
 }
 for s = 1, screen.count() do
@@ -225,24 +225,23 @@ end
 
 -- {{{ Menu
 -- Create a laucher widget and a main menu
-myawesomemenu = {
-   { "manual", terminal .. " -e man awesome" },
+awesomemenu = {
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "check config", function() run_and_notify({cmd="awesome -k", notify=true}) end},
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
 
-toolmenu = {
-   { "dropbox status", "/home/rob/Files/dropbox_notify.sh"},
-   { "htop", terminal .. " -e htop" },
-   { "dmesg", terminal .. " -e dmesg -wH" }
-}
-
 macromenu = x_macros.build_menu()
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                             { "x_macros", macromenu },
+toolmenu = {
+   { "htop", terminal .. " -e htop" },
+   { "dmesg", terminal .. " -e dmesg -wH" },
+   { "dropbox status", "/home/rob/Files/dropbox_notify.sh"},
+   { "x_macros", macromenu }
+}
+
+mymainmenu = awful.menu({ items = { { "awesome", awesomemenu, beautiful.awesome_icon },
                              { "tools", toolmenu },
                              { "spawn irc", irc_loadout },
                              { "spawn loadout", spawn_loadout },
@@ -550,7 +549,9 @@ awful.rules.rules = {
      properties = { tag = tags[auxm][4] } },
    { rule = { class = "Steam" },
      properties = { tag = tags[auxm][5] } },
-   { rule = { class = "gvncviewer"},
+   { rule = { class = "gvncviewer" },
+     properties = { floating = true } },
+   { rule = { instance = "sun-awt-X11-XFramePeer" },
      properties = { floating = true } }
 }
 -- }}}
