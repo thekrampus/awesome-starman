@@ -339,6 +339,14 @@ clientkeys = awful.util.table.join(
       {description = "close", group = "client"}),
    awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
       {description = "toggle floating", group = "client"}),
+   awful.key({ modkey, "Shift"   }, "Return",
+      function (c)
+         local cwd = util.get_client_cwd(c)
+         if cwd then
+            awful.spawn(terminal .. ' -cd "' .. cwd .. '"')
+         end
+      end,
+      {description = "open a terminal at the current working directory", group = "client"}),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
       {description = "move to master", group = "client"}),
    awful.key({ modkey, "Shift"   }, "`",      function (c) c:move_to_screen()               end,

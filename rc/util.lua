@@ -67,10 +67,17 @@ function util.table_cat(t, depth)
    return tcat
 end
 
--- Get the current working directory of a given client, if it has a shell
+-- Get the current working directory of a given client if it has a shell (nil otherwise)
 function util.get_client_cwd(c)
-   -- TODO
-   return nil
+   -- Get PID of first child of the client
+   local pid = string.gsub(util.pread("pgrep -P " .. math.floor(c.pid)), '[\r\n]+$', '')
+   -- Get CWD from system fs
+   local cwd = string.gsub(util.pread("readlink /proc/" .. pid .. "/cwd"), '[\r\n]+$', '')
+   if string.len(cwd) > 0 then
+      return cwd
+   else
+      return nil
+   end
 end
 
 -- Sanitize a string for display in a textbox widget
