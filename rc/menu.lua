@@ -1,7 +1,6 @@
 -- Menu configuration (called from rc.lua)
 local awful = require("awful")
 local beautiful = require("beautiful")
-local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local util = require("rc.util")
@@ -51,14 +50,11 @@ local toolmenu = {
 }
 
 -- Main Menu
-local mymainmenu = awful.menu({ items = { { "awesome", awesomemenu, beautiful.awesome_icon },
+local mainmenu = awful.menu({ items = { { "awesome", awesomemenu, beautiful.awesome_icon },
                              { "tools", toolmenu },
                              { "spawn irc", spawn_irc },
                              { "spawn loadout", spawn_loadout },
                              { "open terminal", var.terminal } }
                        })
 
--- Menubar configuration
-menubar.utils.terminal = var.terminal -- Set the terminal for applications that require it
-
-return mymainmenu
+return mainmenu

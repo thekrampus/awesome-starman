@@ -8,6 +8,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
+local menubar = require("menubar")
 
 -- Utility helper functions
 local util = require("rc.util")
@@ -43,19 +44,15 @@ do
 end
 -- }}}
 
+-- {{{ Variable definition & configuration
 local var = require("rc.variables")
 
--- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_configuration_dir() .. "themes/" .. var.theme .."/theme.lua")
 
--- This is used later as the default terminal and editor to run.
--- terminal = "urxvt"
--- editor = os.getenv("EDITOR") or "nano"
--- editor_cmd = terminal .. " -e " .. editor
+-- Menubar configuration
+menubar.utils.terminal = var.terminal -- Set the terminal for applications that require it
 
--- Auxillary monitor ID (usually 2)
--- auxm = screen.count()
 -- }}}
 
 -- {{{ Helper functions
@@ -71,9 +68,6 @@ local function set_wallpaper(s)
    end
 end
 -- }}}
-
--- Main menu
-mymainmenu = require("rc.menu")
 
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
