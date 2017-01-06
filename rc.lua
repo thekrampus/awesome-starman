@@ -15,9 +15,6 @@ local util = require("rc.util")
 
 -- Extensions
 local awesify = require("extensions.awesify")
-local styleclock = require("extensions.styleclock")
-local cpu_meter = require("extensions.cpu_meter")
-local mem_meter = require("extensions.mem_meter")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -53,6 +50,20 @@ beautiful.init(awful.util.get_configuration_dir() .. "themes/" .. var.theme .."/
 -- Menubar configuration
 menubar.utils.terminal = var.terminal -- Set the terminal for applications that require it
 
+-- Load rules
+require("rc.rules")
+
+-- Load tag config & set layouts
+local tags = require("rc.tags")
+awful.layout.layouts = tags.layouts
+
+-- Load keybindings & set global mappings
+local keys = require("rc.keys")
+root.keys(keys.globalkeys)
+root.buttons(keys.globalbuttons)
+
+-- Load widget tray config
+local tray = require("rc.tray")
 -- }}}
 
 -- {{{ Helper functions
@@ -71,25 +82,6 @@ end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
-
--- Keyboard map indicator and switcher
--- mykeyboardlayout = awful.widget.keyboardlayout()
-
--- Create a textclock widget
-local mytextclock = styleclock()
-
--- Create cpu_meter and mem_meter widgets
-local mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
-local mymemmeter = mem_meter(10, 5)
-
-local tags = require("rc.tags")
-awful.layout.layouts = tags.layouts
-
-local keys = require("rc.keys")
-root.keys(keys.globalkeys)
-root.buttons(keys.globalbuttons)
-
-require("rc.rules")
 
 -- {{{ Wibar
 -- Create a wibox for each screen and add it
@@ -119,25 +111,8 @@ awful.screen.connect_for_each_screen(function(s)
       -- Create the wibox
       s.mywibox = awful.wibar({ position = "top", screen = s })
 
-      -- Right widgets
-      local right_layout
-      if s == screen.primary then
-         right_layout = {
-            layout = wibox.layout.fixed.horizontal,
-            awesify.create_playbox(),
-            awesify.create_musicbox(),
-            mycpumeter,
-            mymemmeter,
-            mytextclock,
-            s.mylayoutbox,
-         }
-      else
-         right_layout = {
-            layout = wibox.layout.fixed.horizontal,
-            mytextclock,
-            s.mylayoutbox
-         }
-      end
+      -- Widget tray
+      local mytray = (s == screen.primary) and tray.primary(s.mylayoutbox) or tray.secondary(s.mylayoutbox)
 
       -- Add widgets to the wibox
       s.mywibox:setup {
@@ -148,7 +123,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
          },
          s.mytasklist, -- Middle widget
-         right_layout -- Right widgets
+         mytray -- Right widgets
       }
 end)
 -- }}}
