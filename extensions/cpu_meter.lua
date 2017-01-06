@@ -135,6 +135,7 @@ function cpu_meter.new(readout_sensor, cores, timeout)
       markup = markup .. ']'
 
       w:set_markup(markup)
+      return true
    end
 
    poll()

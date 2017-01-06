@@ -43,7 +43,7 @@ awful.rules.rules = {
         },
         role = {
            "AlarmWindow",  -- Thunderbird's calendar.
-           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+           -- "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
    }, properties = { floating = true } },
    -- Clients which should be on the primary screen
@@ -54,7 +54,7 @@ awful.rules.rules = {
         instance = {
            "riot.im__app"
         }
-   }, properties = { screen = 1 } },
+   }, properties = { screen = screen.primary } },
    -- Clients which should be on the auxillary screen
    { rule_any = {
         class = {
@@ -64,13 +64,13 @@ awful.rules.rules = {
         }
    }, properties = { screen = auxm } },
    { rule = { name = "irssi" },
-     properties = { tag = 2 } },
+     properties = { tag = "chat" } },
    { rule = { instance = "riot.im__app" },
-     properties = { tag = 2 } },
+     properties = { tag = "chat" } },
    { rule = { class = "Spotify" },
-     properties = { tag = 4 } },
+     properties = { tag = "jams" } },
    { rule = { class = "Steam" },
-     properties = { tag = 5 } }
+     properties = { tag = "games" } }
 }
 -- }}}
 

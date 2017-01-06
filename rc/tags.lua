@@ -22,20 +22,20 @@ awful.layout.layouts = {
 }
 
 local tags = {
-   { "prime.png",   awful.layout.suit.tile     },
-   { "irc.png",     awful.layout.suit.tile     },
-   { "net.png",     awful.layout.suit.tile     },
-   { "jams.png",    awful.layout.suit.max      },
-   { "games.png",   awful.layout.suit.tile.top },
-   { "lambda.png",  awful.layout.suit.fair     },
-   { "epsilon.png", awful.layout.suit.spiral   }
+   { "main",  "prime.png",   awful.layout.suit.tile     },
+   { "chat",  "irc.png",     awful.layout.suit.tile     },
+   { "inet",   "net.png",     awful.layout.suit.tile     },
+   { "jams",  "jams.png",    awful.layout.suit.max      },
+   { "game", "games.png",   awful.layout.suit.tile.top },
+   { "work",  "lambda.png",  awful.layout.suit.fair     },
+   { "misc",  "epsilon.png", awful.layout.suit.spiral   }
 }
 function add_tags_to_screen(s)
    local icons = beautiful.icondir or awful.get_awesome_icon_dir()
    for _, t in ipairs(tags) do
-      awful.tag.add("", {
-                       icon = icons .. t[1],
-                       layout = t[2],
+      awful.tag.add(t[1], {
+                       icon = icons .. t[2],
+                       layout = t[3],
                        master_fill_policy = "master_width_factor",
                        gap_single_client = true,
                        gap = beautiful.useless_gap or 0,

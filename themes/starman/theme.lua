@@ -37,7 +37,7 @@ end
 -- }}}
 
 -- {{{ Styles
-theme.font      = "lemon 10px"
+theme.font      = "lemon,profont 10px"
 
 -- {{{ Colors
 theme.fg_normal  = fg2
