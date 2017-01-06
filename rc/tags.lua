@@ -4,7 +4,21 @@ local beautiful = require("beautiful")
 
 local tag_icons = awful.util.get_configuration_dir() .. "/tag_icons/"
 
-awful.layout.layouts = {
+-- Each element represents a tag: the name (not displayed), the icon, and the default layout
+local mytags = {
+   { "main", "prime.png",   awful.layout.suit.fair     },
+   { "chat", "irc.png",     awful.layout.suit.tile     },
+   { "inet", "net.png",     awful.layout.suit.fair     },
+   { "jams", "jams.png",    awful.layout.suit.max      },
+   { "game", "games.png",   awful.layout.suit.tile.top },
+   { "work", "lambda.png",  awful.layout.suit.tile     },
+   { "misc", "epsilon.png", awful.layout.suit.spiral   }
+}
+
+local tags = {}
+
+-- Usable layouts. Commented layouts are disabled.
+tags.layouts = {
    awful.layout.suit.floating,
    awful.layout.suit.tile,
    awful.layout.suit.tile.left,
@@ -23,18 +37,9 @@ awful.layout.layouts = {
    -- awful.layout.suit.corner.se,
 }
 
-local tags = {
-   { "main", "prime.png",   awful.layout.suit.fair     },
-   { "chat", "irc.png",     awful.layout.suit.tile     },
-   { "inet", "net.png",     awful.layout.suit.fair     },
-   { "jams", "jams.png",    awful.layout.suit.max      },
-   { "game", "games.png",   awful.layout.suit.tile.top },
-   { "work", "lambda.png",  awful.layout.suit.tile     },
-   { "misc", "epsilon.png", awful.layout.suit.spiral   }
-}
-function add_tags_to_screen(s)
+function tags.add_tags_to_screen(s)
    -- local icons = beautiful.icondir or awful.get_awesome_icon_dir()
-   for _, t in ipairs(tags) do
+   for _, t in ipairs(mytags) do
       awful.tag.add(t[1], {
                        icon = tag_icons .. t[2],
                        layout = t[3],
@@ -45,3 +50,5 @@ function add_tags_to_screen(s)
       })
    end
 end
+
+return tags

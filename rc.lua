@@ -69,6 +69,9 @@ local function set_wallpaper(s)
 end
 -- }}}
 
+-- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+screen.connect_signal("property::geometry", set_wallpaper)
+
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
@@ -79,10 +82,8 @@ local mytextclock = styleclock()
 local mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
 local mymemmeter = mem_meter(10, 5)
 
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
-
-require("rc.tags")
+local tags = require("rc.tags")
+awful.layout.layouts = tags.layouts
 
 local keys = require("rc.keys")
 root.keys(keys.globalkeys)
@@ -97,7 +98,7 @@ awful.screen.connect_for_each_screen(function(s)
       set_wallpaper(s)
 
       -- Each screen has its own tag table.
-      add_tags_to_screen(s)
+      tags.add_tags_to_screen(s)
 
       -- Create a promptbox for each screen
       s.mypromptbox = awful.widget.prompt()
