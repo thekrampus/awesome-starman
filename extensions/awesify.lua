@@ -1,9 +1,8 @@
 -- A dbus-based spotify widget for awesome
-local capi = { screen = screen, awesome = awesome, dbus = dbus, timer = timer, awesome = awesome }
-local music_box_width = 30
+local capi = { screen = screen, awesome = awesome, dbus = dbus }
+local timer = require("gears.timer")
 local wibox = require("wibox")
 local awful = require("awful")
-local naughty = require("naughty")
 local music_box = {}
 local play_box = {}
 local play_timer = {}
@@ -15,18 +14,19 @@ local awesify = {}
 -- local play_animation = {'⣀', '⡠', '⡠', '⠔', '⠔', '⠔', '⠊', '⠊', '⠊', '⠊', '⠉', '⠉', '⠉', '⠉', '⠉', '⠉', '⠑', '⠑', '⠑', '⠑', '⠢', '⠢', '⠢', '⢄', '⢄'}; local play_box_period = 0.03; local pause_glyph = '⣀';
 -- local play_animation = {' ⣸', '⢀⣰', '⣀⣠', '⣄⣀', '⣆⡀', '⣇ ', '⡏ ', '⠏⠁', '⠋⠉', '⠉⠙', '⠈⠹', ' ⢹'}; local play_box_period = 0.16; local pause_glyph = '⣿⣿';
 local play_animation = {' ⡱', '⢀⡰', '⢄⡠', '⢆⡀', '⢎ ', '⠎⠁', '⠊⠑', '⠈⠱'}; local play_box_period = 0.16667; local pause_glyph = '⢾⡷';
-local music_playing = false
 local play_index = 1
 
 function awesify.create_playbox()
    play_box = wibox.widget.textbox()
    play_box:set_markup("<span color=\"white\">⣏</span>")
 
-   play_timer = timer({timeout = play_box_period})
-   play_timer:connect_signal("timeout", function()
-                                play_index = (play_index % #play_animation) + 1
-                                play_box:set_markup("<span color=\"white\">" .. play_animation[play_index] .. "</span>")
-   end)
+   local function animate()
+      play_index = (play_index % #play_animation) + 1
+      play_box:set_markup("<span color=\"white\">" .. play_animation[play_index] .. "</span>")
+      return true
+   end
+
+   play_timer = timer.start_new(play_box_period, animate)
 
    return play_box
 end
@@ -34,7 +34,7 @@ end
 function awesify.create_musicbox()
    music_box = wibox.widget.textbox()
    music_box:set_text("⣹")
-   
+
    return music_box
 end
 
@@ -51,7 +51,7 @@ function awesify.previous()
 end
 
 --- General handler function, callback on org.freedesktop.DBus.Properties
-function awesify.on_signal(data, interface, changed, invalidated)   
+function awesify.on_signal(data, interface, changed, invalidated)
    if data.member == "PropertiesChanged" then
       if interface == "org.mpris.MediaPlayer2.Player" then
          if changed.PlaybackStatus ~= nil then
@@ -94,8 +94,6 @@ function handle_trackchange(metadata)
       -- Parse and sanitize the data to print
       local title = metadata["xesam:title"] or ""
       local safe_title = wibox_sanitize(title)
-      -- local album = metadata["xesam:album"] or ""
-      -- local safe_album = wibox_sanitize(album)
       local artist_list = metadata["xesam:artist"] or ""
       local safe_artist = wibox_sanitize(table.concat(artist_list, ", "))
 

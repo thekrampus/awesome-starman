@@ -180,6 +180,26 @@ awful.screen.connect_for_each_screen(function(s)
       -- Create the wibox
       s.mywibox = awful.wibar({ position = "top", screen = s })
 
+      -- Right widgets
+      local right_layout = {}
+      if s == screen.primary then
+         right_layout = {
+            layout = wibox.layout.fixed.horizontal,
+            awesify.create_playbox(),
+            awesify.create_musicbox(),
+            mycpumeter,
+            mymemmeter,
+            mytextclock,
+            s.mylayoutbox,
+         }
+      else
+         right_layout = {
+            layout = wibox.layout.fixed.horizontal,
+            mytextclock,
+            s.mylayoutbox
+         }
+      end
+
       -- Add widgets to the wibox
       s.mywibox:setup {
          layout = wibox.layout.align.horizontal,
@@ -189,14 +209,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
          },
          s.mytasklist, -- Middle widget
-         { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            -- wibox.widget.systray(),
-            mycpumeter,
-            mymemmeter,
-            mytextclock,
-            s.mylayoutbox,
-         },
+         right_layout -- Right widgets
       }
 end)
 -- }}}
