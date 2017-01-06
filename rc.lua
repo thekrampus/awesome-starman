@@ -45,7 +45,6 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_configuration_dir() .. "themes/starman/theme.lua")
--- beautiful.init(awful.util.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -95,7 +94,6 @@ local mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
 local mymemmeter = mem_meter(10, 5)
 
 -- {{{ Wibar
--- Create a textclock widget
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
    awful.button({ }, 1, function(t) t:view_only() end),
@@ -154,12 +152,14 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+require("rc.tags")
+
 awful.screen.connect_for_each_screen(function(s)
       -- Wallpaper
       set_wallpaper(s)
 
       -- Each screen has its own tag table.
-      awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+      add_tags_to_screen(s)
 
       -- Create a promptbox for each screen
       s.mypromptbox = awful.widget.prompt()
@@ -217,8 +217,8 @@ end)
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
                 awful.button({ }, 3, function () mymainmenu:toggle() end),
-                awful.button({ }, 4, awful.tag.viewnext),
-                awful.button({ }, 5, awful.tag.viewprev)
+                awful.button({ }, 8, awful.tag.viewnext),
+                awful.button({ }, 9, awful.tag.viewprev)
 ))
 -- }}}
 
@@ -226,9 +226,9 @@ root.buttons(awful.util.table.join(
 globalkeys = awful.util.table.join(globalkeys,
                                    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
                                       {description="show help", group="awesome"}),
-                                   awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
+                                   awful.key({ modkey, "Shift"   }, "[",   awful.tag.viewprev,
                                       {description = "view previous", group = "tag"}),
-                                   awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
+                                   awful.key({ modkey, "Shift"   }, "]",  awful.tag.viewnext,
                                       {description = "view next", group = "tag"}),
                                    awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
                                       {description = "go back", group = "tag"}),
@@ -288,9 +288,9 @@ globalkeys = awful.util.table.join(globalkeys,
                                       {description = "increase the number of columns", group = "layout"}),
                                    awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
                                       {description = "decrease the number of columns", group = "layout"}),
-                                   awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+                                   awful.key({ modkey,           }, "Tab", function () awful.layout.inc( 1)                end,
                                       {description = "select next", group = "layout"}),
-                                   awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+                                   awful.key({ modkey, "Shift"   }, "Tab", function () awful.layout.inc(-1)                end,
                                       {description = "select previous", group = "layout"}),
 
                                    awful.key({ modkey, "Control" }, "n",
@@ -305,7 +305,7 @@ globalkeys = awful.util.table.join(globalkeys,
                                       {description = "restore minimized", group = "client"}),
 
                                    -- Prompt
-                                   awful.key({ modkey },            "r",     function () awful.screen.focused().mypromptbox:run() end,
+                                   awful.key({ modkey },            "space",     function () awful.screen.focused().mypromptbox:run() end,
                                       {description = "run prompt", group = "launcher"}),
 
                                    awful.key({ modkey }, "x",

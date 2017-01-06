@@ -47,7 +47,7 @@ theme.border_focus = bg1
 theme.border_marked = theme.bg_urgent
 
 -- Transparent padding
-theme.border_padding = 15
+theme.useless_gap = 15
 -- }}}
 
 -- {{{ Titlebars
@@ -116,6 +116,10 @@ theme.layout_max        = theme.confdir .. "/layouts/max.png"
 theme.layout_fullscreen = theme.confdir .. "/layouts/fullscreen.png"
 theme.layout_magnifier  = theme.confdir .. "/layouts/magnifier.png"
 theme.layout_floating   = theme.confdir .. "/layouts/floating.png"
+theme.layout_cornernw   = theme.confdir .. "/layouts/cornernw.png"
+theme.layout_cornerne   = theme.confdir .. "/layouts/cornerne.png"
+theme.layout_cornersw   = theme.confdir .. "/layouts/cornersw.png"
+theme.layout_cornerse   = theme.confdir .. "/layouts/cornerse.png"
 -- }}}
 
 -- {{{ Titlebar
