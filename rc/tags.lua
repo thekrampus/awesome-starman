@@ -2,6 +2,8 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 
+local tag_icons = awful.util.get_configuration_dir() .. "/tag_icons/"
+
 awful.layout.layouts = {
    awful.layout.suit.floating,
    awful.layout.suit.tile,
@@ -31,10 +33,10 @@ local tags = {
    { "misc", "epsilon.png", awful.layout.suit.spiral   }
 }
 function add_tags_to_screen(s)
-   local icons = beautiful.icondir or awful.get_awesome_icon_dir()
+   -- local icons = beautiful.icondir or awful.get_awesome_icon_dir()
    for _, t in ipairs(tags) do
       awful.tag.add(t[1], {
-                       icon = icons .. t[2],
+                       icon = tag_icons .. t[2],
                        layout = t[3],
                        master_fill_policy = "master_width_factor",
                        gap_single_client = true,
