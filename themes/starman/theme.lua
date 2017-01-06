@@ -20,13 +20,24 @@ hi2 = "#c4c0c0"
 theme = {}
 theme.name = "starman"
 theme.confdir = awful.util.getdir("config") .. "/themes/" .. theme.name
-theme.wallpaper = theme.confdir .. "/starman-background-3-big.png"
-theme.smallpaper = theme.confdir .. "/starman-background-3.png"
 theme.icondir = awful.util.getdir("config") .. "/tag_icons/"
 -- }}}
 
+-- {{{ Wallpaper
+function theme.wallpaper(s)
+   local size = s.geometry.width * s.geometry.height
+   if size <= 1280 * 1024 then
+      return theme.confdir .. "/starman-background-3-small.png"
+   elseif size <= 1920 * 1080 then
+      return theme.confdir .. "/starman-background-3.png"
+   else
+      return theme.confdir .. "/starman-background-3-big.png"
+   end
+end
+-- }}}
+
 -- {{{ Styles
-theme.font      = "lemon,profont 10px"
+theme.font      = "lemon 10px"
 
 -- {{{ Colors
 theme.fg_normal  = fg2
