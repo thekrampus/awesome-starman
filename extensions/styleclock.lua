@@ -1,7 +1,7 @@
 local setmetatable = setmetatable
 local os = os
 local textbox = require("wibox.widget.textbox")
-local capi = { timer = timer }
+local timer = require("gears.timer")
 
 --- Based on the text clock widget. (awful.widget.textclock)
 local styleclock = { mt = {} }
@@ -28,22 +28,21 @@ function styleclock.new(format, timeout)
    local timeout = timeout or 60
 
    local w = textbox()
-   local timer = capi.timer { timeout = timeout }
 
-   function styled_markup()
+   local function styled_markup()
       local hour = tonumber(os.date("%H"))
       local glyph = day_glyph
       if hour<6 or hour>20 then
          glyph = night_glyph
       end
       local sub_format = string.gsub(format, '!G', glyph)
-      
+
       w:set_markup(os.date(sub_format))
    end
-   
-   timer:connect_signal("timeout", styled_markup)
-   timer:start()
-   timer:emit_signal("timeout")
+
+   styled_markup()
+   timer.start_new(timeout, styled_markup)
+
    return w
 end
 
@@ -52,4 +51,3 @@ function styleclock.mt:__call(...)
 end
 
 return setmetatable(styleclock, styleclock.mt)
-

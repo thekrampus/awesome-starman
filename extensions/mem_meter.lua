@@ -1,9 +1,8 @@
 -- A widget to poll and display useful memory usage info
 
 local setmetatable = setmetatable
-local awful = require("awful")
 local textbox = require("wibox.widget.textbox")
-local capi = { timer = timer }
+local timer = require("gears.timer")
 local mem_meter = { mt = {} }
 
 local color_free = "gray"
@@ -46,8 +45,6 @@ function mem_meter.make_readout(total, used, swap, total_width)
    n_used = n_used - n_high
    local n_free = total_width - n_used - n_high
 
-   print(string.format("%d, %d, %d, %d", n_used, n_high, n_free, n_swap))
-
    local readout = string.format(readout_string,
                                  (usage_glyph):rep(n_used),
                                  (usage_glyph):rep(n_high),
@@ -62,19 +59,21 @@ function mem_meter.new(total_width, timeout)
    local total_width = total_width or total_width_default
 
    local w = textbox()
-   local timer = capi.timer { timeout = timeout }
 
-   function poll()
-      local memstr = awful.util.pread("free --kilo 2>&1")
+   local function poll()
+      local proc = io.popen("free --kilo 2>&1")
+      local memstr = proc:read("*a")
+      proc:close()
       local total, used, swap = mem_meter.parseUsage(memstr)
       local markup = mem_meter.make_readout(total, used, swap, total_width)
 
       w:set_markup(markup)
+      return true
    end
 
-   timer:connect_signal("timeout", poll)
-   timer:start()
-   timer:emit_signal("timeout")
+   poll()
+   timer.start_new(timeout, poll)
+
    return w
 end
 

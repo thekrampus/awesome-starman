@@ -1,10 +1,12 @@
 -- A widget to poll and display useful cpu temperature & usage info
 
 local setmetatable = setmetatable
-local awful = require("awful")
 local textbox = require("wibox.widget.textbox")
-local capi = { timer = timer }
+local timer = require("gears.timer")
 local cpu_meter = { mt = {} }
+
+local usage_call = "awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat 2>&1"
+local sensor_call = "sensors -u 2>&1"
 
 local color_normal = "gray"
 local color_elevated = "white"
@@ -59,15 +61,15 @@ function cpu_meter.parseUsage(output)
    local stat = {}
    local usage = {}
 
-   
+
    for ln in string.gmatch(output, "[^\n]+") do
       local core, idle, total = string.match(ln, "(%S+)%s+(%S+)%s+(%S+)")
       stat[core] = {idle=idle, total=total}
    end
 
    stats.push(stat)
-   last_stat = stats.peek()
-   
+   local last_stat = stats.peek()
+
    for k,v in pairs(stat) do
       local d_idle = v['idle'] - last_stat[k]['idle']
       local d_total = v['total'] - last_stat[k]['total']
@@ -113,28 +115,31 @@ function cpu_meter.new(readout_sensor, cores, timeout)
    local timeout = timeout or 1
 
    local w = textbox()
-   local timer = capi.timer { timeout = timeout }
-   
-   function poll()
-      local statstr = awful.util.pread("awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat 2>&1")
+
+   local function poll()
+      local proc = io.popen(usage_call)
+      local statstr = proc:read("*a")
+      proc:close()
+      proc = io.popen(sensor_call)
+      local tempstr = proc:read("*a")
+      proc:close()
+
       local usage = cpu_meter.parseUsage(statstr)
-      
-      local tempstr = awful.util.pread("sensors -u 2>&1")
       local i, e, m, c = cpu_meter.parseTemp(tempstr, readout_sensor)
       local markup = '[' .. cpu_meter.make_readout(i, e, m, c) .. '|'
 
-      for i,n in ipairs(cores) do
+      for _,n in ipairs(cores) do
          markup = markup .. cpu_meter.make_glyph(n, usage, tempstr)
       end
 
       markup = markup .. ']'
-      
+
       w:set_markup(markup)
    end
-   
-   timer:connect_signal("timeout", poll)
-   timer:start()
-   timer:emit_signal("timeout")
+
+   poll()
+   timer.start_new(timeout, poll)
+
    return w
 end
 
