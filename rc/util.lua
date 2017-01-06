@@ -4,18 +4,42 @@ local naughty = require("naughty")
 local wibox = require("wibox")
 local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
+local util = {}
 
 -- {{{ Helper functions
-function conf_debug()
+function util.conf_debug()
    naughty.notify{title="HEY!", text="LISTEN!"}
 end
 
+-- Run a command synchronously and return its output, or nil if the command failed
+-- This is synchronous and will block until the program call returns
+-- For the same thing asynchronously, see awful.spawn.easy_async
+function util.pread(command)
+   local proc = io.popen(command)
+   local raw = proc:read("*a")
+   proc:close()
+   return raw
+end
+
+-- Read the contents of a file synchronously and return as a string, or nil if reading failed
+-- This is synchronous and will block until the program call returns
+function util.read(filename)
+   local file = io.open(filename, 'r')
+   if file then
+      local raw = file:read("*a")
+      file:close()
+      return raw
+   else
+      return nil
+   end
+end
+
 -- Run a command and notify with output. Useful for debugging.
-function run_and_notify(options)
+function util.run_and_notify(options)
    if type(options.cmd) ~= "string" then
       naughty.notify({text = "<span color\"red\">bad run_and_notify in rc.lua</span>"})
    else
-      outstr = awful.spawn.easy_async(options.cmd .. " 2>&1")
+      local outstr = util.pread(options.cmd .. " 2>&1")
       if options.notify then
          naughty.notify({title = options.cmd, text = outstr})
       end
@@ -23,19 +47,19 @@ function run_and_notify(options)
 end
 
 -- Recursively concat a table into a single formatted string.
-function table_cat(t, depth)
+function util.table_cat(t, depth)
    if depth == nil then
       depth = 0
    end
-   indent = string.rep(" ", depth)
+   local indent = string.rep(" ", depth)
    if depth > 4 then
       return indent .. "[...]\n"
    end
-   tcat = ""
+   local tcat = ""
    for k,v in pairs(t) do
       tcat = tcat .. indent .. tostring(k) .. " : "
       if type(v) == "table" then
-         tcat = tcat .. "{\n" .. table_cat(v, depth+1) .. indent .. "}\n"
+         tcat = tcat .. "{\n" .. util.table_cat(v, depth+1) .. indent .. "}\n"
       else
          tcat = tcat .. tostring(v) .. "\n"
       end
@@ -43,8 +67,24 @@ function table_cat(t, depth)
    return tcat
 end
 
+-- Get the current working directory of a given client, if it has a shell
+function util.get_client_cwd(c)
+   -- TODO
+   return nil
+end
+
+-- Sanitize a string for display in a textbox widget
+function util.sanitize(raw_string)
+   raw_string = string.gsub(raw_string, "&", "&amp;")
+   raw_string = string.gsub(raw_string, "<", "&lt;")
+   raw_string = string.gsub(raw_string, ">", "&gt;")
+   raw_string = string.gsub(raw_string, "'", "&apos;")
+   raw_string = string.gsub(raw_string, "\"", "&quot;")
+   return raw_string
+end
+
 -- Replacement for awful.widget.common.list_update for the taglist widget. Removes default tag width minimum.
-function minwidth_list_update(w, buttons, label, data, objects)
+function util.minwidth_list_update(w, buttons, label, data, objects)
    -- update the widgets, creating them if needed
    w:reset()
    for i, o in ipairs(objects) do
@@ -163,3 +203,5 @@ function minwidth_list_update(w, buttons, label, data, objects)
    -- end
 end
 -- }}}
+
+return util

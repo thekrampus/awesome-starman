@@ -1,5 +1,6 @@
 -- A dbus-based spotify widget for awesome
 local capi = { screen = screen, awesome = awesome, dbus = dbus }
+local util = require("rc.util")
 local timer = require("gears.timer")
 local wibox = require("wibox")
 local awful = require("awful")
@@ -16,9 +17,46 @@ local awesify = {}
 local play_animation = {' ⡱', '⢀⡰', '⢄⡠', '⢆⡀', '⢎ ', '⠎⠁', '⠊⠑', '⠈⠱'}; local play_box_period = 0.16667; local pause_glyph = '⢾⡷';
 local play_index = 1
 
+--- Handler function for PlaybackStatus change signals
+-- Updates the playbox animation to reflect the playback status
+local function handle_playback(status)
+   if status == "Paused" then
+      play_timer:stop()
+      play_box:set_markup("<span color=\"white\">" .. pause_glyph .. "</span>")
+   elseif status == "Stopped" then
+      play_timer:stop()
+      play_box:set_markup("<span color=\"white\">⣏</span>")
+   elseif status == "Playing" then
+      play_timer:again()
+   end
+end
+
+--- Handler function for Metadata change signals
+-- Updates the musicbox to reflect the new track
+local function handle_trackchange(metadata)
+   local nfields = 0
+   for _ in pairs(metadata) do
+      nfields = nfields + 1
+   end
+   if nfields == 0 then
+      -- Empty metadata indicates that spotify has been closed
+      music_box:set_text("⣹")
+   else
+      -- Parse and sanitize the data to print
+      local title = metadata["xesam:title"] or ""
+      local safe_title = util.sanitize(title)
+      local artist_list = metadata["xesam:artist"] or ""
+      local safe_artist = util.sanitize(table.concat(artist_list, ", "))
+
+      music_box:set_markup(" " .. safe_title .. " <span color=\"white\">" .. safe_artist .. "</span> ")
+
+      -- Track change implies that a track is playing...
+      handle_playback("Playing")
+   end
+end
+
 function awesify.create_playbox()
    play_box = wibox.widget.textbox()
-   play_box:set_markup("<span color=\"white\">⣏</span>")
 
    local function animate()
       play_index = (play_index % #play_animation) + 1
@@ -26,7 +64,9 @@ function awesify.create_playbox()
       return true
    end
 
+   -- TODO: How do I set up a timer in the gears API without starting it?
    play_timer = timer.start_new(play_box_period, animate)
+   handle_playback("Stopped")
 
    return play_box
 end
@@ -64,50 +104,6 @@ function awesify.on_signal(data, interface, changed, invalidated)
          end
       end
    end
-end
-
---- Handler function for PlaybackStatus change signals
--- Updates the playbox animation to reflect the playback status
-function handle_playback(status)
-   if status == "Paused" then
-      play_timer:stop()
-      play_box:set_markup("<span color=\"white\">" .. pause_glyph .. "</span>")
-   elseif status == "Stopped" then
-      play_timer:stop()
-      play_box:set_markup("<span color=\"white\">⣏</span>")
-   elseif status == "Playing" then
-      play_timer:start()
-   end
-end
-
---- Handler function for Metadata change signals
--- Updates the musicbox to reflect the new track
-function handle_trackchange(metadata)
-   local nfields = 0
-   for _ in pairs(metadata) do
-      nfields = nfields + 1
-   end
-   if nfields == 0 then
-      -- Empty metadata indicates that spotify has been closed
-      music_box:set_text("⣹")
-   else
-      -- Parse and sanitize the data to print
-      local title = metadata["xesam:title"] or ""
-      local safe_title = wibox_sanitize(title)
-      local artist_list = metadata["xesam:artist"] or ""
-      local safe_artist = wibox_sanitize(table.concat(artist_list, ", "))
-
-      music_box:set_markup(" " .. safe_title .. " <span color=\"white\">" .. safe_artist .. "</span> ")
-   end
-end
-
-function wibox_sanitize(raw_string)
-   raw_string = string.gsub(raw_string, "&", "&amp;")
-   raw_string = string.gsub(raw_string, "<", "&lt;")
-   raw_string = string.gsub(raw_string, ">", "&gt;")
-   raw_string = string.gsub(raw_string, "'", "&apos;")
-   raw_string = string.gsub(raw_string, "\"", "&quot;")
-   return raw_string
 end
 
 -- Configure DBUS support

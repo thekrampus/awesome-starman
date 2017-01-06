@@ -80,7 +80,7 @@ local function client_menu_toggle_fn()
 end
 -- }}}
 
-require("rc.util")
+local util = require("rc.util")
 local mymainmenu = require("rc.menu")
 
 -- Keyboard map indicator and switcher
@@ -172,7 +172,11 @@ awful.screen.connect_for_each_screen(function(s)
                                awful.button({ }, 4, function () awful.layout.inc( 1) end),
                                awful.button({ }, 5, function () awful.layout.inc(-1) end)))
       -- Create a taglist widget
-      s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons, nil, minwidth_list_update)
+      s.mytaglist = awful.widget.taglist(s,
+                                         awful.widget.taglist.filter.all,
+                                         taglist_buttons,
+                                         nil,
+                                         util.minwidth_list_update)
 
       -- Create a tasklist widget
       s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)

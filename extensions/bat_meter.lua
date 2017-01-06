@@ -1,7 +1,6 @@
 -- A widget to show battery status/events polled at regular intervals
 local setmetatable = setmetatable
-local awful = require("awful")
-local naugty = require("naughty")
+local util = require("rc.util")
 local textbox = require("wibox.widget.textbox")
 local capi = { timer = timer }
 local bat_meter = { mt = {} }
@@ -30,10 +29,9 @@ local readout_string = string.format('<span color="%s">%s</span><span color="%s"
                                      color_empty, "%s")
 
 function bat_meter.readStatus(syspath, total_width)
-
-   local charge = tonumber(io.open(syspath .. "/charge_now"):read())
-   local charge_max = tonumber(io.open(syspath .. "/charge_full"):read())
-   local status = io.open(syspath .. "/status"):read()
+   local charge = tonumber(util.read(syspath .. "/charge_now"))
+   local charge_max = tonumber(util.read(syspath .. "/charge_full"))
+   local status = util.read(syspath .. "/status")
 
    local charge_pct = charge / charge_max
 

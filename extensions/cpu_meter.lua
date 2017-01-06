@@ -1,6 +1,6 @@
 -- A widget to poll and display useful cpu temperature & usage info
-
 local setmetatable = setmetatable
+local util = require("rc.util")
 local textbox = require("wibox.widget.textbox")
 local timer = require("gears.timer")
 local cpu_meter = { mt = {} }
@@ -117,12 +117,8 @@ function cpu_meter.new(readout_sensor, cores, timeout)
    local w = textbox()
 
    local function poll()
-      local proc = io.popen(usage_call)
-      local statstr = proc:read("*a")
-      proc:close()
-      proc = io.popen(sensor_call)
-      local tempstr = proc:read("*a")
-      proc:close()
+      local statstr = util.pread(usage_call)
+      local tempstr = util.pread(sensor_call)
 
       local usage = cpu_meter.parseUsage(statstr)
       local i, e, m, c = cpu_meter.parseTemp(tempstr, readout_sensor)
