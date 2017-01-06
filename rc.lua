@@ -43,17 +43,19 @@ do
 end
 -- }}}
 
+local var = require("rc.variables")
+
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(awful.util.get_configuration_dir() .. "themes/starman/theme.lua")
+beautiful.init(awful.util.get_configuration_dir() .. "themes/" .. var.theme .."/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "urxvt"
-editor = os.getenv("EDITOR") or "nano"
-editor_cmd = terminal .. " -e " .. editor
+-- terminal = "urxvt"
+-- editor = os.getenv("EDITOR") or "nano"
+-- editor_cmd = terminal .. " -e " .. editor
 
 -- Auxillary monitor ID (usually 2)
-auxm = screen.count()
+-- auxm = screen.count()
 -- }}}
 
 -- {{{ Helper functions

@@ -2,7 +2,9 @@
 local awful = require("awful")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
+
 local util = require("rc.util")
+local var = require("rc.variables")
 
 local awesify = require("extensions.awesify")
 
@@ -77,7 +79,7 @@ keys.globalkeys = awful.util.table.join(
       {description = "go back", group = "client"}),
 
    -- Standard program
-   awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
+   awful.key({ modkey,           }, "Return", function () awful.spawn(var.terminal) end,
       {description = "open a terminal", group = "launcher"}),
    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
       {description = "increase master width factor", group = "layout"}),
@@ -210,7 +212,7 @@ keys.clientkeys = awful.util.table.join(
       function (c)
          local cwd = util.get_client_cwd(c)
          if cwd then
-            awful.spawn(terminal .. ' -cd "' .. cwd .. '"')
+            awful.spawn(var.terminal .. ' -cd "' .. cwd .. '"')
          end
       end,
       {description = "open a terminal at the current working directory", group = "client"}),

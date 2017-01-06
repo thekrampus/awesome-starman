@@ -5,6 +5,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 
 local keys = require("rc.keys")
+local var = require("rc.variables")
 
 -- {{{ Rules
 awful.rules.rules = {
@@ -18,7 +19,7 @@ awful.rules.rules = {
                     buttons = keys.clientbuttons,
                     screen = awful.screen.preferred,
                     placement = awful.placement.no_overlap+awful.placement.no_offscreen,
-                    titlebars_enabled = false
+                    titlebars_enabled = var.titlebars_enabled
      }
    },
    -- Floating clients.
@@ -64,7 +65,7 @@ awful.rules.rules = {
            "Spotify",
            "Steam"
         }
-   }, properties = { screen = auxm } },
+   }, properties = { screen = var.auxm } },
    { rule = { name = "irssi" },
      properties = { tag = "chat" } },
    { rule = { instance = "riot.im__app" },

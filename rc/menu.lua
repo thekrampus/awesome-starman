@@ -1,23 +1,25 @@
 -- Menu configuration (called from rc.lua)
 local awful = require("awful")
--- awful.menu = require("patch.menu")
 local beautiful = require("beautiful")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
+local util = require("rc.util")
+local var = require("rc.variables")
+
 local x_macros = require("extensions.x_macros")
 
 local function spawn_htop()
-   awful.spawn(terminal .. " -e htop")
+   awful.spawn(var.terminal .. " -e htop")
 end
 
 local function spawn_dmesg()
-   awful.spawn(terminal .. " -e dmesg -wH")
+   awful.spawn(var.terminal .. " -e dmesg -wH")
 end
 
 local function spawn_irc()
    awful.spawn("chromium --app=https://riot.im/app")
-   awful.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
+   awful.spawn(var.terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
 end
 
 local function spawn_loadout()
@@ -31,8 +33,8 @@ end
 -- awesome WM Menu
 local awesomemenu = {
    { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "check config", function() run_and_notify({cmd="awesome -k", notify=true}) end},
+   { "edit config", var.editor_cmd .. " " .. awesome.conffile },
+   { "check config", function() util.run_and_notify({cmd="awesome -k", notify=true}) end},
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end }
 }
@@ -53,10 +55,10 @@ local mymainmenu = awful.menu({ items = { { "awesome", awesomemenu, beautiful.aw
                              { "tools", toolmenu },
                              { "spawn irc", spawn_irc },
                              { "spawn loadout", spawn_loadout },
-                             { "open terminal", terminal } }
+                             { "open terminal", var.terminal } }
                        })
 
 -- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+menubar.utils.terminal = var.terminal -- Set the terminal for applications that require it
 
 return mymainmenu
