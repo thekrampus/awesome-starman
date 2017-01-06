@@ -11,26 +11,66 @@ awful.rules.rules = {
      properties = { border_width = beautiful.border_width,
                     border_color = beautiful.border_normal,
                     focus = awful.client.focus.filter,
+                    raise = true,
                     keys = clientkeys,
                     buttons = clientbuttons,
-                    size_hints_honor = false } },
-   { rule = { class = "pinentry" },
-     properties = { floating = true } },
-   { rule = { class = "gimp" },
-     properties = { floating = true,
-                    tag = tags[auxm][1] } },
+                    screen = awful.screen.preferred,
+                    placement = awful.placement.no_overlap+awful.placement.no_offscreen,
+                    titlebars_enabled = false
+     }
+   },
+   -- Floating clients.
+   { rule_any = {
+        instance = {
+           "DTA",  -- Firefox addon DownThemAll.
+           "copyq",  -- Includes session name in class.
+        },
+        class = {
+           "Arandr",
+           "Gpick",
+           "Kruler",
+           "MessageWin",  -- kalarm.
+           "Sxiv",
+           "Wpa_gui",
+           "pinentry",
+           "veromix",
+           "xtightvncviewer",
+           "gvncviewer",
+           "sun-awt-X11-XFramePeer"},
+
+        name = {
+           "Event Tester",  -- xev.
+        },
+        role = {
+           "AlarmWindow",  -- Thunderbird's calendar.
+           "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
+        }
+   }, properties = { floating = true } },
+   -- Clients which should be on the primary screen
+   { rule_any = {
+        name = {
+           "irssi"
+        },
+        instance = {
+           "riot.im__app"
+        }
+   }, properties = { screen = 1 } },
+   -- Clients which should be on the auxillary screen
+   { rule_any = {
+        class = {
+           "gimp",
+           "Spotify",
+           "Steam"
+        }
+   }, properties = { screen = auxm } },
    { rule = { name = "irssi" },
-     properties = { tag = tags[1][2] } },
+     properties = { tag = 2 } },
    { rule = { instance = "riot.im__app" },
-     properties = { tag = tags[1][2] } },
+     properties = { tag = 2 } },
    { rule = { class = "Spotify" },
-     properties = { tag = tags[auxm][4] } },
+     properties = { tag = 4 } },
    { rule = { class = "Steam" },
-     properties = { tag = tags[auxm][5] } },
-   { rule = { class = "gvncviewer" },
-     properties = { floating = true } },
-   { rule = { instance = "sun-awt-X11-XFramePeer" },
-     properties = { floating = true } }
+     properties = { tag = 5 } }
 }
 -- }}}
 
@@ -38,5 +78,5 @@ awful.rules.rules = {
 -- {{{ Naughty
 -- Suppress default notifications
 naughty.config.presets.spotify = {callback = function() return false end}
-table.insert(naughty.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
+table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
 -- }}}
