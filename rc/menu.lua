@@ -59,14 +59,4 @@ local mymainmenu = awful.menu({ items = { { "awesome", awesomemenu, beautiful.aw
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 
-globalkeys = awful.util.table.join(globalkeys,
-                                   awful.key({ modkey,         }, "w", function() mymainmenu:show() end),
-                                   awful.key({ modkey, "Shift" }, "e", x_macros.hot_macro),
-                                   awful.key({ modkey,         }, "p", function() menubar.show() end)
-)
-
-globalbuttons = awful.util.table.join(globalbuttons,
-                                      awful.button({ }, 3, function() mymainmenu:toggle() end)
-)
-
 return mymainmenu
