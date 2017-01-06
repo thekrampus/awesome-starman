@@ -1,5 +1,4 @@
 -- Utilities (called from rc.lua)
-local awful = require("awful")
 local naughty = require("naughty")
 local wibox = require("wibox")
 local common = require("awful.widget.common")
