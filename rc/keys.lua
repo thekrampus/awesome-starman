@@ -6,6 +6,16 @@ local util = require("rc.util")
 
 local awesify = require("extensions.awesify")
 
+local keys = {}
+
+-- {{{ Variables
+-- Default modkey.
+-- Usually, Mod4 is the key with a logo between Control and Alt.
+-- If you do not like this or do not have such a key,
+-- I suggest you to remap Mod4 to another key using xmodmap or other tools.
+-- However, you can use another modifier like Mod1, but it may interact with others.
+local modkey = "Mod4"
+-- }}}
 
 -- {{{ Helper functions
 local function client_menu_toggle_fn()
@@ -23,7 +33,7 @@ end
 -- }}}
 
 -- {{{ Global key bindings
-globalkeys = awful.util.table.join(
+keys.globalkeys = awful.util.table.join(
    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
       {description="show help", group="awesome"}),
    awful.key({ modkey, "Shift"   }, "[",   awful.tag.viewprev,
@@ -128,8 +138,8 @@ globalkeys = awful.util.table.join(
 -- Be careful: we use keycodes to make it work on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
 for i = 1, 9 do
-   globalkeys = awful.util.table.join(
-      globalkeys,
+   keys.globalkeys = awful.util.table.join(
+      keys.globalkeys,
       -- View tag only.
       awful.key({ modkey }, "#" .. i + 9,
          function ()
@@ -174,22 +184,18 @@ for i = 1, 9 do
          {description = "toggle focused client on tag #" .. i, group = "tag"})
    )
 end
-
-root.keys(globalkeys)
 -- }}}
 
 -- {{{ Global mouse bindings
-globalbuttons = awful.util.table.join(
+keys.globalbuttons = awful.util.table.join(
    awful.button({ }, 3, function () mymainmenu:toggle() end),
    awful.button({ }, 8, awful.tag.viewnext),
    awful.button({ }, 9, awful.tag.viewprev)
 )
-
-root.buttons(globalbuttons)
 -- }}}
 
 -- {{{ Client key bindings
-clientkeys = awful.util.table.join(
+keys.clientkeys = awful.util.table.join(
    awful.key({ modkey,           }, "f",
       function (c)
          c.fullscreen = not c.fullscreen
@@ -229,7 +235,7 @@ clientkeys = awful.util.table.join(
       {description = "maximize", group = "client"})
 )
 
-clientbuttons = awful.util.table.join(
+keys.clientbuttons = awful.util.table.join(
    awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
    awful.button({ modkey }, 1, awful.mouse.client.move),
    awful.button({ modkey }, 3, awful.mouse.client.resize),
@@ -244,7 +250,7 @@ clientbuttons = awful.util.table.join(
 -- }}}
 
 -- {{{ Widget key and mouse bindings
-taglist_buttons = awful.util.table.join(
+keys.taglist_buttons = awful.util.table.join(
    awful.button({ }, 1, function(t) t:view_only() end),
    awful.button({ modkey }, 1, function(t)
          if client.focus then
@@ -261,7 +267,7 @@ taglist_buttons = awful.util.table.join(
    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
 )
 
-tasklist_buttons = awful.util.table.join(
+keys.tasklist_buttons = awful.util.table.join(
    awful.button({ }, 1, function (c)
          if c == client.focus then
             c.minimized = true
@@ -286,7 +292,14 @@ tasklist_buttons = awful.util.table.join(
          awful.client.focus.byidx(-1)
 end))
 
-function titlebar_buttons(c)
+keys.layoutbox_buttons = awful.util.table.join(
+   awful.button({ }, 1, function () awful.layout.inc( 1) end),
+   awful.button({ }, 3, function () awful.layout.inc(-1) end),
+   awful.button({ }, 4, function () awful.layout.inc( 1) end),
+   awful.button({ }, 5, function () awful.layout.inc(-1) end)
+)
+
+function keys.titlebar_buttons(c)
    awful.util.table.join(
       awful.button({ }, 1, function()
             client.focus = c
@@ -300,11 +313,6 @@ function titlebar_buttons(c)
       end)
    )
 end
-
-layoutbox_buttons = awful.util.table.join(
-   awful.button({ }, 1, function () awful.layout.inc( 1) end),
-   awful.button({ }, 3, function () awful.layout.inc(-1) end),
-   awful.button({ }, 4, function () awful.layout.inc( 1) end),
-   awful.button({ }, 5, function () awful.layout.inc(-1) end)
-)
 -- }}}
+
+return keys

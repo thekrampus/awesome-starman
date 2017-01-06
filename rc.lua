@@ -52,13 +52,6 @@ terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
--- Default modkey.
--- Usually, Mod4 is the key with a logo between Control and Alt.
--- If you do not like this or do not have such a key,
--- I suggest you to remap Mod4 to another key using xmodmap or other tools.
--- However, you can use another modifier like Mod1, but it may interact with others.
-modkey = "Mod4"
-
 -- Auxillary monitor ID (usually 2)
 auxm = screen.count()
 -- }}}
@@ -94,7 +87,11 @@ local mymemmeter = mem_meter(10, 5)
 screen.connect_signal("property::geometry", set_wallpaper)
 
 require("rc.tags")
-require("rc.keys")
+
+local keys = require("rc.keys")
+root.keys(keys.globalkeys)
+root.buttons(keys.globalbuttons)
+
 require("rc.rules")
 
 -- {{{ Wibar
@@ -111,16 +108,16 @@ awful.screen.connect_for_each_screen(function(s)
       -- Create an imagebox widget which will contains an icon indicating which layout we're using.
       -- We need one layoutbox per screen.
       s.mylayoutbox = awful.widget.layoutbox(s)
-      s.mylayoutbox:buttons(layoutbox_buttons)
+      s.mylayoutbox:buttons(keys.layoutbox_buttons)
       -- Create a taglist widget
       s.mytaglist = awful.widget.taglist(s,
                                          awful.widget.taglist.filter.all,
-                                         taglist_buttons,
+                                         keys.taglist_buttons,
                                          nil,
                                          util.minwidth_list_update)
 
       -- Create a tasklist widget
-      s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+      s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, keys.tasklist_buttons)
 
       -- Create the wibox
       s.mywibox = awful.wibar({ position = "top", screen = s })
@@ -177,7 +174,7 @@ end)
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
                          -- buttons for the titlebar
-                         local buttons = titlebar_buttons(c)
+                         local buttons = keys.titlebar_buttons(c)
 
                          awful.titlebar(c) : setup {
                             { -- Left
