@@ -1,21 +1,23 @@
 -- Menu configuration (called from rc.lua)
 local awful = require("awful")
-awful.menu = require("patch.menu")
+-- awful.menu = require("patch.menu")
 local beautiful = require("beautiful")
 local menubar = require("menubar")
+local hotkeys_popup = require("awful.hotkeys_popup").widget
+
 local x_macros = require("extensions.x_macros")
 
 local function spawn_htop()
-   awful.util.spawn(terminal .. " -e htop")
+   awful.spawn(terminal .. " -e htop")
 end
 
 local function spawn_dmesg()
-   awful.util.spawn(terminal .. " -e dmesg -wH")
+   awful.spawn(terminal .. " -e dmesg -wH")
 end
 
 local function spawn_irc()
-   awful.util.spawn("chromium --app=https://riot.im/app")
-   awful.util.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
+   awful.spawn("chromium --app=https://riot.im/app")
+   awful.spawn(terminal .. " -e irssi --config=/home/rob/.irssi/sudonet.conf")
 end
 
 local function spawn_loadout()
@@ -28,10 +30,11 @@ end
 
 -- awesome WM Menu
 local awesomemenu = {
+   { "hotkeys", function() return false, hotkeys_popup.show_help end},
    { "edit config", editor_cmd .. " " .. awesome.conffile },
    { "check config", function() run_and_notify({cmd="awesome -k", notify=true}) end},
    { "restart", awesome.restart },
-   { "quit", awesome.quit }
+   { "quit", function() awesome.quit() end }
 }
 
 -- x_macros extension menu
@@ -65,3 +68,5 @@ globalkeys = awful.util.table.join(globalkeys,
 globalbuttons = awful.util.table.join(globalbuttons,
                                       awful.button({ }, 3, function() mymainmenu:toggle() end)
 )
+
+return mymainmenu
