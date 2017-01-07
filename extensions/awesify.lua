@@ -202,8 +202,8 @@ function awesify.new()
                 awful.button({ }, 1, awesify.playpause ),
                 awful.button({ }, 2, awesify.mute),
                 awful.button({ }, 3, function() self.menu:toggle() end ),
-                awful.button({ }, 4, awesify.vol_down ),
-                awful.button({ }, 5, awesify.vol_up )
+                awful.button({ }, 4, awesify.vol_up ),
+                awful.button({ }, 5, awesify.vol_down )
    ))
 
    return w
