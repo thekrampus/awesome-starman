@@ -1,6 +1,5 @@
 -- Wibar widget tray layout and configuration (called by rc.lua)
 -- The widget tray is everything in the wibar after the taglist & tasklist
-local awful = require("awful")
 local wibox = require("wibox")
 
 local awesify = require("extensions.awesify")
@@ -12,6 +11,9 @@ local tray = {}
 
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
+
+-- Create awesify music-player widget
+local mymusicbox = awesify()
 
 -- Create a textclock widget
 local mytextclock = styleclock()
@@ -27,8 +29,7 @@ end
 
 -- Create the widget tray for the primary screen.
 function tray.primary(base)
-   return wibox.layout.fixed.horizontal(awesify.create_playbox(),
-                                        awesify.create_musicbox(),
+   return wibox.layout.fixed.horizontal(mymusicbox,
                                         mycpumeter,
                                         mymemmeter,
                                         base_tray(base))

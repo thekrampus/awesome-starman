@@ -13,9 +13,6 @@ local menubar = require("menubar")
 -- Utility helper functions
 local util = require("rc.util")
 
--- Extensions
-local awesify = require("extensions.awesify")
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
