@@ -69,12 +69,13 @@ theme.titlebar_bg_normal = bg1
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
--- [taglist|tasklist]_[bg|fg]_[focus|urgent]
+-- [taglist|tasklist]_[bg|fg]_[focus|urgent|occupied|empty]
 -- titlebar_[normal|focus]
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- Example:
 --theme.taglist_bg_focus = "#CC9393"
 theme.taglist_bg_focus = fg2
+theme.taglist_bg_occupied = bg2
 -- }}}
 
 -- {{{ Widgets
