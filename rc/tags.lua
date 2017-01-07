@@ -2,6 +2,8 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 
+local tags = {}
+
 local tag_icons = awful.util.get_configuration_dir() .. "/tag_icons/"
 
 -- Each element represents a tag: the name (not displayed), the icon, and the default layout
@@ -14,8 +16,6 @@ local mytags = {
    { "work", "lambda.png",  awful.layout.suit.tile     },
    { "misc", "epsilon.png", awful.layout.suit.spiral   }
 }
-
-local tags = {}
 
 -- Usable layouts. Commented layouts are disabled.
 tags.layouts = {
@@ -37,8 +37,8 @@ tags.layouts = {
    -- awful.layout.suit.corner.se,
 }
 
+-- Add all standard to a screen
 function tags.add_tags_to_screen(s)
-   -- local icons = beautiful.icondir or awful.get_awesome_icon_dir()
    for _, t in ipairs(mytags) do
       awful.tag.add(t[1], {
                        icon = tag_icons .. t[2],
@@ -48,6 +48,24 @@ function tags.add_tags_to_screen(s)
                        gap = beautiful.useless_gap or 0,
                        screen = s
       })
+   end
+end
+
+-- Create a new volatile "transient" tag for a client
+function tags.to_transient_tag(c)
+   if c then
+      local icon = c.icon or tag_icons .. "epsilon.png"
+      local tag = awful.tag.add("temp", {
+                                 icon = icon,
+                                 layout = awful.layout.suit.fair,
+                                 master_fill_policy = "master_width_factor",
+                                 gap_single_client = true,
+                                 gap = beautiful.useless_gap or 0,
+                                 screen = c.screen,
+                                 volatile = true
+      })
+      c:tags({tag})
+      tag:view_only()
    end
 end
 

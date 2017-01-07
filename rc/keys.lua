@@ -6,6 +6,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local util = require("rc.util")
 local var = require("rc.variables")
 local mainmenu = require("rc.menu")
+local tags = require("rc.tags")
 
 local awesify = require("extensions.awesify")
 
@@ -81,7 +82,7 @@ keys.globalkeys = awful.util.table.join(
 
    -- Standard program
    awful.key({ modkey,           }, "Return", function () awful.spawn(var.terminal) end,
-      {description = "open a terminal", group = "launcher"}),
+      {description = "spawn terminal", group = "launcher"}),
    awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)          end,
       {description = "increase master width factor", group = "layout"}),
    awful.key({ modkey,           }, "h",     function () awful.tag.incmwfact(-0.05)          end,
@@ -216,11 +217,13 @@ keys.clientkeys = awful.util.table.join(
             awful.spawn(var.terminal .. ' -cd "' .. cwd .. '"')
          end
       end,
-      {description = "open a terminal at the current working directory", group = "client"}),
+      {description = "spawn terminal at current path", group = "client"}),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
       {description = "move to master", group = "client"}),
    awful.key({ modkey, "Shift"   }, "`",      function (c) c:move_to_screen()               end,
       {description = "move to screen", group = "client"}),
+   awful.key({ modkey, "Shift"   }, "\\",      tags.to_transient_tag,
+      {description = "move to transient tag", group = "client"}),
    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
       {description = "toggle keep on top", group = "client"}),
    awful.key({ modkey,           }, "n",
