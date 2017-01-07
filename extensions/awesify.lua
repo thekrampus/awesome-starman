@@ -1,5 +1,4 @@
--- A dbus-based spotify widget for awesome
--- local capi = { screen = screen, awesome = awesome, dbus = dbus }
+-- A dbus-based media widget for awesome
 local awful = require("awful")
 local wibox = require("wibox")
 local timer = require("gears.timer")
@@ -18,7 +17,56 @@ local play_animation = {' ⡱', '⢀⡰', '⢄⡠', '⢆⡀', '⢎ ', '⠎⠁', 
 local track_fmt = ' %s <span color="white">%s</span> '
 local tooltip_fmt = '   %s\n' ..
    '<span color="white">by</span> %s\n' ..
-   '<span color="white">on</span> %s'
+   '<span color="white">on</span> %s\n' ..
+   '   <span color="green">%s</span>'
+
+local function make_menu()
+   local theme = {width = 20,
+                  height = 220}
+
+   local menu = awful.menu{ theme = theme }
+
+   local function menu_widget()
+      local beautiful = require("beautiful")
+      local gears = require("gears")
+
+      local function handle_shape(cr, w, h)
+         return gears.shape.partially_rounded_rect(cr, w, h, true, false, true, true, theme.width)
+      end
+      local slider = wibox.widget {
+         bar_shape = gears.shape.rounded_bar,
+         bar_height = 2,
+         bar_color = beautiful.fg_focus,
+         handle_color = "[0]#000000",
+         handle_shape = handle_shape,
+         handle_border_color = beautiful.fg_focus,
+         handle_border_width = 2,
+         handle_width = theme.width,
+         handle_margins = {left=4, right=4, top=4, bottom=4},
+         value = 100,
+         widget = wibox.widget.slider
+      }
+
+      local function slider_callback()
+         awesify.vol_set(slider.value)
+      end
+
+      slider:connect_signal("widget::redraw_needed", slider_callback)
+
+      local w = wibox.container {
+         slider,
+         direction = 'east',
+         widget = wibox.container.rotate
+      }
+      return {akey = nil,
+              widget = w,
+              cmd = nil}
+   end
+
+   menu:add({ new = menu_widget })
+
+   return menu
+end
 
 function awesify.playpause()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
@@ -32,6 +80,22 @@ function awesify.previous()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
 end
 
+function awesify.vol_set(n)
+   awful.spawn("amixer set Master " .. n .. "%")
+end
+
+function awesify.vol_up()
+   awful.spawn("amixer set Master 5%+")
+end
+
+function awesify.vol_down()
+   awful.spawn("amixer set Master 5%-")
+end
+
+function awesify.mute()
+   awful.spawn("amixer set Master playback toggle")
+end
+
 function awesify:set_track_info()
    if self.track then
       self.music_box:set_markup(string.format(track_fmt,
@@ -40,7 +104,8 @@ function awesify:set_track_info()
       self.tooltip:set_markup(string.format(tooltip_fmt,
                                             self.track.title,
                                             self.track.artist,
-                                            self.track.album))
+                                            self.track.album,
+                                            self.track.year))
    else
       self.music_box:set_text("⣹")
       self.tooltip:set_markup("... nothing's playing...")
@@ -81,6 +146,8 @@ function awesify:handle_trackchange(metadata)
       self.track.artist = util.sanitize(table.concat(artist_list, ", "))
       local album = metadata["xesam:album"] or ""
       self.track.album = util.sanitize(album)
+      local date = metadata["xesam:contentCreated"] or ""
+      self.track.year = date:match("^(%d*)-") or "----"
    end
 end
 
@@ -106,6 +173,8 @@ function awesify.new()
 
    self.track = nil
 
+   self.menu = make_menu()
+
    self.play_index = 1
    self.music_box = wibox.widget.textbox()
 
@@ -128,6 +197,14 @@ function awesify.new()
    -- Hook into DBus signals
    dbus.add_match("session", "interface='org.freedesktop.DBus.Properties'")
    dbus.connect_signal("org.freedesktop.DBus.Properties", function(...) self:on_signal(...) end)
+
+   w:buttons(awful.util.table.join(
+                awful.button({ }, 1, awesify.playpause ),
+                awful.button({ }, 2, awesify.mute),
+                awful.button({ }, 3, function() self.menu:toggle() end ),
+                awful.button({ }, 4, awesify.vol_down ),
+                awful.button({ }, 5, awesify.vol_up )
+   ))
 
    return w
 end
