@@ -26,7 +26,7 @@ local default_format = " %a %b %d <span color=\"white\">!G</span> %H:%M "
 
 local tooltip_format = "last system update was <span color=\"white\">%s</span>ago"
 
-local lastupdate_cmd = '/usr/bin/bash -c "grep -e \\"Running \'pacman .* -Sy\'\\" /var/log/pacman.log | tail -1"'
+local lastupdate_cmd = '/usr/bin/bash -c "grep -e \\"Running \'pacman.*-Sy\'\\" /var/log/pacman.log | tail -1"'
 
 local function lastupdate_handler(ttip, stdout, stderr, exitreason, exitcode)
    if exitcode ~= 0 then
