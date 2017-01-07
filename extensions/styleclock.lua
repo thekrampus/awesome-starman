@@ -38,6 +38,7 @@ function styleclock.new(format, timeout)
       local sub_format = string.gsub(format, '!G', glyph)
 
       w:set_markup(os.date(sub_format))
+      return true
    end
 
    styled_markup()
