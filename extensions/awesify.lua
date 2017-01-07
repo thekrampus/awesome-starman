@@ -1,9 +1,9 @@
 -- A dbus-based spotify widget for awesome
-local capi = { screen = screen, awesome = awesome, dbus = dbus }
-local util = require("rc.util")
-local timer = require("gears.timer")
-local wibox = require("wibox")
+-- local capi = { screen = screen, awesome = awesome, dbus = dbus }
 local awful = require("awful")
+local wibox = require("wibox")
+local timer = require("gears.timer")
+local util = require("rc.util")
 
 local awesify = {}
 awesify.__index = awesify
@@ -98,10 +98,8 @@ function awesify.new()
    self:handle_playback("Stopped")
 
    -- Hook into DBus signals
-   if capi.dbus then
-      capi.dbus.add_match("session", "interface='org.freedesktop.DBus.Properties'")
-      capi.dbus.connect_signal("org.freedesktop.DBus.Properties", function(...) self:on_signal(...) end)
-   end
+   dbus.add_match("session", "interface='org.freedesktop.DBus.Properties'")
+   dbus.connect_signal("org.freedesktop.DBus.Properties", function(...) self:on_signal(...) end)
 
    local w = wibox.layout.fixed.horizontal(self.play_box, self.music_box)
    return w
