@@ -5,7 +5,6 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 
 local util = require("rc.util")
 local var = require("rc.variables")
-local mainmenu = require("rc.menu")
 local tags = require("rc.tags")
 
 local awesify = require("extensions.awesify")
@@ -59,7 +58,7 @@ keys.globalkeys = awful.util.table.join(
       end,
       {description = "focus previous by index", group = "client"}
    ),
-   awful.key({ modkey,           }, "w", function () mainmenu:show() end,
+   awful.key({ modkey,           }, "w", function () var.mainmenu:show() end,
       {description = "show main menu", group = "awesome"}),
 
    -- Layout manipulation
@@ -192,7 +191,7 @@ end
 
 -- {{{ Global mouse bindings
 keys.globalbuttons = awful.util.table.join(
-   awful.button({ }, 3, function () mainmenu:toggle() end),
+   awful.button({ }, 3, function () var.mainmenu:toggle() end),
    awful.button({ }, 8, awful.tag.viewnext),
    awful.button({ }, 9, awful.tag.viewprev)
 )

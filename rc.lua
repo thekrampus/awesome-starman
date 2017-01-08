@@ -40,6 +40,7 @@ end
 
 -- {{{ Variable definition & configuration
 local var = require("rc.variables")
+awful.layout.layouts = var.layouts
 
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_configuration_dir() .. "themes/" .. var.theme .."/theme.lua")
@@ -52,7 +53,6 @@ require("rc.rules")
 
 -- Load tag config & set layouts
 local tags = require("rc.tags")
-awful.layout.layouts = tags.layouts
 
 -- Load keybindings & set global mappings
 local keys = require("rc.keys")
