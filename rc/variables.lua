@@ -49,11 +49,11 @@ variables.layouts = personal.layouts or {
 
 -- Main menu
 variables.mainmenu = personal.mainmenu or
-   awful.menu{items = {
-                 { "open terminal", variables.terminal },
-                 { "edit config", variables.editor_cmd .. " " .. awesome.conffile },
-                 { "restart", awesome.restart },
-                 { "quit", function() awesome.quit() end }
-   }}
+   {
+      { "open terminal", variables.terminal },
+      { "edit config", variables.editor_cmd .. " " .. awesome.conffile },
+      { "restart", awesome.restart },
+      { "quit", function() awesome.quit() end }
+   }
 
 return variables
