@@ -99,21 +99,27 @@ awful.screen.connect_for_each_screen(function(s)
       s.mytaglist = awful.widget.taglist(s,
                                          awful.widget.taglist.filter.all,
                                          keys.taglist_buttons,
-                                         nil,
-                                         util.minwidth_list_update)
+                                         {spacing = -9},
+                                         -- nil,
+                                         util.icon_list_update
+      )
 
       -- Create a tasklist widget
-      s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, keys.tasklist_buttons)
-
-      -- Create the wibox
-      s.mywibox = awful.wibar({ position = "top", screen = s })
+      s.mytasklist = awful.widget.tasklist(s,
+                                           awful.widget.tasklist.filter.currenttags,
+                                           keys.tasklist_buttons,
+                                           {spacing = -9})
 
       -- Widget tray
       local mytray = (s == screen.primary) and tray.primary(s.mylayoutbox) or tray.secondary(s.mylayoutbox)
 
+      -- Create the wibox
+      s.mywibox = awful.wibar({ position = "top", screen = s })
+
       -- Add widgets to the wibox
       s.mywibox:setup {
          layout = wibox.layout.align.horizontal,
+         expand = "inside",
          { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             s.mytaglist,
