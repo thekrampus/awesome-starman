@@ -6,18 +6,26 @@
 
 -- required by the theme
 local awful = require("awful")
+local shape = require("gears.shape")
 
 -- {{{ Pallette
-bg1 = "#2a2529"
-fg1 = "#3f4e53"
-bg2 = "#393333"
-fg2 = "#607c88"
-hi1 = "#a19b9b"
-hi2 = "#c4c0c0"
+-- Primary
+local bg1 = "#2a2529" -- dark gunmetal
+local fg1 = "#3f4e53" -- outer space
+local bg2 = "#393333" -- jet
+local fg2 = "#607c88" -- steel teal
+local hi1 = "#a19b9b" -- spanish gray
+local hi2 = "#c4c0c0" -- silver
+
+-- Secondary
+local fg3 = "#a49e8d" -- grullo
+local bg3 = "#595a4a" -- ebony (olivine)
+local fg4 = "#dad7cd" -- timberwolf
+local bg4 = "#684a52" -- wenge
 -- }}}
 
 -- {{{ Main
-theme = {}
+local theme = {}
 theme.name = "starman"
 
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
@@ -69,13 +77,17 @@ theme.titlebar_bg_normal = bg1
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
--- [taglist|tasklist]_[bg|fg]_[focus|urgent|occupied|empty]
+-- [taglist|tasklist]_[bg|fg]_[focus|urgent|occupied|empty|volatile]
 -- titlebar_[normal|focus]
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- Example:
 --theme.taglist_bg_focus = "#CC9393"
 theme.taglist_bg_focus = fg2
 theme.taglist_bg_occupied = bg2
+theme.taglist_bg_volatile = bg3
+theme.taglist_fg_volatile = fg3
+-- theme.taglist_shape_volatile = shape.powerline
+theme.taglist_shape_volatile = function(cr, w, h) shape.partially_rounded_rect(cr, w, h, false, true, true, true, 20) end
 -- }}}
 
 -- {{{ Widgets
