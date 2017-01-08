@@ -95,20 +95,29 @@ awful.screen.connect_for_each_screen(function(s)
       -- We need one layoutbox per screen.
       s.mylayoutbox = awful.widget.layoutbox(s)
       s.mylayoutbox:buttons(keys.layoutbox_buttons)
+
+      -- Create patched layouts for taglist and tasklist
+      local tag_layout = wibox.layout.fixed.horizontal()
+      tag_layout.fit = util.fixed_fit
+      local task_layout = wibox.layout.fixed.horizontal()
+      task_layout.fit = util.fixed_fit
+
       -- Create a taglist widget
       s.mytaglist = awful.widget.taglist(s,
                                          awful.widget.taglist.filter.all,
                                          keys.taglist_buttons,
                                          {spacing = -9},
                                          -- nil,
-                                         util.icon_list_update
+                                         util.icon_list_update,
+                                         tag_layout
       )
 
       -- Create a tasklist widget
       s.mytasklist = awful.widget.tasklist(s,
                                            awful.widget.tasklist.filter.currenttags,
                                            keys.tasklist_buttons,
-                                           {spacing = -9})
+                                           {spacing = -9},
+                                           nil, nil, task_layout)
 
       -- Widget tray
       local mytray = (s == screen.primary) and tray.primary(s.mylayoutbox) or tray.secondary(s.mylayoutbox)

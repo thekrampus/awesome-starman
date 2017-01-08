@@ -143,6 +143,48 @@ function util.icon_list_update(w, buttons, label, data, objects)
       w:add(tagbg)
    end
 end
+
+--- Replacement for wibox.layout.fixed:fit which respects negative spacing
+-- @param context The context in which we are fit.
+-- @param orig_width The available width.
+-- @param orig_height The available height.
+function util.fixed_fit(self, context, orig_width, orig_height)
+   local width, height = orig_width, orig_height
+   local used_in_dir, used_max = 0, 0
+
+   local spacing = self._private.spacing
+
+   for _, v in pairs(self._private.widgets) do
+      local w, h = wibox.widget.base.fit_widget(self, context, v, width, height)
+      local in_dir, max
+      if self._private.dir == "y" then
+         max, in_dir = w, h
+         height = height - in_dir - spacing
+      else
+         in_dir, max = w, h
+         width = width - in_dir - spacing
+      end
+      if max > used_max then
+         used_max = max
+      end
+
+      used_in_dir = used_in_dir + in_dir + spacing
+
+      if width <= 0 or height <= 0 then
+         if self._private.dir == "y" then
+            used_in_dir = orig_height
+         else
+            used_in_dir = orig_width
+         end
+         break
+      end
+   end
+
+   if self._private.dir == "y" then
+      return used_max, used_in_dir - spacing
+   end
+   return used_in_dir - spacing, used_max
+end
 -- }}}
 
 return util
