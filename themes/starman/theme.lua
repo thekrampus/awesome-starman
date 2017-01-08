@@ -82,15 +82,16 @@ theme.titlebar_bg_normal = bg1
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- Example:
 --theme.taglist_bg_focus = "#CC9393"
-theme.taglist_bg_focus = fg2
-theme.taglist_bg_occupied = bg2
-theme.taglist_bg_volatile = bg3
-theme.taglist_fg_volatile = fg3
--- theme.taglist_shape_volatile = shape.powerline
-theme.taglist_shape_volatile = function(cr, w, h) shape.partially_rounded_rect(cr, w, h, false, true, true, true, 20) end
+theme.taglist_bg_focus       = fg2
+theme.taglist_bg_occupied    = bg2
+theme.taglist_bg_volatile    = bg3
+theme.taglist_fg_volatile    = fg3
+theme.taglist_shape          = shape.powerline
+theme.taglist_shape_volatile = shape.hexagon
+theme.tasklist_shape         = shape.powerline
 -- }}}
 
--- {{{ Widgets
+-- {{{ widgets
 -- You can add as many variables as
 -- you wish and access them by using
 -- beautiful.variable in your rc.lua
