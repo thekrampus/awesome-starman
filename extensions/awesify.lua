@@ -20,54 +20,6 @@ local tooltip_fmt = '   %s\n' ..
    '<span color="white">on</span> %s\n' ..
    '   <span color="green">%s</span>'
 
-local function make_menu()
-   local theme = {width = 20,
-                  height = 220}
-
-   local menu = awful.menu{ theme = theme }
-
-   local function menu_widget()
-      local beautiful = require("beautiful")
-      local gears = require("gears")
-
-      local function handle_shape(cr, w, h)
-         return gears.shape.partially_rounded_rect(cr, w, h, true, false, true, true, theme.width)
-      end
-      local slider = wibox.widget {
-         bar_shape = gears.shape.rounded_bar,
-         bar_height = 2,
-         bar_color = beautiful.fg_focus,
-         handle_color = "[0]#000000",
-         handle_shape = handle_shape,
-         handle_border_color = beautiful.fg_focus,
-         handle_border_width = 2,
-         handle_width = theme.width,
-         handle_margins = {left=4, right=4, top=4, bottom=4},
-         value = 100,
-         widget = wibox.widget.slider
-      }
-
-      local function slider_callback()
-         awesify.vol_set(slider.value)
-      end
-
-      slider:connect_signal("widget::redraw_needed", slider_callback)
-
-      local w = wibox.container {
-         slider,
-         direction = 'east',
-         widget = wibox.container.rotate
-      }
-      return {akey = nil,
-              widget = w,
-              cmd = nil}
-   end
-
-   menu:add({ new = menu_widget })
-
-   return menu
-end
-
 function awesify.playpause()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 end
@@ -81,19 +33,76 @@ function awesify.previous()
 end
 
 function awesify.vol_set(n)
-   awful.spawn("amixer set Master " .. n .. "%")
+   awful.spawn("amixer -q set Master " .. n .. "%")
 end
 
 function awesify.vol_up()
-   awful.spawn("amixer set Master 5%+")
+   awful.spawn("amixer -q set Master 5%+")
 end
 
 function awesify.vol_down()
-   awful.spawn("amixer set Master 5%-")
+   awful.spawn("amixer -q set Master 5%-")
 end
 
 function awesify.mute()
-   awful.spawn("amixer set Master playback toggle")
+   awful.spawn("amixer -q set Master playback toggle")
+end
+
+local function make_menu()
+   local theme = {
+      width = 20,
+      height = 220
+   }
+
+   local menu = awful.menu{ theme = theme }
+
+   local function menu_widget()
+      local beautiful = require("beautiful")
+      local gears = require("gears")
+
+      local function handle_shape(cr, w, h)
+         return gears.shape.transform(gears.shape.partially_rounded_rect)
+            : scale(0.9, 0.9) (cr, h, h, true, false, true, true, theme.width)
+      end
+      local slider = wibox.widget {
+         bar_shape = gears.shape.rounded_bar,
+         bar_height = 2,
+         bar_color = beautiful.fg_focus,
+         handle_color = "[0]#000000",
+         handle_shape = handle_shape,
+         handle_border_color = beautiful.fg_focus,
+         handle_border_width = 2,
+         handle_width = theme.width,
+         handle_margins = {left=1, top=2},
+         bar_margins = {left=7, right=10, top=theme.width/2 - 1},
+         value = 100,
+         widget = wibox.widget.slider
+      }
+
+      local function slider_callback()
+         awesify.vol_set(slider.value)
+      end
+
+      slider:connect_signal("widget::redraw_needed", slider_callback)
+
+      local w = wibox.container {
+         wibox.container {
+            slider,
+            width = theme.height,
+            strategy = 'max',
+            widget = wibox.container.constraint
+         },
+         direction = 'east',
+         widget = wibox.container.rotate
+      }
+      return {akey = nil,
+              widget = w,
+              cmd = nil}
+   end
+
+   menu:add({ new = menu_widget })
+
+   return menu
 end
 
 function awesify:set_track_info()
