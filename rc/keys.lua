@@ -130,12 +130,20 @@ keys.globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
 
    -- Media controls
-   awful.key({ modkey }, "Home", awesify.playpause,
+   awful.key({ modkey          }, "Home", awesify.playpause,
       {description = "play/pause media", group = "media"}),
-   awful.key({ modkey }, "Prior", awesify.next,
+   awful.key({ modkey          }, "Prior", awesify.next,
       {description = "next track", group = "media"}),
-   awful.key({ modkey }, "Insert", awesify.previous,
-      {description = "previous track", group = "media"})
+   awful.key({ modkey          }, "Insert", awesify.previous,
+      {description = "previous track", group = "media"}),
+   awful.key({ modkey, "Shift" }, "=", awesify.vol_up,
+      {description = "volume++", group = "media"}),
+   awful.key({ modkey, "Shift" }, "-", awesify.vol_down,
+      {description = "volume--", group = "media"}),
+
+   -- Screencap
+   awful.key({ }, "Print", function() awful.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end,
+      {description = "screenshot", group = "screen"})
 )
 
 -- Bind all key numbers to tags.
