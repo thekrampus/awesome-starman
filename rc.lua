@@ -106,8 +106,7 @@ awful.screen.connect_for_each_screen(function(s)
       s.mytaglist = awful.widget.taglist(s,
                                          awful.widget.taglist.filter.all,
                                          keys.taglist_buttons,
-                                         {spacing = -9},
-                                         -- nil,
+                                         nil,
                                          util.icon_list_update,
                                          tag_layout
       )
@@ -116,7 +115,7 @@ awful.screen.connect_for_each_screen(function(s)
       s.mytasklist = awful.widget.tasklist(s,
                                            awful.widget.tasklist.filter.currenttags,
                                            keys.tasklist_buttons,
-                                           {spacing = -9},
+                                           nil,
                                            nil, nil, task_layout)
 
       -- Widget tray

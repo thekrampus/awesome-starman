@@ -89,6 +89,9 @@ theme.taglist_fg_volatile    = fg3
 theme.taglist_shape          = shape.powerline
 theme.taglist_shape_volatile = shape.hexagon
 theme.tasklist_shape         = shape.powerline
+
+theme.taglist_spacing        = -9
+theme.tasklist_spacing        = -9
 -- }}}
 
 -- {{{ widgets
