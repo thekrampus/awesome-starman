@@ -121,10 +121,12 @@ function cpu_meter:parse_sensors(stdout, stderr, exitreason, exitcode)
    if exitcode ~= 0 then
       print("\nNonzero exit code from cpu_meter sensors call: " .. exitcode)
       print(stderr)
+      self.lock = false
       return
    end
 
    self:make_markup(stdout)
+   self.lock = false
 end
 
 -- Usage command callback. Parse command output, add to stats,
@@ -133,6 +135,7 @@ function cpu_meter:parse_usage(stdout, stderr, exitreason, exitcode)
    if exitcode ~= 0 then
       print("\nNonzero exit code from cpu_meter usage call: " .. exitcode)
       print(stderr)
+      self.lock = false
       return
    end
 
@@ -146,6 +149,7 @@ function cpu_meter:parse_usage(stdout, stderr, exitreason, exitcode)
    self.usage = get_usage(self.stats:peek(), stat)
 
    awful.spawn.easy_async(sensor_call, function(...) self:parse_sensors(...) end)
+   collectgarbage()
 end
 
 function cpu_meter.new(readout_sensor, cores, timeout)
@@ -157,9 +161,13 @@ function cpu_meter.new(readout_sensor, cores, timeout)
    self.sensor = readout_sensor
    self.cores = cores
    self.usage = nil
+   self.lock = false
 
    local function poll()
-      awful.spawn.easy_async(usage_call, function(...) self:parse_usage(...) end)
+      if not self.lock then
+         self.lock = true
+         awful.spawn.easy_async(usage_call, function(...) self:parse_usage(...) end)
+      end
       return true
    end
 
