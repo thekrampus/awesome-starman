@@ -7,7 +7,7 @@ local util = {}
 
 -- {{{ Helper functions
 function util.conf_debug()
-   naughty.notify{title="HEY!", text="LISTEN!"}
+   naughty.notify{title="𝒂𝒘𝒆𝒔𝒐𝒎𝒆", text="using " .. collectgarbage('count') .. " kb", font="Noto Sans 10"}
 end
 
 -- Run a command synchronously and return its output, or nil if the command failed

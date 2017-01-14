@@ -143,7 +143,11 @@ keys.globalkeys = awful.util.table.join(
 
    -- Screencap
    awful.key({ }, "Print", function() awful.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end,
-      {description = "screenshot", group = "screen"})
+      {description = "screenshot", group = "screen"}),
+
+   -- Etc
+   awful.key({ modkey, "Shift" }, "Escape", util.conf_debug,
+      {description = "get that data", group = "awesome"})
 )
 
 -- Bind all key numbers to tags.
