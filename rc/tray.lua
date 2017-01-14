@@ -2,7 +2,7 @@
 -- The widget tray is everything in the wibar after the taglist & tasklist
 local wibox = require("wibox")
 
-local jammin = require("extensions.jammin")
+local jammin = require("jammin")
 local styleclock = require("extensions.styleclock")
 local cpu_meter = require("extensions.cpu_meter")
 local mem_meter = require("extensions.mem_meter")

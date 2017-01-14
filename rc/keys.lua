@@ -8,7 +8,7 @@ local tags = require("rc.tags")
 local var = require("rc.variables")
 local mainmenu = require("rc.menu")
 
-local jammin = require("extensions.jammin")
+local jammin = require("jammin")
 
 local keys = {}
 
