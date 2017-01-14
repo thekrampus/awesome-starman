@@ -5,9 +5,28 @@ local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
 local util = {}
 
+local log_date_fmt = "%Y%m%d.%X"
+local log_fmt = "%s <%s> %s: %s"
+
 -- {{{ Helper functions
 function util.conf_debug()
    naughty.notify{title="𝒂𝒘𝒆𝒔𝒐𝒎𝒆", text="using " .. collectgarbage('count') .. " kb", font="Noto Sans 10"}
+end
+
+local function write_log(msg)
+   print(msg)
+end
+
+-- Log a system message.
+-- The message string in `msg` is formatted and timestamped.
+-- The resulting log message is passed to `log_fn`, or printed to stdout by default
+function util.log(msg, log_fn)
+   log_fn = log_fn or write_log
+   local caller = debug.getinfo(2)
+   local caller_name = caller.name or tostring(caller.func) or "[function]"
+   local timestamp = os.date(log_date_fmt)
+   local log_msg = log_fmt:format(timestamp, os.clock(), caller_name, msg)
+   log_fn(log_msg)
 end
 
 -- Run a command synchronously and return its output, or nil if the command failed
