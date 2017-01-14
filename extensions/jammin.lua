@@ -1,11 +1,17 @@
--- A dbus-based media widget for awesome
+----------------------------------------------------------------
+--- Jammin'! A dbus-based media widget for awesome
+--
+-- @author Krampus &lt;tetramor.ph&gt;
+-- @module jammin
+----------------------------------------------------------------
+
 local awful = require("awful")
 local wibox = require("wibox")
 local timer = require("gears.timer")
 local util = require("rc.util")
 
-local awesify = {}
-awesify.__index = awesify
+local jammin = {}
+jammin.__index = jammin
 
 -- local play_animation = {'⣸', '⣴', '⣦', '⣇', '⡏', '⠟', '⠻', '⢹'}; local play_box_period = 0.2; local pause_glyph = '⣿';
 -- local play_animation = {'⢸', '⣰', '⣤', '⣆', '⡇', '⠏', '⠛', '⠹'}; local play_box_period = 0.2; local pause_glyph = '⣿';
@@ -20,31 +26,31 @@ local tooltip_fmt = '   %s\n' ..
    '<span color="white">on</span> %s\n' ..
    '   <span color="green">%s</span>'
 
-function awesify.playpause()
+function jammin.playpause()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 end
 
-function awesify.next()
+function jammin.next()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 end
 
-function awesify.previous()
+function jammin.previous()
    awful.spawn("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
 end
 
-function awesify.vol_set(n)
+function jammin.vol_set(n)
    awful.spawn("amixer -q set Master " .. n .. "%")
 end
 
-function awesify.vol_up()
+function jammin.vol_up()
    awful.spawn("amixer -q set Master 5%+")
 end
 
-function awesify.vol_down()
+function jammin.vol_down()
    awful.spawn("amixer -q set Master 5%-")
 end
 
-function awesify.mute()
+function jammin.mute()
    awful.spawn("amixer -q set Master playback toggle")
 end
 
@@ -80,7 +86,7 @@ local function make_menu()
       }
 
       local function slider_callback()
-         awesify.vol_set(slider.value)
+         jammin.vol_set(slider.value)
       end
 
       slider:connect_signal("widget::redraw_needed", slider_callback)
@@ -105,7 +111,7 @@ local function make_menu()
    return menu
 end
 
-function awesify:set_track_info()
+function jammin:set_track_info()
    if self.track then
       self.music_box:set_markup(string.format(track_fmt,
                                               self.track.title,
@@ -123,7 +129,7 @@ end
 
 --- Handler function for PlaybackStatus change signals
 -- Updates the playbox animation to reflect the playback status
-function awesify:handle_playback(status)
+function jammin:handle_playback(status)
    if status == "Paused" then
       self.play_timer:stop()
       self.play_box:set_markup("<span color=\"white\">" .. pause_glyph .. "</span>")
@@ -138,7 +144,7 @@ end
 
 --- Handler function for Metadata change signals
 -- Updates the musicbox to reflect the new track
-function awesify:handle_trackchange(metadata)
+function jammin:handle_trackchange(metadata)
    local nfields = 0
    for _ in pairs(metadata) do
       nfields = nfields + 1
@@ -161,7 +167,7 @@ function awesify:handle_trackchange(metadata)
 end
 
 --- General handler function, callback on org.freedesktop.DBus.Properties
-function awesify:on_signal(data, interface, changed, invalidated)
+function jammin:on_signal(data, interface, changed, invalidated)
    if data.member == "PropertiesChanged" then
       if interface == "org.mpris.MediaPlayer2.Player" then
          if changed.PlaybackStatus ~= nil then
@@ -177,8 +183,8 @@ function awesify:on_signal(data, interface, changed, invalidated)
    end
 end
 
-function awesify.new()
-   local self = setmetatable({}, awesify)
+function jammin.new()
+   local self = setmetatable({}, jammin)
 
    self.track = nil
 
@@ -208,20 +214,20 @@ function awesify.new()
    dbus.connect_signal("org.freedesktop.DBus.Properties", function(...) self:on_signal(...) end)
 
    w:buttons(awful.util.table.join(
-                awful.button({ }, 1, awesify.playpause ),
-                awful.button({ }, 2, awesify.mute),
+                awful.button({ }, 1, jammin.playpause ),
+                awful.button({ }, 2, jammin.mute),
                 awful.button({ }, 3, function() self.menu:toggle() end ),
-                awful.button({ }, 4, awesify.vol_up ),
-                awful.button({ }, 5, awesify.vol_down )
+                awful.button({ }, 4, jammin.vol_up ),
+                awful.button({ }, 5, jammin.vol_down )
    ))
 
    return w
 end
 
-setmetatable(awesify, {
+setmetatable(jammin, {
                 __call = function(cls, ...)
                    return cls.new(...)
                 end
 })
 
-return awesify
+return jammin

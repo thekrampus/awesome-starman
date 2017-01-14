@@ -2,7 +2,7 @@
 -- The widget tray is everything in the wibar after the taglist & tasklist
 local wibox = require("wibox")
 
-local awesify = require("extensions.awesify")
+local jammin = require("extensions.jammin")
 local styleclock = require("extensions.styleclock")
 local cpu_meter = require("extensions.cpu_meter")
 local mem_meter = require("extensions.mem_meter")
@@ -12,8 +12,8 @@ local tray = {}
 -- Keyboard map indicator and switcher
 -- mykeyboardlayout = awful.widget.keyboardlayout()
 
--- Create awesify music-player widget
-local mymusicbox = awesify()
+-- Create jammin music-player widget
+local mymusicbox = jammin()
 
 -- Create a textclock widget
 local mytextclock = styleclock()

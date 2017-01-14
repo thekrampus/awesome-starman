@@ -8,7 +8,7 @@ local tags = require("rc.tags")
 local var = require("rc.variables")
 local mainmenu = require("rc.menu")
 
-local awesify = require("extensions.awesify")
+local jammin = require("extensions.jammin")
 
 local keys = {}
 
@@ -130,15 +130,15 @@ keys.globalkeys = awful.util.table.join(
       {description = "show the menubar", group = "launcher"}),
 
    -- Media controls
-   awful.key({ modkey          }, "Home", awesify.playpause,
+   awful.key({ modkey          }, "Home", jammin.playpause,
       {description = "play/pause media", group = "media"}),
-   awful.key({ modkey          }, "Prior", awesify.next,
+   awful.key({ modkey          }, "Prior", jammin.next,
       {description = "next track", group = "media"}),
-   awful.key({ modkey          }, "Insert", awesify.previous,
+   awful.key({ modkey          }, "Insert", jammin.previous,
       {description = "previous track", group = "media"}),
-   awful.key({ modkey, "Shift" }, "=", awesify.vol_up,
+   awful.key({ modkey, "Shift" }, "=", jammin.vol_up,
       {description = "volume++", group = "media"}),
-   awful.key({ modkey, "Shift" }, "-", awesify.vol_down,
+   awful.key({ modkey, "Shift" }, "-", jammin.vol_down,
       {description = "volume--", group = "media"}),
 
    -- Screencap
