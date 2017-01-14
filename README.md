@@ -9,10 +9,10 @@
 A word of warning: this uses some way weird keybindings and personalizations and I have made virtually no attempt to document them, nor do I totally intend to. If you want to use this then like go for it dude, at your own peril.
 
 some highlights:
-* integration with the Spotify client for Linux
 * home-grown icon set for everything
 * chill colors n wallpaper
+* it's [𝓙𝓪𝓶𝓶𝓲𝓷'!](/../../../awesome-jammin)
 * shoutouts to my Earthbound crew
 * :fire: HOT like FIRE :fire:
 
-[awesome]: http://awesome.naquadah.org/
+[awesome]: http://awesomewm.org/
