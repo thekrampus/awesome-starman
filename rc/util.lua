@@ -11,6 +11,7 @@ local log_fmt = "%s <%s> %s: %s"
 -- {{{ Helper functions
 function util.conf_debug()
    naughty.notify{title="𝒂𝒘𝒆𝒔𝒐𝒎𝒆", text="using " .. collectgarbage('count') .. " kb", font="Noto Sans 10"}
+   util.log("Called util.conf_debug")
 end
 
 local function write_log(msg)
