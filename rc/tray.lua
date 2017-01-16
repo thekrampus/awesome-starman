@@ -14,6 +14,7 @@ local tray = {}
 
 -- Create jammin music-player widget
 local mymusicbox = jammin()
+mymusicbox:add_notify_handler("Spotify")
 
 -- Create a textclock widget
 local mytextclock = styleclock()
@@ -29,7 +30,7 @@ end
 
 -- Create the widget tray for the primary screen.
 function tray.primary(base)
-   return wibox.layout.fixed.horizontal(mymusicbox,
+   return wibox.layout.fixed.horizontal(mymusicbox.wibox,
                                         mycpumeter,
                                         mymemmeter,
                                         base_tray(base))

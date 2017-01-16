@@ -76,10 +76,3 @@ awful.rules.rules = {
      properties = { tag = "games" } }
 }
 -- }}}
-
-
--- {{{ Naughty
--- Suppress default notifications
-naughty.config.presets.spotify = {callback = function() return false end}
-table.insert(naughty.dbus.config.mapping, {{appname = "Spotify"}, naughty.config.presets.spotify})
--- }}}
