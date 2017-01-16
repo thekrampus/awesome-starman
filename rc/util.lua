@@ -7,11 +7,6 @@ local dpi = require("beautiful").xresources.apply_dpi
 local nifty = require("nifty")
 local util = {}
 
-local log_date_fmt = "%Y%m%d.%X"
-local log_stat_fmt = "%8.3fs %8.1fkb"
-local log_fmt = "%s %s: %s%s<%s>"
-local log_width = 100
-
 -- {{{ Helper functions
 function util.conf_debug()
    naughty.notify{title="𝒂𝒘𝒆𝒔𝒐𝒎𝒆", text="using " .. collectgarbage('count') .. " kb", font="Noto Sans 10"}
@@ -41,27 +36,6 @@ function util.read(filename)
    end
 end
 
--- Recursively concat a table into a single formatted string.
-function util.table_cat(t, depth)
-   if depth == nil then
-      depth = 0
-   end
-   local indent = string.rep(" ", depth)
-   if depth > 4 then
-      return indent .. "[...]\n"
-   end
-   local tcat = ""
-   for k,v in pairs(t) do
-      tcat = tcat .. indent .. tostring(k) .. " : "
-      if type(v) == "table" then
-         tcat = tcat .. "{\n" .. util.table_cat(v, depth+1) .. indent .. "}\n"
-      else
-         tcat = tcat .. tostring(v) .. "\n"
-      end
-   end
-   return tcat
-end
-
 -- Get the current working directory of a given client if it has a shell (nil otherwise)
 function util.get_client_cwd(c)
    -- Get PID of first child of the client
@@ -73,16 +47,6 @@ function util.get_client_cwd(c)
    else
       return nil
    end
-end
-
--- Sanitize a string for display in a textbox widget
-function util.sanitize(raw_string)
-   raw_string = string.gsub(raw_string, "&", "&amp;")
-   raw_string = string.gsub(raw_string, "<", "&lt;")
-   raw_string = string.gsub(raw_string, ">", "&gt;")
-   raw_string = string.gsub(raw_string, "'", "&apos;")
-   raw_string = string.gsub(raw_string, "\"", "&quot;")
-   return raw_string
 end
 
 function util.icon_list_update(w, buttons, label, data, objects)
