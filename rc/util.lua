@@ -3,6 +3,8 @@ local naughty = require("naughty")
 local wibox = require("wibox")
 local common = require("awful.widget.common")
 local dpi = require("beautiful").xresources.apply_dpi
+
+local nifty = require("nifty")
 local util = {}
 
 local log_date_fmt = "%Y%m%d.%X"
@@ -13,25 +15,7 @@ local log_width = 100
 -- {{{ Helper functions
 function util.conf_debug()
    naughty.notify{title="𝒂𝒘𝒆𝒔𝒐𝒎𝒆", text="using " .. collectgarbage('count') .. " kb", font="Noto Sans 10"}
-   util.log("Called util.conf_debug")
-end
-
-local function write_log(msg)
-   print(msg)
-end
-
--- Log a system message.
--- The message string in `msg` is formatted and timestamped.
--- The resulting log message is passed to `log_fn`, or printed to stdout by default
-function util.log(msg, log_fn)
-   log_fn = log_fn or write_log
-   local caller = debug.getinfo(2)
-   local caller_name = caller.name or tostring(caller.func) or "[function]"
-   local timestamp = os.date(log_date_fmt)
-   local stats = log_stat_fmt:format(os.clock(), collectgarbage("count"))
-   local padding = string.rep(" ", log_width - (#caller_name + #msg + #stats + 5))
-   local log_msg = log_fmt:format(timestamp, caller_name, msg, padding, stats)
-   log_fn(log_msg)
+   nifty.util.log("Called util.conf_debug")
 end
 
 -- Run a command synchronously and return its output, or nil if the command failed
@@ -54,18 +38,6 @@ function util.read(filename)
       return raw
    else
       return nil
-   end
-end
-
--- Run a command and notify with output. Useful for debugging.
-function util.run_and_notify(options)
-   if type(options.cmd) ~= "string" then
-      naughty.notify({text = "<span color\"red\">bad run_and_notify in rc.lua</span>"})
-   else
-      local outstr = util.pread(options.cmd .. " 2>&1")
-      if options.notify then
-         naughty.notify({title = options.cmd, text = outstr})
-      end
    end
 end
 
