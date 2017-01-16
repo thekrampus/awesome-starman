@@ -2,7 +2,7 @@
 
 local awful = require("awful")
 local wibox = require("wibox")
-local timeout = require("extensions.timeout")
+local timeout = require("nifty.timeout")
 
 local popup_widget = {}
 popup_widget.__index = popup_widget

@@ -19,8 +19,8 @@ To use:
 
     ```lua
     -- in your rc.lua:
-    local popup_widget = require("nifty.popup_widget")
-    local mypopup = popup_widget(my_widget, {timeout = 3})
+    local nifty = require("nifty")
+    local mypopup = nifty.popup_widget(my_widget, {timeout = 3})
     mypopup:show()
     ```
 
