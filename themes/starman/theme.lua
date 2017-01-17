@@ -28,6 +28,8 @@ local theme = {}
 theme.name = "starman"
 
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
+
+theme.font      = "lemon,profont 10px"
 -- }}}
 
 -- {{{ Wallpaper
@@ -42,9 +44,6 @@ function theme.wallpaper(s)
    end
 end
 -- }}}
-
--- {{{ Styles
-theme.font      = "lemon,profont 10px"
 
 -- {{{ Colors
 theme.fg_normal  = fg1
@@ -112,7 +111,6 @@ theme.menu_height = dpi(15)
 theme.menu_width  = dpi(100)
 -- }}}
 
--- {{{ Icons
 -- {{{ Taglist
 -- theme.taglist_squares_sel   = theme_dir .. "/taglist/squarefz.png"
 -- theme.taglist_squares_unsel = theme_dir .. "/taglist/squarefz.png"
@@ -166,7 +164,6 @@ theme.titlebar_maximized_button_focus_active  = theme_dir .. "/titlebar/maximize
 theme.titlebar_maximized_button_normal_active = theme_dir .. "/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme_dir .. "/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme_dir .. "/titlebar/maximized_normal_inactive.png"
--- }}}
 -- }}}
 
 return theme
