@@ -38,10 +38,10 @@
 ! brown sugar
 *.color13: rgb:b0/71/56
 
-! verde musgo
-*.color6:  rgb:94/dc/9a
-! tea green
-*.color14: rgb:d0/f0/c0
+! metallic seaweed
+*.color6:  rgb:0f/82/9d
+! verdigris
+*.color14: rgb:3a/98/ae
 
 ! spanish gray
 *.color7:  rgb:a1/9b/9b
