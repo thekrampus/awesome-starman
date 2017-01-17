@@ -1,0 +1,79 @@
+! -*- mode: conf-xdefaults; -*-
+
+!! This defines the colors used in the starman theme.
+!! Make sure this file is #included from your .Xresources.
+
+!! Pallette
+! dark gunmetal
+#define bgA rgb:2a/25/29
+! steel teal
+#define fgA rgb:60/7c/88
+
+! jet
+#define bg0 rgb:39/33/33
+! outer space
+#define fg0 rgb:3f/4e/53
+
+! sweet brown
+#define bg1 rgb:a5/37/2e
+! terra cotta
+#define fg1 rgb:e0/6c/5c
+
+! gray-asparagus
+#define bg2 rgb:4a/66/3c
+! camouflage green
+#define fg2 rgb:7b/99/6c
+
+! grizzly
+#define bg3 rgb:7c/56/18
+! deer
+#define fg3 rgb:b3/88/49
+
+! japanese indigo
+#define bg4 rgb:27/40/60
+! b-dazzled blue
+#define fg4 rgb:33/5c/81
+
+! wenge
+#define bg5 rgb:68/4a/52
+! brown sugar
+#define fg5 rgb:b0/71/56
+
+! verde musgo
+#define bg6 rgb:94/dc/9a
+! tea green
+#define fg6 rgb:d0/f0/c0
+
+! spanish gray
+#define bg7 rgb:a1/9b/9b
+! silver
+#define fg7 rgb:c4/c0/c0
+
+!! Resource Colors
+! bg/fg
+*.background: bgA
+*.foreground: fgA
+! black
+*.color0:     bg0
+*.color8:     fg0
+! red
+*.color1:     bg1
+*.color9:     fg1
+! green
+*.color2:     bg2
+*.color10:    fg2
+! yellow
+*.color3:     bg3
+*.color11:    fg3
+! blue
+*.color4:     bg4
+*.color12:    fg4
+! magenta
+*.color5:     bg5
+*.color13:    fg5
+! cyan
+*.color6:     bg6
+*.color14:    fg6
+! white
+*.color7:     bg7
+*.color15:    fg7
