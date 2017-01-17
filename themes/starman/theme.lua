@@ -7,21 +7,20 @@
 -- required by the theme
 local awful = require("awful")
 local shape = require("gears.shape")
+local xresources = require("beautiful.xresources")
+local xrdb = xresources.get_current_theme()
+local dpi = xresources.apply_dpi
 
--- {{{ Pallette
+-- {{{ Palette
 -- Primary
-local bg1 = "#2a2529" -- dark gunmetal
-local fg1 = "#3f4e53" -- outer space
-local bg2 = "#393333" -- jet
-local fg2 = "#607c88" -- steel teal
-local hi1 = "#a19b9b" -- spanish gray
-local hi2 = "#c4c0c0" -- silver
-
--- Secondary
-local fg3 = "#a49e8d" -- grullo
-local bg3 = "#595a4a" -- ebony (olivine)
-local fg4 = "#dad7cd" -- timberwolf
-local bg4 = "#684a52" -- wenge
+local bg1 = xrdb.background
+local fg1 = xrdb.foreground
+local bg2 = xrdb.color0
+local fg2 = xrdb.color8
+local bg3 = xrdb.color1
+local fg3 = xrdb.color9
+local hi1 = xrdb.color7
+local hi2 = xrdb.color15
 -- }}}
 
 -- {{{ Main
@@ -48,7 +47,7 @@ end
 theme.font      = "lemon,profont 10px"
 
 -- {{{ Colors
-theme.fg_normal  = fg2
+theme.fg_normal  = fg1
 theme.fg_focus   = hi1
 theme.fg_urgent  = hi2
 theme.bg_normal  = bg1
@@ -58,15 +57,11 @@ theme.bg_systray = bg1
 -- }}}
 
 -- {{{ Borders
-theme.border_width  = 2
+theme.border_width  = dpi(2)
 theme.border_normal = bg1
 theme.border_focus = bg1
--- theme.border_normal = "[0]#000000"
--- theme.border_focus  = "[0]#000000"
 theme.border_marked = theme.bg_urgent
-
--- Transparent padding
-theme.useless_gap = 15
+theme.useless_gap = dpi(15)
 -- }}}
 
 -- {{{ Titlebars
@@ -74,15 +69,14 @@ theme.titlebar_bg_focus  = bg2
 theme.titlebar_bg_normal = bg1
 -- }}}
 
+-- {{{ Taglist & Tasklist
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
 -- [taglist|tasklist]_[bg|fg]_[focus|urgent|occupied|empty|volatile]
 -- titlebar_[normal|focus]
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
--- Example:
---theme.taglist_bg_focus = "#CC9393"
-theme.taglist_bg_focus       = fg2
+theme.taglist_bg_focus       = fg1
 theme.taglist_bg_occupied    = bg2
 theme.taglist_bg_volatile    = bg3
 theme.taglist_fg_volatile    = fg3
@@ -106,17 +100,16 @@ theme.tasklist_spacing        = -6
 -- }}}
 
 -- {{{ Mouse finder
-theme.mouse_finder_color = "#CC9393"
+-- theme.mouse_finder_color = "#CC9393"
 -- mouse_finder_[timeout|animate_timeout|radius|factor]
 -- }}}
 
 -- {{{ Menu
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
--- menu_[border_color|border_width|border_padding]
-theme.menu_height = 15
-theme.menu_width  = 100
-theme.menu_border_padding = 4
+-- menu_[border_color|border_width]
+theme.menu_height = dpi(15)
+theme.menu_width  = dpi(100)
 -- }}}
 
 -- {{{ Icons
