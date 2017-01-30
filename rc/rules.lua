@@ -72,7 +72,11 @@ awful.rules.rules = {
      properties = { tag = "chat" } },
    { rule = { class = "Spotify" },
      properties = { tag = "jams" } },
-   { rule = { class = "Steam" },
-     properties = { tag = "game" } }
+   { rule = { class = "Steam", name = "Steam" },
+     properties = { tag = "game" } },
+   { rule = { class = "Steam", name = "Friends" },
+     properties = { tag = "chat" } },
+   { rule = { class = "Steam", name = ".- %- Chat" },
+     properties = { tag = "chat" } }
 }
 -- }}}
