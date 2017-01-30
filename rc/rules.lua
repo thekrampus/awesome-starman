@@ -2,7 +2,6 @@
 local awful = require("awful")
 awful.rules = require("awful.rules")
 local beautiful = require("beautiful")
-local naughty = require("naughty")
 
 local keys = require("rc.keys")
 local var = require("rc.variables")
