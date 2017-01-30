@@ -73,6 +73,6 @@ awful.rules.rules = {
    { rule = { class = "Spotify" },
      properties = { tag = "jams" } },
    { rule = { class = "Steam" },
-     properties = { tag = "games" } }
+     properties = { tag = "game" } }
 }
 -- }}}
