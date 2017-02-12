@@ -42,6 +42,12 @@ end
 local var = require("rc.variables")
 awful.layout.layouts = var.layouts
 
+-- These are defined by the standard rc.lua. I don't really like that, so I'll
+-- access these through rc.variables. These are here for backwards-compatibility
+terminal = var.terminal
+editor = var.editor
+editor_cmd = var.editor_cmd
+
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(awful.util.get_configuration_dir() .. "themes/" .. var.theme .."/theme.lua")
 
