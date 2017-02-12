@@ -1,6 +1,5 @@
 -- Tag configuration (called from rc.lua)
 local awful = require("awful")
-local beautiful = require("beautiful")
 
 local var = require("rc.variables")
 
@@ -14,9 +13,6 @@ function tags.add_tags_to_screen(s)
       awful.tag.add(t[1] or "tag", {
                        icon = t[2] and tag_icons .. t[2],
                        layout = t[3] or awful.layout.suit.tile,
-                       master_fill_policy = "master_width_factor",
-                       gap_single_client = true,
-                       gap = beautiful.useless_gap or 0,
                        screen = s
       })
    end
@@ -29,9 +25,6 @@ function tags.to_transient_tag(c)
       local tag = awful.tag.add("temp", {
                                  icon = icon,
                                  layout = awful.layout.suit.fair,
-                                 master_fill_policy = "master_width_factor",
-                                 gap_single_client = true,
-                                 gap = beautiful.useless_gap or 0,
                                  screen = c.screen,
                                  volatile = true
       })

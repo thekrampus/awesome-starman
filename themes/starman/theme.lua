@@ -60,12 +60,17 @@ theme.border_width  = dpi(2)
 theme.border_normal = bg1
 theme.border_focus = bg1
 theme.border_marked = theme.bg_urgent
-theme.useless_gap = dpi(15)
 -- }}}
 
 -- {{{ Titlebars
 theme.titlebar_bg_focus  = bg2
 theme.titlebar_bg_normal = bg1
+-- }}}
+
+-- {{{ Tags
+theme.gap_single_client = true
+theme.useless_gap = dpi(15)
+theme.master_fill_policy = "expand"
 -- }}}
 
 -- {{{ Taglist & Tasklist
@@ -85,6 +90,10 @@ theme.tasklist_shape         = shape.powerline
 
 theme.taglist_spacing        = -6
 theme.tasklist_spacing        = -6
+
+-- theme.taglist_squares_sel   = theme_dir .. "/taglist/squarefz.png"
+-- theme.taglist_squares_unsel = theme_dir .. "/taglist/squarefz.png"
+-- theme.taglist_squares_resize = "false"
 -- }}}
 
 -- {{{ widgets
@@ -109,12 +118,6 @@ theme.tasklist_spacing        = -6
 -- menu_[border_color|border_width]
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(100)
--- }}}
-
--- {{{ Taglist
--- theme.taglist_squares_sel   = theme_dir .. "/taglist/squarefz.png"
--- theme.taglist_squares_unsel = theme_dir .. "/taglist/squarefz.png"
--- theme.taglist_squares_resize = "false"
 -- }}}
 
 -- {{{ Misc
