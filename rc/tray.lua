@@ -20,7 +20,7 @@ mymusicbox:add_notify_handler("Spotify")
 local mytextclock = styleclock()
 
 -- Create cpu_meter and mem_meter widgets
-local mycpumeter = cpu_meter("Physical id 0", {0,1,2,3}, 2)
+local mycpumeter = cpu_meter("Package id 0", {0,1,2,3}, 2)
 local mymemmeter = mem_meter(10, 5)
 
 -- Create the base tray wibox, with elements common to the primary and secondary trays
