@@ -65,6 +65,13 @@ awful.rules.rules = {
            "Steam"
         }
    }, properties = { screen = var.auxm } },
+   { rule_any = {
+        -- Clients which should be on the "misc" tag
+        name = {
+           "dmesg",
+           "htop"
+        }
+   }, properties = { tag = "misc" } },
    { rule = { name = "irssi" },
      properties = { tag = "chat" } },
    { rule = { instance = "riot.im__app" },
