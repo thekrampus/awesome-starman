@@ -238,6 +238,15 @@ keys.clientkeys = awful.util.table.join(
       {description = "move to transient tag", group = "client"}),
    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
       {description = "toggle keep on top", group = "client"}),
+   awful.key({ modkey, "Shift"   }, "o",
+      function (c)
+         if c.opacity == 1.0 then
+            c.opacity = 0.5
+         else
+            c.opacity = 1.0
+         end
+      end,
+      {description = "toggle transparency", group = "client"}),
    awful.key({ modkey,           }, "n",
       function (c)
          -- The client currently has the input focus, so it cannot be
@@ -250,7 +259,20 @@ keys.clientkeys = awful.util.table.join(
          c.maximized = not c.maximized
          c:raise()
       end ,
-      {description = "maximize", group = "client"})
+      {description = "maximize", group = "client"}),
+   awful.key({ modkey, "Control" }, "m",
+      function (c)
+         c.maximized_vertical = not c.maximized_vertical
+         c:raise()
+      end ,
+      {description = "maximize vertically", group = "client"}),
+   awful.key({ modkey, "Shift"   }, "m",
+      function (c)
+         c.maximized_horizontal = not c.maximized_horizontal
+         c:raise()
+      end ,
+      {description = "maximize horizontally", group = "client"})
+
 )
 
 keys.clientbuttons = awful.util.table.join(
