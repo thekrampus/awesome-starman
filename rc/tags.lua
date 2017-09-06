@@ -21,7 +21,7 @@ end
 -- Create a new volatile "transient" tag for a client
 function tags.to_transient_tag(c)
    if c then
-      local icon = c.icon or tag_icons .. "epsilon.png"
+      local icon = tag_icons .. "epsilon.png"
       local tag = awful.tag.add("temp", {
                                  icon = icon,
                                  layout = awful.layout.suit.fair,
