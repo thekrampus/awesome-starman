@@ -18,7 +18,7 @@ local keys = {}
 -- If you do not like this or do not have such a key,
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
-local modkey = "Mod4"
+local modkey = var.modkey
 -- }}}
 
 -- {{{ Helper functions
@@ -200,6 +200,9 @@ for i = 1, 9 do
          {description = "toggle focused client on tag #" .. i, group = "tag"})
    )
 end
+
+-- Add variable config
+keys.globalkeys = awful.util.table.join(keys.globalkeys, var.globalkeys)
 -- }}}
 
 -- {{{ Global mouse bindings
@@ -208,6 +211,9 @@ keys.globalbuttons = awful.util.table.join(
    awful.button({ }, 8, awful.tag.viewnext),
    awful.button({ }, 9, awful.tag.viewprev)
 )
+
+-- Add variable config
+keys.globalbuttons = awful.util.table.join(keys.globalbuttons, var.globalbuttons)
 -- }}}
 
 -- {{{ Client key bindings
@@ -275,6 +281,8 @@ keys.clientkeys = awful.util.table.join(
 
 )
 
+keys.clientkeys = awful.util.table.join(keys.clientkeys, var.clientkeys)
+
 keys.clientbuttons = awful.util.table.join(
    awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
    awful.button({ modkey }, 1, awful.mouse.client.move),
@@ -287,6 +295,8 @@ keys.clientbuttons = awful.util.table.join(
    end),
    awful.button({ modkey }, 8, function(c) c:kill() end)
 )
+
+keys.clientbuttons = awful.util.table.join(keys.clientbuttons, var.clientbuttons)
 -- }}}
 
 -- {{{ Widget key and mouse bindings
@@ -306,6 +316,8 @@ keys.taglist_buttons = awful.util.table.join(
    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
 )
+
+keys.taglist_buttons = awful.util.table.join(keys.taglist_buttons, var.taglist_buttons)
 
 keys.tasklist_buttons = awful.util.table.join(
    awful.button({ }, 1, function (c)
@@ -331,6 +343,8 @@ keys.tasklist_buttons = awful.util.table.join(
    awful.button({ }, 5, function ()
          awful.client.focus.byidx(-1)
 end))
+
+keys.tasklist_buttons = awful.util.table.join(keys.tasklist_buttons, var.tasklist_buttons)
 
 keys.layoutbox_buttons = awful.util.table.join(
    awful.button({ }, 1, function () awful.layout.inc( 1) end),

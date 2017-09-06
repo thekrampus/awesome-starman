@@ -7,6 +7,13 @@ local variables = {}
 local res, personal = pcall(require, "rc.personal")
 if not res then personal = {} end
 
+-- Default modkey.
+-- Usually, Mod4 is the key with a logo between Control and Alt.
+-- If you do not like this or do not have such a key,
+-- I suggest you to remap Mod4 to another key using xmodmap or other tools.
+-- However, you can use another modifier like Mod1, but it may interact with others.
+variables.modkey = personal.modkey or "Mod4"
+
 -- Name of the theme to use
 variables.theme = personal.theme or "default"
 
@@ -19,7 +26,7 @@ variables.editor_cmd = personal.editor_cmd or variables.terminal .. " -e " .. va
 variables.home_dir = personal.home_dir or os.getenv("HOME")
 
 -- Auxillary monitor ID (usually 2)
-variables.auxm = personal.lua or screen.count()
+variables.auxm = personal.auxm or screen.count()
 
 -- Enable titlebars?
 variables.titlebars_enabled = personal.titlebars_enabled or false
@@ -55,5 +62,13 @@ variables.mainmenu = personal.mainmenu or
       { "restart", awesome.restart },
       { "quit", function() awesome.quit() end }
    }
+
+-- Personal key & button definitions
+variables.globalkeys = personal.globalkeys or {}
+variables.globalbuttons = personal.globalbuttons or {}
+variables.clientkeys = personal.clientkeys or {}
+variables.clientbuttons = personal.clientbuttons or {}
+variables.taglist_buttons = personal.taglist_buttons or {}
+variables.tasklist_buttons = personal.tasklist_buttons or {}
 
 return variables
