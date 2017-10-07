@@ -1,7 +1,6 @@
 ! -*- mode: conf-xdefaults; -*-
-
-!! This defines the colors used in the starman theme.
-!! Make sure this file is #included from your .Xresources.
+! Color palette configuration (called from .Xresources)
+! This defines the colors used in the starman theme.
 
 ! dark gunmetal
 *.background: rgb:2a/25/29
