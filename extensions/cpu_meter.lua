@@ -15,9 +15,9 @@ local color_crit = "red"
 
 -- Temperature thresholds. These can be provided by sensors,
 -- or alternately hardcoded since they're unlikely to change...
-local temp_elevated = 65
-local temp_max = 85
-local temp_crit = 105
+local temp_elevated = 50
+local temp_max = 80
+local temp_crit = 100
 
 local usage_glyphs = {'⣀', '⣤', '⣶', '⣿'}
 
@@ -68,7 +68,7 @@ local function get_usage(prev, new)
 end
 
 local function parse_temp(output, sensor)
-   local readings = string.match(output, sensor .. ":\n(.-)\n[^%s]")
+   local readings = string.match(output, sensor .. ":\n(.-)\n")
    local input = tonumber(string.match(readings, "[%w]+_input:%s+([%d%.]+)"))
    return input, temp_elevated, temp_max, temp_crit
 end
