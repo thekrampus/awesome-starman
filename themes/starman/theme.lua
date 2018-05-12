@@ -123,6 +123,7 @@ theme.menu_width  = dpi(100)
 -- {{{ Misc
 theme.awesome_icon           = theme_dir .. "/awesome-icon.png"
 -- theme.menu_submenu_icon      = "/usr/share/awesome/themes/default/submenu.png"
+theme.notify_icon_size_max       = dpi(32)
 -- }}}
 
 -- {{{ Layout

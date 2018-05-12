@@ -2,6 +2,7 @@
 local awful = require("awful")
 awful.rules = require("awful.rules")
 local beautiful = require("beautiful")
+local naughty = require("naughty")
 
 local keys = require("rc.keys")
 local var = require("rc.variables")
@@ -85,4 +86,17 @@ awful.rules.rules = {
    { rule = { class = "Steam", name = ".- %- Chat" },
      properties = { tag = "chat" } }
 }
+-- }}}
+
+-- local util = require("nifty.util")
+
+-- {{{ Naughty notification config
+naughty.config.notify_callback = function(args)
+   -- if args.title ~= "meta" then
+   --    naughty.notify{title="meta", text=util.tcat(args), timeout=0}
+   -- end
+   args.icon_size = math.min(args.icon_size or 32, beautiful.notify_icon_size_max or 32)
+   return args
+end
+
 -- }}}
