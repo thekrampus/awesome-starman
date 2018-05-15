@@ -12,6 +12,7 @@ local menubar = require("menubar")
 
 -- Utility helper functions
 local util = require("rc.util")
+local nifty = require("nifty")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -199,6 +200,7 @@ client.connect_signal("mouse::enter", function(c)
                          end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+nifty.smart_borders.enable()
+-- client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+-- client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}

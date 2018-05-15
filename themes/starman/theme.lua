@@ -57,9 +57,22 @@ theme.bg_systray = bg1
 
 -- {{{ Borders
 theme.border_width  = dpi(2)
+theme.border_width  = 0
 theme.border_normal = bg1
 theme.border_focus = bg1
 theme.border_marked = theme.bg_urgent
+
+-- Smart borders
+-- Color for smart border on focused client
+theme.border_smart = theme.fg_urgent
+-- Size of gap between client and corner arrow
+theme.border_gutter = dpi(4)
+-- Weight of corner arrow
+theme.border_weight = dpi(2)
+-- Weight of side strings
+theme.border_string = 0
+-- Size of corner arrow
+theme.border_arrow = dpi(16)
 -- }}}
 
 -- {{{ Titlebars
@@ -69,7 +82,8 @@ theme.titlebar_bg_normal = bg1
 
 -- {{{ Tags
 theme.gap_single_client = true
-theme.useless_gap = dpi(15)
+-- theme.useless_gap = dpi(15)
+theme.useless_gap = dpi(10)
 theme.master_fill_policy = "expand"
 -- }}}
 
