@@ -1,23 +1,24 @@
 -- A widget to poll and display useful cpu temperature & usage info
-local awful = require("awful")
+local awful   = require("awful")
 local textbox = require("wibox.widget.textbox")
-local timer = require("gears.timer")
+local timer   = require("gears.timer")
+
 local cpu_meter = {}
 cpu_meter.__index = cpu_meter
 
-local usage_call = "awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat"
+local usage_call  = "awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat"
 local sensor_call = "sensors -u"
 
-local color_normal = "gray"
+local color_normal   = "gray"
 local color_elevated = "white"
-local color_high = "orange"
-local color_crit = "red"
+local color_high     = "orange"
+local color_crit     = "red"
 
 -- Temperature thresholds. These can be provided by sensors,
 -- or alternately hardcoded since they're unlikely to change...
 local temp_elevated = 50
-local temp_max = 80
-local temp_crit = 100
+local temp_max      = 80
+local temp_crit     = 100
 
 local usage_glyphs = {'⣀', '⣤', '⣶', '⣿'}
 

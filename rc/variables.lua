@@ -18,8 +18,8 @@ variables.modkey = personal.modkey or "Mod4"
 variables.theme = personal.theme or "default"
 
 -- The default terminal and editor to run.
-variables.terminal = personal.terminal or "xterm"
-variables.editor = personal.editor or os.getenv("EDITOR") or "nano"
+variables.terminal   = personal.terminal or "xterm"
+variables.editor     = personal.editor or os.getenv("EDITOR") or "nano"
 variables.editor_cmd = personal.editor_cmd or variables.terminal .. " -e " .. variables.editor
 
 -- User home directory
@@ -58,17 +58,17 @@ variables.layouts = personal.layouts or {
 variables.mainmenu = personal.mainmenu or
    {
       { "open terminal", variables.terminal },
-      { "edit config", variables.editor_cmd .. " " .. awesome.conffile },
-      { "restart", awesome.restart },
-      { "quit", function() awesome.quit() end }
+      { "edit config",   variables.editor_cmd .. " " .. awesome.conffile },
+      { "restart",       awesome.restart },
+      { "quit",          function() awesome.quit() end }
    }
 
 -- Personal key & button definitions
-variables.globalkeys = personal.globalkeys or {}
-variables.globalbuttons = personal.globalbuttons or {}
-variables.clientkeys = personal.clientkeys or {}
-variables.clientbuttons = personal.clientbuttons or {}
-variables.taglist_buttons = personal.taglist_buttons or {}
+variables.globalkeys       = personal.globalkeys or {}
+variables.globalbuttons    = personal.globalbuttons or {}
+variables.clientkeys       = personal.clientkeys or {}
+variables.clientbuttons    = personal.clientbuttons or {}
+variables.taglist_buttons  = personal.taglist_buttons or {}
 variables.tasklist_buttons = personal.tasklist_buttons or {}
 
 return variables

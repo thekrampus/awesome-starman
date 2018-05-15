@@ -1,7 +1,6 @@
 -- Tag configuration (called from rc.lua)
 local awful = require("awful")
-
-local var = require("rc.variables")
+local var   = require("rc.variables")
 
 local tags = {}
 

@@ -1,8 +1,8 @@
 -- A convenient way to automate some GUI tasks...
-local x_macros = {}
 local awful = require("awful")
+local var   = require("rc.variables")
 
-local var = require("rc.variables")
+local x_macros = {}
 
 local macro_dir = var.home_dir .. "/x_macros/"
 local hot_macro = macro_dir .. "hot_macro.sh"

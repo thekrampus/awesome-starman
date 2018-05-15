@@ -5,11 +5,11 @@
 -----------------------------------
 
 -- required by the theme
-local awful = require("awful")
-local shape = require("gears.shape")
+local awful      = require("awful")
+local shape      = require("gears.shape")
 local xresources = require("beautiful.xresources")
-local xrdb = xresources.get_current_theme()
-local dpi = xresources.apply_dpi
+local xrdb       = xresources.get_current_theme()
+local dpi        = xresources.apply_dpi
 
 -- {{{ Palette
 -- Primary
@@ -24,11 +24,9 @@ local hi2 = xrdb.color15
 -- }}}
 
 -- {{{ Main
-local theme = {}
-theme.name = "starman"
-
+local theme     = {}
+theme.name      = "starman"
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
-
 theme.font      = "lemon,profont 10px"
 -- }}}
 
@@ -58,12 +56,12 @@ theme.bg_systray = bg1
 -- {{{ Borders
 theme.border_width  = dpi(2)
 theme.border_normal = bg1
-theme.border_focus = bg1
+theme.border_focus  = bg2
 theme.border_marked = theme.bg_urgent
 
 -- Smart borders
 -- Color for smart border on focused client
-theme.border_smart = theme.fg_urgent
+theme.border_smart  = theme.fg_urgent
 -- Size of gap between client and corner arrow
 theme.border_gutter = dpi(4)
 -- Weight of corner arrow
@@ -71,7 +69,7 @@ theme.border_weight = dpi(2)
 -- Weight of side strings
 theme.border_string = 0
 -- Size of corner arrow
-theme.border_arrow = dpi(16)
+theme.border_arrow  = dpi(16)
 -- }}}
 
 -- {{{ Titlebars
@@ -80,9 +78,8 @@ theme.titlebar_bg_normal = bg1
 -- }}}
 
 -- {{{ Tags
-theme.gap_single_client = true
--- theme.useless_gap = dpi(15)
-theme.useless_gap = dpi(10)
+theme.gap_single_client  = true
+theme.useless_gap        = dpi(15)
 theme.master_fill_policy = "expand"
 -- }}}
 
@@ -102,11 +99,8 @@ theme.taglist_shape_volatile = shape.hexagon
 theme.tasklist_shape         = shape.powerline
 
 theme.taglist_spacing        = -6
-theme.tasklist_spacing        = -6
+theme.tasklist_spacing       = -6
 
--- theme.taglist_squares_sel   = theme_dir .. "/taglist/squarefz.png"
--- theme.taglist_squares_unsel = theme_dir .. "/taglist/squarefz.png"
--- theme.taglist_squares_resize = "false"
 -- }}}
 
 -- {{{ widgets
@@ -134,8 +128,7 @@ theme.menu_width  = dpi(100)
 -- }}}
 
 -- {{{ Misc
-theme.awesome_icon           = theme_dir .. "/awesome-icon.png"
--- theme.menu_submenu_icon      = "/usr/share/awesome/themes/default/submenu.png"
+theme.awesome_icon               = theme_dir .. "/awesome-icon.png"
 theme.notify_icon_size_max       = dpi(32)
 -- }}}
 
@@ -159,26 +152,26 @@ theme.layout_cornerse   = theme_dir .. "/layouts/cornerse.png"
 -- }}}
 
 -- {{{ Titlebar
-theme.titlebar_close_button_focus  = theme_dir .. "/titlebar/close_focus.png"
-theme.titlebar_close_button_normal = theme_dir .. "/titlebar/close_normal.png"
+theme.titlebar_close_button_focus               = theme_dir .. "/titlebar/close_focus.png"
+theme.titlebar_close_button_normal              = theme_dir .. "/titlebar/close_normal.png"
 
-theme.titlebar_ontop_button_focus_active  = theme_dir .. "/titlebar/ontop_focus_active.png"
-theme.titlebar_ontop_button_normal_active = theme_dir .. "/titlebar/ontop_normal_active.png"
-theme.titlebar_ontop_button_focus_inactive  = theme_dir .. "/titlebar/ontop_focus_inactive.png"
-theme.titlebar_ontop_button_normal_inactive = theme_dir .. "/titlebar/ontop_normal_inactive.png"
+theme.titlebar_ontop_button_focus_active        = theme_dir .. "/titlebar/ontop_focus_active.png"
+theme.titlebar_ontop_button_normal_active       = theme_dir .. "/titlebar/ontop_normal_active.png"
+theme.titlebar_ontop_button_focus_inactive      = theme_dir .. "/titlebar/ontop_focus_inactive.png"
+theme.titlebar_ontop_button_normal_inactive     = theme_dir .. "/titlebar/ontop_normal_inactive.png"
 
-theme.titlebar_sticky_button_focus_active  = theme_dir .. "/titlebar/sticky_focus_active.png"
-theme.titlebar_sticky_button_normal_active = theme_dir .. "/titlebar/sticky_normal_active.png"
-theme.titlebar_sticky_button_focus_inactive  = theme_dir .. "/titlebar/sticky_focus_inactive.png"
-theme.titlebar_sticky_button_normal_inactive = theme_dir .. "/titlebar/sticky_normal_inactive.png"
+theme.titlebar_sticky_button_focus_active       = theme_dir .. "/titlebar/sticky_focus_active.png"
+theme.titlebar_sticky_button_normal_active      = theme_dir .. "/titlebar/sticky_normal_active.png"
+theme.titlebar_sticky_button_focus_inactive     = theme_dir .. "/titlebar/sticky_focus_inactive.png"
+theme.titlebar_sticky_button_normal_inactive    = theme_dir .. "/titlebar/sticky_normal_inactive.png"
 
-theme.titlebar_floating_button_focus_active  = theme_dir .. "/titlebar/floating_focus_active.png"
-theme.titlebar_floating_button_normal_active = theme_dir .. "/titlebar/floating_normal_active.png"
-theme.titlebar_floating_button_focus_inactive  = theme_dir .. "/titlebar/floating_focus_inactive.png"
-theme.titlebar_floating_button_normal_inactive = theme_dir .. "/titlebar/floating_normal_inactive.png"
+theme.titlebar_floating_button_focus_active     = theme_dir .. "/titlebar/floating_focus_active.png"
+theme.titlebar_floating_button_normal_active    = theme_dir .. "/titlebar/floating_normal_active.png"
+theme.titlebar_floating_button_focus_inactive   = theme_dir .. "/titlebar/floating_focus_inactive.png"
+theme.titlebar_floating_button_normal_inactive  = theme_dir .. "/titlebar/floating_normal_inactive.png"
 
-theme.titlebar_maximized_button_focus_active  = theme_dir .. "/titlebar/maximized_focus_active.png"
-theme.titlebar_maximized_button_normal_active = theme_dir .. "/titlebar/maximized_normal_active.png"
+theme.titlebar_maximized_button_focus_active    = theme_dir .. "/titlebar/maximized_focus_active.png"
+theme.titlebar_maximized_button_normal_active   = theme_dir .. "/titlebar/maximized_normal_active.png"
 theme.titlebar_maximized_button_focus_inactive  = theme_dir .. "/titlebar/maximized_focus_inactive.png"
 theme.titlebar_maximized_button_normal_inactive = theme_dir .. "/titlebar/maximized_normal_inactive.png"
 -- }}}

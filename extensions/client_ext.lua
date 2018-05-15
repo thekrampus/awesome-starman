@@ -1,7 +1,7 @@
 -- Useful client extensions
-local tag = require("awful.tag")
 local layout = require("awful.layout")
-local capi = { client = client }
+local capi   = { client = client }
+
 local client_ext = {}
 
 local saved_layout = layout.suit.floating
@@ -24,7 +24,7 @@ function client_ext.drag_float(c)
       layout.set(layout.suit.floating)
    end
 
-   
+
 end
 
 function client_ext.drop_float(c)

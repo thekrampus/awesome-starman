@@ -1,11 +1,10 @@
 -- Wibar widget tray layout and configuration (called by rc.lua)
 -- The widget tray is everything in the wibar after the taglist & tasklist
-local wibox = require("wibox")
-
-local jammin = require("jammin")
+local wibox      = require("wibox")
+local jammin     = require("jammin")
 local styleclock = require("extensions.styleclock")
-local cpu_meter = require("extensions.cpu_meter")
-local mem_meter = require("extensions.mem_meter")
+local cpu_meter  = require("extensions.cpu_meter")
+local mem_meter  = require("extensions.mem_meter")
 
 local tray = {}
 

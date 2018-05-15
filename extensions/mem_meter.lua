@@ -1,8 +1,10 @@
 -- A widget to poll and display useful memory usage info
 local setmetatable = setmetatable
-local spawn = require("awful.spawn")
+
+local spawn   = require("awful.spawn")
 local textbox = require("wibox.widget.textbox")
-local timer = require("gears.timer")
+local timer   = require("gears.timer")
+
 local mem_meter = { mt = {} }
 
 local color_free = "gray"
@@ -21,6 +23,8 @@ local pct_high = 0.7
 local timeout_default = 1
 
 local usage_glyph = ':'
+
+local cmd = "free --kilo 2>&1"
 
 local readout_string = string.format('[<span color="%s">%s</span><span color="%s">%s</span><span color="%s">%s</span><span color="%s">%s</span>]',
                                      color_used, "%s",
@@ -61,7 +65,7 @@ function mem_meter.new(total_width, timeout)
    local w = textbox()
 
    local function poll()
-      spawn.easy_async("free --kilo 2>&1",
+      spawn.easy_async(cmd,
                        function(out, err, _, code)
                           if code ~= 0 then
                              print("\nNonzero exit code from cpu_meter usage call: " .. code)

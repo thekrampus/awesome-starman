@@ -1,16 +1,16 @@
 local setmetatable = setmetatable
-local os = os
-local spawn = require("awful.spawn")
+local os           = os
+local spawn   = require("awful.spawn")
 local textbox = require("wibox.widget.textbox")
 local tooltip = require("awful.tooltip")
-local timer = require("gears.timer")
+local timer   = require("gears.timer")
 
 --- Based on the text clock widget. (awful.widget.textclock)
 local styleclock = { mt = {} }
 
-local day_glyph = '☀'
--- local day_glyph = '☉'
--- local day_glyph = '⢾⡷'
+local day_glyph   = '☀'
+-- local day_glyph   = '☉'
+-- local day_glyph   = '⢾⡷'
 local night_glyph = '☾'
 -- local night_glyph = '✭'
 -- local night_glyph = '☽'
@@ -23,9 +23,7 @@ local hour_s = min_s * 60
 local day_s = hour_s * 24
 
 local default_format = " %a %b %d <span color=\"white\">!G</span> %H:%M "
-
 local tooltip_format = "last system update was <span color=\"white\">%s</span>ago"
-
 local lastupdate_cmd = '/usr/bin/bash -c "grep -e \\"Running \'pacman.*-Sy\'\\" /var/log/pacman.log | tail -1"'
 
 local function lastupdate_handler(ttip, stdout, stderr, exitreason, exitcode)

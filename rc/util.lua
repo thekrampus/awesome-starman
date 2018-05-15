@@ -1,10 +1,10 @@
 -- Utilities (called from rc.lua)
 local naughty = require("naughty")
-local wibox = require("wibox")
-local common = require("awful.widget.common")
-local dpi = require("beautiful").xresources.apply_dpi
+local wibox   = require("wibox")
+local common  = require("awful.widget.common")
+local dpi     = require("beautiful").xresources.apply_dpi
+local nifty   = require("nifty")
 
-local nifty = require("nifty")
 local util = {}
 
 -- {{{ Helper functions

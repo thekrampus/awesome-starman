@@ -1,28 +1,29 @@
 -- A widget to show battery status/events polled at regular intervals
 local setmetatable = setmetatable
-local util = require("rc.util")
-local textbox = require("wibox.widget.textbox")
-local capi = { timer = timer }
+
+local util      = require("rc.util")
+local textbox   = require("wibox.widget.textbox")
+local capi      = { timer = timer }
 local bat_meter = { mt = {} }
 
-local color_full = "green"
+local color_full  = "green"
 local color_empty = "gray"
-local color_std = "white"
-local color_low = "orange"
-local color_crit = "red"
+local color_std   = "white"
+local color_low   = "orange"
+local color_crit  = "red"
 
 -- Width of usage meter, in glyphs, for the battery status.
 local total_width_default = 6
 
 -- Memory usage greater than this percent will be rendered in color_high
-local pct_low = 0.5
+local pct_low  = 0.5
 local pct_crit = 0.15
 
 local timeout_default = 5
 
 local battery_glyph = ':'
-local charge_glyph = '-'
-local plug_glyph = '{'
+local charge_glyph  = '-'
+local plug_glyph    = '{'
 
 local readout_string = string.format('<span color="%s">%s</span><span color="%s">%s</span>',
                                      "%s", "%s",

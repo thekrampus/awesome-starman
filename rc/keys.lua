@@ -1,14 +1,12 @@
 -- Keybindings & button mappings (called from rc.lua)
-local awful = require("awful")
-local menubar = require("menubar")
+local awful         = require("awful")
+local menubar       = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
-
-local util = require("rc.util")
-local tags = require("rc.tags")
-local var = require("rc.variables")
-local mainmenu = require("rc.menu")
-
-local jammin = require("jammin")
+local util          = require("rc.util")
+local tags          = require("rc.tags")
+local var           = require("rc.variables")
+local mainmenu      = require("rc.menu")
+local jammin        = require("jammin")
 
 local keys = {}
 
