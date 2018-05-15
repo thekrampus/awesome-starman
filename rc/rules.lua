@@ -84,7 +84,9 @@ awful.rules.rules = {
    { rule = { class = "Steam", name = "Friends" },
      properties = { tag = "chat" } },
    { rule = { class = "Steam", name = ".- %- Chat" },
-     properties = { tag = "chat" } }
+     properties = { tag = "chat" } },
+   { rule = { class = "URxvt"},
+     properties = { size_hints_honor = false} }
 }
 -- }}}
 
