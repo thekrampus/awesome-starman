@@ -57,7 +57,6 @@ theme.bg_systray = bg1
 
 -- {{{ Borders
 theme.border_width  = dpi(2)
-theme.border_width  = 0
 theme.border_normal = bg1
 theme.border_focus = bg1
 theme.border_marked = theme.bg_urgent
