@@ -228,10 +228,10 @@ keys.clientkeys = awful.util.table.join(
       {description = "toggle floating", group = "client"}),
    awful.key({ modkey, "Shift"   }, "Return",
       function (c)
-         local cwd = util.get_client_cwd(c)
-         if cwd then
-            awful.spawn(var.terminal .. ' -cd "' .. cwd .. '"')
-         end
+         util.get_client_cwd(c, function(cwd) awful.spawn(var.terminal..' -cd "'..cwd..'"') end)
+         -- if cwd then
+         --    awful.spawn(var.terminal .. ' -cd "' .. cwd .. '"')
+         -- end
       end,
       {description = "spawn terminal at current path", group = "client"}),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,

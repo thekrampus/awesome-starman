@@ -2,6 +2,7 @@
 local naughty = require("naughty")
 local wibox   = require("wibox")
 local common  = require("awful.widget.common")
+local spawn   = require("awful.spawn")
 local dpi     = require("beautiful").xresources.apply_dpi
 local nifty   = require("nifty")
 
@@ -13,40 +14,16 @@ function util.conf_debug()
    nifty.util.log("Called util.conf_debug")
 end
 
--- Run a command synchronously and return its output, or nil if the command failed
--- This is synchronous and will block until the program call returns
--- For the same thing asynchronously, see awful.spawn.easy_async
-function util.pread(command)
-   local proc = io.popen(command)
-   local raw = proc:read("*a")
-   proc:close()
-   return raw
-end
-
--- Read the contents of a file synchronously and return as a string, or nil if reading failed
--- This is synchronous and will block until the program call returns
-function util.read(filename)
-   local file = io.open(filename, 'r')
-   if file then
-      local raw = file:read("*a")
-      file:close()
-      return raw
-   else
-      return nil
+-- Call the provided callback with the current working directory of a given client if it has a shell
+function util.get_client_cwd(c, callback)
+   local cb = function(out, _, _, code)
+      if code ~= 0 then
+         nifty.util.log("Error getting client cwd (probably not a shell)")
+      elseif string.len(out) > 0 then
+         callback(string.gsub(out, '[\r\n]+$', ''))
+      end
    end
-end
-
--- Get the current working directory of a given client if it has a shell (nil otherwise)
-function util.get_client_cwd(c)
-   -- Get PID of first child of the client
-   local pid = string.gsub(util.pread("pgrep -P " .. math.floor(c.pid)), '[\r\n]+$', '')
-   -- Get CWD from system fs
-   local cwd = string.gsub(util.pread("readlink /proc/" .. pid .. "/cwd"), '[\r\n]+$', '')
-   if string.len(cwd) > 0 then
-      return cwd
-   else
-      return nil
-   end
+   spawn.easy_async_with_shell("readlink /proc/(pgrep -P "..c.pid..")/cwd", cb)
 end
 
 function util.icon_list_update(w, buttons, label, data, objects)
