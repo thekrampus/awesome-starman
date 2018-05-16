@@ -5,6 +5,7 @@ local jammin     = require("jammin")
 local styleclock = require("extensions.styleclock")
 local cpu_meter  = require("extensions.cpu_meter")
 local mem_meter  = require("extensions.mem_meter")
+local disk_meter = require("extensions.disk_meter")
 
 local tray = {}
 
@@ -18,9 +19,13 @@ mymusicbox:add_notify_handler("Spotify")
 -- Create a textclock widget
 local mytextclock = styleclock()
 
--- Create cpu_meter and mem_meter widgets
-local mycpumeter = cpu_meter("Package id 0", {0,1,2,3}, 2)
-local mymemmeter = mem_meter(10, 5)
+-- Create meters
+local mycpumeter  = cpu_meter("Package id 0", {0,1,2,3}, 2)
+local mymemmeter  = mem_meter(10, 5)
+local mydiskmeter = disk_meter({
+      disks = {"/dev/sdc2", "/dev/sdd1", "/dev/sdg1", "/dev/sda1"},
+      timeout = 60
+})
 
 -- Create the base tray wibox, with elements common to the primary and secondary trays
 local function base_tray(base)
@@ -32,6 +37,7 @@ function tray.primary(base)
    return wibox.layout.fixed.horizontal(mymusicbox.wibox,
                                         mycpumeter,
                                         mymemmeter,
+                                        mydiskmeter,
                                         base_tray(base))
 end
 
