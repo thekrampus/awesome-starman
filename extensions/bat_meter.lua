@@ -98,19 +98,33 @@ end
 function bat_meter.new(battery_id, timeout)
    local timeout = timeout or timeout_default
 
-   local charge_max = tonumber(util.read(sysfs_path .. battery_id .. "/charge_full"))
+   -- local charge_max = tonumber(util.read(sysfs_path .. battery_id .. "/charge_full"))
+   local charge_max = 0
+
    local poll_cmd = string.format(shell_cmd, battery_id, battery_id)
    local function poll_callback(widget, out, err, _, status)
       if status ~= 0 then
          print("\nNonzero exit code from bat_meter poll: " .. status)
          print(err)
          return
+      elseif charge_max then
+         local charge_str, status = out:match("(.-)\n(.-)\n")
+         local markup = bat_meter.readStatus(tonumber(charge_str), charge_max, status)
+         widget:set_markup(markup)
       end
-
-      local charge_str, status = out:match("(.-)\n(.-)\n")
-      local markup = bat_meter.readStatus(tonumber(charge_str), charge_max, status)
-      widget:set_markup(markup)
    end
+
+   awful.spawn.easy_async("cat "..sysfs_path..battery_id.."/charge_full",
+                          function(out,err,_,status)
+                             if status ~= 0 then
+                                print("\nCouldn't read battery max charge: " .. status)
+                                print(err)
+                                return
+                             else
+                                charge_max = tonumber(out)
+                             end
+                          end
+   )
 
    local w = awful.widget.watch(poll_cmd, timeout, poll_callback)
 
