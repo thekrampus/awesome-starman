@@ -37,8 +37,9 @@ awful.rules.rules = {
            "veromix",
            "xtightvncviewer",
            "gvncviewer",
-           "sun-awt-X11-XFramePeer"},
-
+           "sun-awt-X11-XFramePeer",
+           "keepassx"
+        },
         name = {
            "Event Tester",  -- xev.
         },
@@ -47,6 +48,14 @@ awful.rules.rules = {
            -- "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
         }
    }, properties = { floating = true } },
+   -- Clients which should not honor size hints
+   { rule_any = {
+        class = {
+           "URxvt",
+           "keepassx"
+        }
+   },
+     properties = { size_hints_honor = false} },
    -- Clients which should be on the primary screen
    { rule_any = {
         name = {
@@ -64,8 +73,8 @@ awful.rules.rules = {
            "Steam"
         }
    }, properties = { screen = var.auxm } },
+   -- Clients which should be on the "misc" tag
    { rule_any = {
-        -- Clients which should be on the "misc" tag
         name = {
            "dmesg",
            "htop"
@@ -83,8 +92,16 @@ awful.rules.rules = {
      properties = { tag = "chat" } },
    { rule = { class = "Steam", name = ".- %- Chat" },
      properties = { tag = "chat" } },
-   { rule = { class = "URxvt"},
-     properties = { size_hints_honor = false} }
+   { rule = { class = "keepassx" },
+     properties = {
+        sticky = true,
+        width = 260,
+        height = 300,
+        honor_padding = false,
+        honor_workarea = false,
+        placement = function(...) awful.placement.centered(...) end
+     }
+   }
 }
 -- }}}
 
