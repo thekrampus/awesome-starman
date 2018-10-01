@@ -34,6 +34,16 @@ variables.titlebars_enabled = personal.titlebars_enabled or false
 -- Each element represents a tag: the name, optional icon, and optional default layout
 variables.tags = personal.tags or { {"1"}, {"2"}, {"3"}, {"4"}, {"5"}, {"6"}, {"7"}, {"8"} }
 
+-- Default tags, which are loaded for each screen on startup
+variables.default_tags = {}
+for s = 1, screen.count() do
+   if personal.default_tags then
+      variables.default_tags[s] = personal.default_tags[s]
+   else
+      variables.default_tags[s] = nil
+   end
+end
+
 -- Usable layouts.
 variables.layouts = personal.layouts or {
    awful.layout.suit.floating,
