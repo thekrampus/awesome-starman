@@ -1,13 +1,18 @@
 -- A widget to poll and display useful cpu temperature & usage info
 local awful   = require("awful")
-local textbox = require("wibox.widget.textbox")
+local wibox   = require("wibox")
 local timer   = require("gears.timer")
+local beautiful = require("beautiful")
+
+local buffer  = require("extensions.buffer")
 
 local cpu_meter = {}
 cpu_meter.__index = cpu_meter
 
-local usage_call  = "awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat"
-local sensor_call = "sensors -u"
+local info_cmd  = "awk -v FS=':' '/^processor/ {printf $2 } /^core id/ {print $2}' /proc/cpuinfo"
+local usage_cmd = "awk '/^cpu[0-9]/{ print $1, $5, ($2 + $3 + $4 + $5 + $6 + $7 + $8);}' /proc/stat"
+
+local summary_fmt = '<span color="%s">%d°C</span>'
 
 local color_normal   = "gray"
 local color_elevated = "white"
@@ -20,61 +25,28 @@ local temp_elevated = 50
 local temp_max      = 80
 local temp_crit     = 100
 
-local usage_glyphs = {'⣀', '⣤', '⣶', '⣿'}
+-- Usage thresholds. An alternative to coloring by temperature.
+local usage_elevated = 50
+local usage_max      = 75
+local usage_crit     = 98
 
--- Buffer stats as a FIFO
-local stats = {}
-stats.__index = stats
-
-function stats.new()
-   local self = setmetatable({}, stats)
-   self.buffer = {}
-   self.capacity = 2
-   self.tail = 1
-
-   return self
-end
-
-function stats:getn()
-   return #self.buffer
-end
-
-function stats:push(item)
-   self.buffer[self.tail] = item
-   self.tail = (self.tail % self.capacity) + 1
-end
-
-function stats:peek()
-   if self:getn() < self.capacity then
-      return self.buffer[1]
-   else
-      return self.buffer[self.tail]
-   end
-end
-
-local function get_usage(prev, new)
+local function delta_usage(prev, new)
    local usage = {}
 
    for k,v in pairs(new) do
-      local d_idle = v['idle'] - prev[k]['idle']
+      local d_used = v['used'] - prev[k]['used']
       local d_total = v['total'] - prev[k]['total']
       if d_total == 0 then
          usage[k] = 0
       else
-         usage[k] = 1.0 - (d_idle / d_total)
+         usage[k] = (d_used / d_total)
       end
    end
 
    return usage
 end
 
-local function parse_temp(output, sensor)
-   local readings = string.match(output, sensor .. ":\n(.-)\n")
-   local input = tonumber(string.match(readings, "[%w]+_input:%s+([%d%.]+)"))
-   return input, temp_elevated, temp_max, temp_crit
-end
-
-local function color_by_temp(input, elevated, max, crit)
+local function color_by_level(input, elevated, max, crit)
    local c = color_crit
    if input < elevated then
       c = color_normal
@@ -87,101 +59,209 @@ local function color_by_temp(input, elevated, max, crit)
    return c
 end
 
--- Make a numeric temperature readout. Input is assumed in degrees Celsius.
-local function make_readout(input, elevated, max, crit)
-   local color = color_by_temp(input, elevated, max, crit)
-   return '<span color="' .. color .. '">' .. math.floor(input) .. '°C</span>'
+local function color_by_temp(input)
+   return color_by_level(input, temp_elevated, temp_max, temp_crit)
 end
 
--- Make a usage glyph for a CPU core
-local function make_glyph(n, usage, tempstr)
-   local core_usage = usage['cpu' .. n]
-   local glyph = usage_glyphs[math.min(#usage_glyphs,
-                                       math.floor(core_usage * #usage_glyphs + 1))]
-   local i, e, m, c = parse_temp(tempstr, 'Core ' .. n)
-   local color = color_by_temp(i, e, m, c)
-
-   return '<span color="' .. color .. '">' .. glyph .. '</span>'
+local function color_by_usage(input)
+   return color_by_level(input, usage_elevated, usage_max, usage_crit)
 end
 
--- Set widget markup using cached usage statistics and polled sensor output
-function cpu_meter:make_markup(sensor_out)
-   local i, e, m, c = parse_temp(sensor_out, self.sensor)
-   local markup = '[' .. make_readout(i, e, m, c) .. '|'
+local function parse_sensors(out, sensor_ids)
+   local core_temps = {}
 
-   for _, n in ipairs(self.cores) do
-      markup = markup .. make_glyph(n, self.usage, sensor_out)
-   end
-
-   markup = markup .. ']'
-   self.wibox:set_markup(markup)
-end
-
--- Sensors command callback. Parse command output and set widget markup
-function cpu_meter:parse_sensors(stdout, stderr, exitreason, exitcode)
-   if exitcode ~= 0 then
-      print("\nNonzero exit code from cpu_meter sensors call: " .. exitcode)
-      print(stderr)
-      self.lock = false
-      return
-   end
-
-   self:make_markup(stdout)
-   self.lock = false
-end
-
--- Usage command callback. Parse command output, add to stats,
--- and make asynchronous call to temperature sensors
-function cpu_meter:parse_usage(stdout, stderr, exitreason, exitcode)
-   if exitcode ~= 0 then
-      print("\nNonzero exit code from cpu_meter usage call: " .. exitcode)
-      print(stderr)
-      self.lock = false
-      return
-   end
-
-   local stat = {}
-   for ln in string.gmatch(stdout, "[^\n]+") do
-      local core, idle, total = string.match(ln, "(%S+)%s+(%S+)%s+(%S+)")
-      stat[core] = {idle=idle, total=total}
-   end
-
-   self.stats:push(stat)
-   self.usage = get_usage(self.stats:peek(), stat)
-
-   awful.spawn.easy_async(sensor_call, function(...) self:parse_sensors(...) end)
-   collectgarbage()
-end
-
-function cpu_meter.new(readout_sensor, cores, timeout)
-   local timeout = timeout or 1
-
-   local self = setmetatable({}, cpu_meter)
-   self.stats = stats.new()
-   self.wibox = textbox()
-   self.sensor = readout_sensor
-   self.cores = cores
-   self.usage = nil
-   self.lock = false
-
-   local function poll()
-      if not self.lock then
-         self.lock = true
-         awful.spawn.easy_async(usage_call, function(...) self:parse_usage(...) end)
+   local i = 0
+   for ln in out:gmatch("[^\n]+") do
+      i = i + 1
+      local core_id = sensor_ids[i]
+      if core_id then
+         core_temps[core_id] = ln / 1000.0
       end
+   end
+
+   return core_temps
+end
+
+local function parse_usage(out)
+   local data = {}
+
+   for ln in out:gmatch("[^\n]+") do
+      local core, idle, total = ln:match("(%S+)%s+(%S+)%s+(%S+)")
+      data[core] = {
+         total = total,
+         used  = total - idle
+      }
+   end
+
+   return data
+end
+
+local function parse_cpuinfo(out)
+   local core_map = {}
+
+   for ln in out:gmatch("[^\n]+") do
+      local processor, core_id = ln:match("(%d+)%s*(%d+)")
+      core_map['cpu' .. processor] = 'Core ' .. core_id
+   end
+
+   return core_map
+end
+
+function cpu_meter:build_charts(color_fn)
+   local usage = self._stats:get_tail(1)
+   for cpu, use_pct in pairs(usage) do
+      local chart = self._processors[cpu].chart
+      if chart then
+         chart:set_value(use_pct)
+         chart.color = color_fn(cpu)
+      end
+   end
+end
+
+--- Create a new CPU meter widget
+function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
+   local self = setmetatable({}, cpu_meter)
+   local use_sensors = (sensor_sysfs_map ~= nil)
+   timeout = timeout or 1 -- default: 1 second
+   local theme = chart_theme or {}
+   self._stats = buffer.new(60)
+
+   local chart_box = wibox.widget {
+      layout = wibox.layout.fixed.horizontal
+   }
+
+   self.widget = wibox.widget {
+      wibox.widget.textbox("["),
+      chart_box,
+      wibox.widget.textbox("]"),
+      layout = layout or wibox.layout.fixed.horizontal
+   }
+
+   if use_sensors and sensor_sysfs_map['all'] then
+      self.widget:insert(2, wibox.widget.textbox("|"))
+      local summary_box = wibox.widget.textbox()
+      self.widget:insert(2, summary_box)
+      self._set_summary = function(...) summary_box:set_markup(...) end
+   end
+
+   -- read each sensor sysfs node in order when polling sensors
+   local sensor_cmd = "cat"
+   local sensor_ids = {}
+   for id,sysfs in pairs(sensor_sysfs_map) do
+      table.insert(sensor_ids, id)
+      sensor_cmd = sensor_cmd .. " " .. sysfs
+   end
+
+   -- async sensor callback
+   local function sensor_callback(out, err, _, code)
+      if code ~= 0 then
+         print("\nError polling hardware sensors: " .. code)
+         print(err)
+         return
+      end
+
+      local core_temps = parse_sensors(out, sensor_ids)
+
+      if core_temps['all'] then
+         -- build summary box
+         local all_temp = core_temps['all']
+         local all_color = color_by_temp(all_temp)
+         local markup = summary_fmt:format(all_color, math.floor(all_temp))
+         self._set_summary(markup)
+      end
+
+      self:build_charts(function(id)
+            return color_by_temp(
+               core_temps[self._processors[id].core]
+            )
+      end)
+   end
+
+   -- async usage callback
+   local function usage_callback(out, err, _, code)
+      if code ~= 0 then
+         print("\nError getting CPU usage: " .. code)
+         print(err)
+         return
+      end
+
+      local usage_data = parse_usage(out)
+      if self._stats:wait_for_lock(5) then
+      -- if true then
+         if self._prev then
+            local usage = delta_usage(self._prev, usage_data)
+            self._stats:push(usage)
+
+            if use_sensors then
+               awful.spawn.easy_async(sensor_cmd,
+                                      function(...)
+                                         sensor_callback(...)
+                                         self._stats:release()
+                                      end
+               )
+            else
+               self:build_charts(function(id) return color_by_usage(usage[id]) end)
+               self._stats:release()
+            end
+         else
+            self._stats:release()
+         end
+
+         self._prev = usage_data
+      end
+
+      collectgarbage()
+   end
+
+   -- async polling timer callback
+   local function poll()
+      awful.spawn.easy_async(usage_cmd, usage_callback)
       return true
    end
 
-   poll()
-   timer.start_new(timeout, poll)
+   -- initialize based on output of cpuinfo
+   local function init_cpuinfo(out, err, _, code)
+      if code ~= 0 then
+         print("\nError initializing cpu_meter: " .. code)
+         print(err)
+         return
+      end
 
-   return self.wibox
+      local core_map = parse_cpuinfo(out)
+
+      self._processors = {}
+      for cpu, core in pairs(core_map) do
+         local chart = wibox.widget {
+            max_value = 1,
+            value = 0,
+            margins = { top=1, left=3, right=3 } or theme.margins,
+            widget = wibox.widget.progressbar,
+            background_color = theme.background_color or beautiful.bg_systray
+         }
+         chart_box:add(
+            wibox.widget {
+               chart,
+               forced_width = 4 or theme.forced_width,
+               direction = 'east',
+               layout = wibox.container.rotate
+            }
+         )
+         self._processors[cpu] = {
+            chart = chart,
+            core = core
+         }
+      end
+
+      -- poll once to initialize widget
+      poll()
+      timer.start_new(timeout, poll)
+
+      collectgarbage()
+   end
+   awful.spawn.easy_async(info_cmd, init_cpuinfo)
+
+
+   return self.widget
 end
-
-setmetatable(cpu_meter, {
-                __call = function(cls, ...)
-                   return cls.new(...)
-                end
-})
 
 return cpu_meter

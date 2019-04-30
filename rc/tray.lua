@@ -20,7 +20,17 @@ mymusicbox:add_notify_handler("Spotify")
 local mytextclock = styleclock()
 
 -- Create meters
-local mycpumeter  = cpu_meter("Package id 0", {0,1,2,3}, 2)
+-- local mycpumeter  = cpu_meter("Package id 0", {0,1,2,3}, 2)
+local hwmon_root = '/sys/class/hwmon/hwmon1/'
+local mycpumeter  = cpu_meter.new(
+   {
+      ['all']    = hwmon_root .. 'temp1_input',
+      ['Core 0'] = hwmon_root .. 'temp2_input',
+      ['Core 1'] = hwmon_root .. 'temp3_input',
+      ['Core 2'] = hwmon_root .. 'temp4_input',
+      ['Core 3'] = hwmon_root .. 'temp5_input'
+   }
+)
 local mymemmeter  = mem_meter(10, 5)
 local mydiskmeter = disk_meter({
       disks = {"/dev/sdc2", "/dev/sdd1", "/dev/sdg1", "/dev/sda1"},
