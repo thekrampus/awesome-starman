@@ -29,7 +29,8 @@ local mycpumeter  = cpu_meter.new(
       ['Core 1'] = hwmon_root .. 'temp3_input',
       ['Core 2'] = hwmon_root .. 'temp4_input',
       ['Core 3'] = hwmon_root .. 'temp5_input'
-   }
+   },
+   2
 )
 local mymemmeter  = mem_meter(10, 5)
 local mydiskmeter = disk_meter({

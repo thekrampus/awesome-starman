@@ -107,6 +107,15 @@ local function parse_cpuinfo(out)
    return core_map
 end
 
+local function cpu_idx(cpu_id)
+   local idx = cpu_id:match("cpu(%d+)")
+   return idx
+end
+
+-- function cpu_meter:build_tooltip()
+--    -- TODO
+-- end
+
 function cpu_meter:build_charts(color_fn)
    local usage = self._stats:get_tail(1)
    for cpu, use_pct in pairs(usage) do
@@ -114,6 +123,10 @@ function cpu_meter:build_charts(color_fn)
       if chart then
          chart:set_value(use_pct)
          chart.color = color_fn(cpu)
+      end
+
+      if self._ttip_graph then
+         self._ttip_graph:add_value(use_pct, cpu_idx(cpu) + 1)
       end
    end
 end
@@ -123,9 +136,30 @@ function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
    local self = setmetatable({}, cpu_meter)
    local use_sensors = (sensor_sysfs_map ~= nil)
    timeout = timeout or 1 -- default: 1 second
-   local theme = chart_theme or {}
    self._stats = buffer.new(60)
+   local theme = chart_theme or {}
+   theme.tooltip = theme.tooltip or {}
+   theme.tooltip.colors = theme.tooltip.colors or
+      {
+         beautiful.fg_normal,
+         beautiful.fg_focus,
+         "#ff4444",
+         "#ffbb33",
+         "#00C851",
+         "#33b5e5",
+         "#2BBBAD",
+         "#4285F4",
+         "#aa66cc",
+         "#CC0000",
+         "#FF8800",
+         "#007E33",
+         "#0099CC",
+         "#00695c",
+         "#0d47a1",
+         "#9933CC"
+      }
 
+   -- build systray readout widget
    local chart_box = wibox.widget {
       layout = wibox.layout.fixed.horizontal
    }
@@ -143,6 +177,15 @@ function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
       self.widget:insert(2, summary_box)
       self._set_summary = function(...) summary_box:set_markup(...) end
    end
+
+   -- build tooltip graph
+   self._ttip_graph = wibox.widget {
+      max_value = 1,
+      widget = wibox.widget.graph,
+      background_color = theme.tooltip.background_color or beautiful.bg_focus,
+      stack = true,
+      stack_colors = theme.tooltip.colors
+   }
 
    -- read each sensor sysfs node in order when polling sensors
    local sensor_cmd = "cat"
@@ -230,7 +273,13 @@ function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
       local core_map = parse_cpuinfo(out)
 
       self._processors = {}
+      local n = 0
+      local ttip_label = ""
       for cpu, core in pairs(core_map) do
+
+         n = n + 1
+
+         -- build systtray readout chart
          local chart = wibox.widget {
             max_value = 1,
             value = 0,
@@ -246,11 +295,55 @@ function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
                layout = wibox.container.rotate
             }
          )
+
+         -- -- build tooltip graph
+         -- local graph = wibox.widget {
+         --    max_value = 1,
+         --    widget = wibox.widget.graph,
+         --    background_color = theme.tooltip.background_color or beautiful.bg_systray,
+         --    color = theme.tooltip.color or beautiful.fg_normal
+         -- }
+         -- ttip_box:add(wibox.widget {
+         --                 wibox.widget.textbox(cpu .. " "),
+         --                 graph,
+         --                 fill_space = true,
+         --                 layout = wibox.layout.fixed.horizontal
+         -- })
+
+         ttip_label = ttip_label .. string.format('<span color="%s">%s</span> ',
+                                                  theme.tooltip.colors[n],
+                                                  cpu)
+
+         -- object accessor
          self._processors[cpu] = {
             chart = chart,
+            -- ttip = graph,
             core = core
          }
       end
+
+      -- build tooltip
+      local ttip_box = wibox.widget {
+         self._ttip_graph,
+         wibox.widget.textbox(ttip_label),
+         layout = wibox.layout.fixed.vertical
+      }
+
+      -- monkey-patch textbox and add tooltip
+      -- monkey-patch methods which will be called by the underlying tooltip
+      ttip_box.set_markup = function(...) end
+      local n_w = theme.tooltip.width or (2 * beautiful.menu_width)
+      local n_h = theme.tooltip.height or (2 * beautiful.menu_height)
+      print("width: " .. n_w)
+      print("height: " .. n_h)
+      ttip_box.get_preferred_size = function(...)
+         return n_w, n_h
+      end
+      local ttip = awful.tooltip {
+         objects = {self.widget},
+      }
+      ttip.textbox = ttip_box
+      ttip.marginbox = wibox.container.margin(ttip_box, 5, 5, 3, 3)
 
       -- poll once to initialize widget
       poll()
@@ -258,8 +351,9 @@ function cpu_meter.new(sensor_sysfs_map, timeout, layout, chart_theme)
 
       collectgarbage()
    end
-   awful.spawn.easy_async(info_cmd, init_cpuinfo)
 
+   -- initialize with cpuinfo output
+   awful.spawn.easy_async(info_cmd, init_cpuinfo)
 
    return self.widget
 end
