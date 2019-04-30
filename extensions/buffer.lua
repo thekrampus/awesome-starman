@@ -21,6 +21,16 @@ function buffer:getn()
    return #self._data
 end
 
+--- Get the nth last element in the buffer
+function buffer:get_tail(n)
+   n = n or 0
+   local i = self._tail - n
+   if i < 1 then
+      i = self._capacity - i
+   end
+   return self._data[i]
+end
+
 --- Add a new item to the buffer.
 -- When the buffer has reached capacity, this will remove the oldest buffered item.
 -- @param item The item to be added.
@@ -60,7 +70,7 @@ end
 function buffer:try_lock()
    local initial = self._lock
    self._lock = true
-   return ~initial
+   return not initial
 end
 
 --- Release the mutex lock on this buffer.
