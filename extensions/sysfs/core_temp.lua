@@ -1,5 +1,5 @@
 --- CPU Core temperature sysfs monitor
-local base = require("extensions.sysfs.base")
+local base = require("base")
 
 local core_temp = {}
 
@@ -46,6 +46,7 @@ function core_temp.new(args)
    local filter_fn = filter_map[args.units:lower()]
 
    local self = base.new(args.sysfs_path, args.verbose)
+   self:with_endpoint('name', 0)
    self:with_endpoint('temp*_label', 0)
    self:with_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn)
    self:with_endpoint('temp*_input', args.rate, filter_fn)
