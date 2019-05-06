@@ -46,13 +46,13 @@ function disk_usage:make_parser()
 end
 
 function disk_usage:_on_new_disk(name, props)
-   for fn in self:listeners('@new_disk') do
+   for _,fn in pairs(self._new_disk_listeners) do
       fn(name, props)
    end
 end
 
 function disk_usage:_on_rm_disk(name)
-   for fn in self:listeners('@rm_disk') do
+   for _,fn in pairs(self._rm_disk_listeners) do
       fn(name)
    end
 end
@@ -61,18 +61,20 @@ end
 -- @param callback Function to call with the new disk name and
 --                 properties.
 function disk_usage:add_new_disk_listener(callback)
-   self:add_listener("@new_disk", callback)
+   table.insert(self._new_disk_listeners, callback)
 end
 
 --- Add a callback to call when a disk is removed.
 -- @param callback Function to call with the removed disk name.
 function disk_usage:add_remove_disk_listener(callback)
-   self:add_listener("@rm_disk", callback)
+   table.insert(self._rm_disk_listeners, callback)
 end
 
 function disk_usage:_init(args)
    args = nifty.util.merge_tables(args or {}, DEFAULT_ARGS)
    abc._init(self, args)
+   self._new_disk_listeners = {}
+   self._rm_disk_listeners = {}
 
    self:_add_poll(USAGE_CMD, self:make_parser(), self.poll_rate)
 end

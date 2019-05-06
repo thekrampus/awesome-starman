@@ -69,61 +69,126 @@ function abc:_add_poll(cmd, parser, rate_s, error_handler)
    end
 end
 
---- Add a callback to call when the value of an endpoint changes.
--- @param name The endpoint name.
--- @param callback Function to call with the new value.
-function abc:add_listener(name, callback)
-   if self._listeners[name] == nil then
-      self._listeners[name] = {}
+-- --- Has the given endpoint been defined?
+-- -- @param name The endpoint name.
+-- function abc:has(name)
+--    return self:get(name) ~= nil
+-- end
+
+-- --- Get the current value associated with the given endpoint.
+-- -- @param name The endpoint name.
+-- function abc:get(name)
+--    return self._state[name]
+-- end
+
+------------------------------------------------------------
+--- Endpoint tree
+
+local node = {}
+
+--- Construct a new tree node
+-- Children of a node may be indexed directly from the parent node,
+-- like `parent.child`. Indexing a child which does not exist will
+-- create it. Be careful when iterating!
+function node._new(monitor)
+   local new = {
+      _monitor = monitor,
+      _children = {},
+      _listeners = {}
+   }
+   setmetatable(
+      new,
+      {
+         __index = function(t, k)
+            if node[k] then
+               return node[k]
+            elseif k:match('^_') then
+               return nil
+            else
+               if not t._children[k] then
+                  t._children[k] = node._new(monitor)
+               end
+               return t._children[k]
+            end
+         end
+      }
+   )
+   return new
+end
+
+--- Has this node been defined?
+function node:defined()
+   if self._value then
+      return true
+   else
+      for _,v in pairs(self._children) do
+         if v:is_defined() then
+            return true
+         end
+      end
+      return false
    end
-   table.insert(self._listeners[name], callback)
 end
 
---- Has the given endpoint been defined?
--- @param name The endpoint name.
-function abc:has(name)
-   return self:get(name) ~= nil
+--- Get the value at this node
+function node:get()
+   if self._value then
+      return self._value
+   else
+      local tab = {}
+      for k, v in pairs(self._children) do
+         tab[k] = v:get()
+      end
+      return tab
+   end
 end
 
---- Get the current value associated with the given endpoint.
--- @param name The endpoint name.
-function abc:get(name)
-   return self._state[name]
+function node:_notify_listeners(value)
+   for _,fn in pairs(self._listeners) do
+      fn(value)
+   end
 end
 
---- Is the new value value different from the old?
-local function changed(old, new)
-   if type(old) == "table" then
-      if type(new) == "table" then
-         for k,v in pairs(old) do
-            if changed(v, new[k]) then
-               return true
-            end
-         end
-         for k, _ in pairs(new) do
-            if old[k] == nil then
-               return true
-            end
-         end
-         return false
-      else
+function node:_update(value)
+   if type(value) == "table" then
+      local flag = false
+
+      -- add and update children
+      for k, v in pairs(value) do
+         local changed = self[k]:_update(v)
+         flag = flag or changed
+      end
+
+      -- if any children changed, notify listeners
+      if flag then
+         self:_notify_listeners(value)
          return true
+      else
+         return false
       end
    else
-      return (old ~= new)
+      if self._value ~= value then
+         self:_notify_listeners(value)
+         self._value = value
+         return true
+      else
+         return false
+      end
    end
+end
+
+--- Add a callback to call when the value of this endpoint changes.
+-- @param listener Function to call with the new value.
+function node:add_listener(listener)
+   table.insert(self._listeners, listener)
 end
 
 --- Update this monitor's state with a new value for a name
 -- @param name The endpoint name.
 -- @param value The new value to assign to the endpoint.
 function abc:_update(name, value)
-   if changed(self._state[name], value) then
+   if self.state[name]:_update(value) then
       self:_log("New value {"..tostring(value).."} for "..name)
-      self._state[name] = value
-      for fn in self:listeners(name) do
-         fn(value)
-      end
    end
 end
 
@@ -156,18 +221,14 @@ local function _kv_iter(tab, keys)
 end
 
 function abc:names()
-   return _kv_iter(self._state, true)
-end
-
-function abc:listeners(name)
-   return _kv_iter(self._listeners[name] or {}, false)
+   return _kv_iter(self.state, true)
 end
 
 function abc:polls()
    return _kv_iter(self._polls, false)
 end
 
-function abc:matches(pattern)
+function node:matches(pattern)
    local function _iter(t, name)
       local value
       repeat
@@ -178,7 +239,7 @@ function abc:matches(pattern)
       until string.match(name, pattern)
       return name, value
    end
-   return _iter, self._state, nil
+   return _iter, self._children, nil
 end
 
 ------------------------------------------------------------
@@ -222,9 +283,8 @@ function abc:_init(args)
    args = nifty.util.merge_tables(args or {}, DEFAULT_ARGS)
    nifty.util.merge_in_place(self, args)
 
-   self._state = {}
+   self.state = node._new(self)
    self._polls = {}
-   self._listeners = {}
 end
 
 return abc:_subclass()

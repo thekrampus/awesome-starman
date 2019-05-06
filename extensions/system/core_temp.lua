@@ -36,23 +36,27 @@ local filter_map = {
    imperial = fahrenheit_filter,
 }
 
-function core_temp:get_by_label(label, property)
-   property = property or "input"
-   for k, v in self:matches('^temp.*_label$') do
-      if v:match(label) then
-         local label_name = k:match('^(.*)label$') .. property
-         return self:get(label_name)
+local function sensor_filter(parse_table)
+   local sensors = {}
+   for k, v in pairs(parse_table) do
+      local sensor, endpt = k:match("^(temp%d+)_(%S+)$")
+      if not sensors[sensor] then
+         sensors[sensor] = {}
       end
+      sensors[sensor][endpt] = v
    end
+   return sensors
 end
 
--- Core temperatures are also indexible by label
-function core_temp:get(name)
-   local ret = sysfs.get(self, name)
-   if ret then
-      return ret
-   else
-      return self:get_by_label(name, "input")
+local function label_filter_factory(self)
+   return function(parse_table)
+      parse_table = sensor_filter(parse_table)
+      for k, v in pairs(parse_table) do
+         -- Patch state tree to index this sensor by its label
+         self:_log("Aliasing "..v.label.." -> "..k)
+         self.state[v.label] = self.state[k]
+      end
+      return parse_table
    end
 end
 
@@ -64,9 +68,9 @@ function core_temp:_init(args)
    local filter_fn = filter_map[args.units:lower()]
 
    self:_add_endpoint('name', 0)
-   self:_add_endpoint('temp*_label', 0)
-   self:_add_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn)
-   self:_add_endpoint('temp*_input', self.poll_rate, filter_fn)
+   self:_add_endpoint('temp*_label', 0, nil, label_filter_factory(self))
+   self:_add_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn, sensor_filter)
+   self:_add_endpoint('temp*_input', self.poll_rate, filter_fn, sensor_filter)
 
    return self
 end

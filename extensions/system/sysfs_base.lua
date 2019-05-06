@@ -13,18 +13,21 @@ local GLOB_CMD = "bash -c 'cd %s; for f in %s; do echo $f; done'"
 -- NOTE: globs always resolve in alphabetical order
 local POLL_CMD = "bash -c 'paste -s %s'"
 
-local function monitor_factory(names, filter_fn)
+local function monitor_factory(names, value_filter, table_filter)
    return function (out)
       local parse_table = {}
       local i = 1
       for value in out:gmatch("[^\n]*") do
          if names[i] ~= nil then
-            if filter_fn then
-               value = filter_fn(value)
+            if value_filter then
+               value = value_filter(value)
             end
             parse_table[names[i]] = value
          end
          i = i + 1
+      end
+      if table_filter then
+         parse_table = table_filter(parse_table)
       end
       return parse_table
    end
@@ -57,9 +60,12 @@ end
 --                 path.
 -- @param rate The polling interval, in seconds. A rate of 0 will cause this
 --             endpoint to be polled only once, immediately.
--- @param filter Optional function to filter raw endpoint file value. Takes a
---               raw value, returns a filtered value.
-function sysfs:_add_endpoint(endpoint, rate, filter)
+-- @param value_filter Optional function to filter raw endpoint file
+--                     value. Takes a raw value, returns a filtered
+--                     value.
+-- @param table_filter Optional function to filter the table of parsed
+--                     endpoints & values.
+function sysfs:_add_endpoint(endpoint, poll_rate, value_filter, table_filter)
    self._barrier:start()
    self:_log("Adding endpoint "..endpoint)
 
@@ -73,9 +79,9 @@ function sysfs:_add_endpoint(endpoint, rate, filter)
       self:_log("Found "..#names.." names for endpoint "..endpoint)
       -- set up polling for list of globbed files
       local cmd = POLL_CMD:format(self.sysfs_path .. endpoint)
-      local monitor_cb = monitor_factory(names, filter)
+      local poll_cb = monitor_factory(names, value_filter, table_filter)
 
-      self:_add_poll(cmd, monitor_cb, rate)
+      self:_add_poll(cmd, poll_cb, poll_rate)
       self._barrier:finish()
    end
 
