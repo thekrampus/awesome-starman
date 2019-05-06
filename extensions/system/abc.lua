@@ -3,9 +3,6 @@ local awful = require('awful')
 local gears = require('gears')
 local nifty = require('nifty')
 
--- polling interval in seconds for synchronization
-local SYNC_POLL_PERIOD_S = 0.5
-
 local LOG_FMT = "<%d> [%s] %s"
 
 local abc = {
@@ -65,7 +62,8 @@ function abc:_add_poll(cmd, parser, rate_s, error_handler)
       self:_log("Will poll "..cmd.." every "..rate_s.." seconds.")
       local poll_timer = gears.timer {
          timeout = rate_s or self.poll_rate,
-         callback = timer_cb
+         callback = timer_cb,
+         call_now = true
       }
       table.insert(self._polls, poll_timer)
    end
@@ -108,14 +106,10 @@ end
 
 --- Start asynchronous polling.
 function abc:start()
-   local function start_cb()
-      self:_log("Starting")
-      for timer in self:polls() do
-         timer:start()
-      end
+   self:_log("Starting")
+   for timer in self:polls() do
+      timer:start()
    end
-   self:_log("`start` called; monitor will start when ready")
-   self:_when_ready(30, start_cb)
 end
 
 --- Stop asynchronous polling.
@@ -167,41 +161,11 @@ end
 ------------------------------------------------------------
 --- Monitor utilities
 
-function abc:_lock()
-   self._n_sync = self._n_sync + 1
-end
-
-function abc:_release()
-   self._n_sync = self._n_sync - 1
-end
-
-function abc:_when_ready(timeout_s, callback)
-   local timeout_time = os.time() + timeout_s
-   gears.timer.start_new(
-      SYNC_POLL_PERIOD_S,
-      function()
-         if self._n_sync > 0 then
-            if timeout_s >= 0 and os.time() >= timeout_time then
-               print("Error: SYSFS monitor synchronization timed out!")
-               return false
-            end
-         else
-            callback()
-            return false
-         end
-         return true
-      end
-   )
-end
-
 function abc:_log(message)
    if self.verbose then
       print(LOG_FMT:format(os.time(), self._repr, message))
    end
 end
-
-------------------------------------------------------------
---- OOP constructs
 
 --- Subclass metaconstructor.
 -- @param args Subclass variables
@@ -238,7 +202,6 @@ function abc:_init(args)
    self._state = {}
    self._polls = {}
    self._listeners = {}
-   self._n_sync = 0
 end
 
 return abc:_subclass()
