@@ -5,7 +5,6 @@ local nifty = require('nifty')
 
 -- polling interval in seconds for synchronization
 local SYNC_POLL_PERIOD_S = 0.5
-local DEFAULT_POLL_RATE = 10
 
 local LOG_FMT = "[%s] <%d>: %s"
 
@@ -14,7 +13,8 @@ local abc = {
 }
 
 local DEFAULT_ARGS = {
-   verbose = false
+   verbose = false,
+   poll_rate = 10
 }
 
 ------------------------------------------------------------
@@ -62,7 +62,7 @@ function abc:_add_poll(cmd, parser, rate_s, error_handler)
    else
       -- create a timer to run polling at the given rate
       local poll_timer = gears.timer {
-         timeout = rate_s or DEFAULT_POLL_RATE,
+         timeout = rate_s or self.poll_rate,
          callback = timer_cb
       }
       table.insert(self._polls, poll_timer)

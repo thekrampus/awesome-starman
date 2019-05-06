@@ -8,7 +8,7 @@ local core_temp = sysfs:_subclass{
 
 local DEFAULT_ARGS = {
    sysfs_path = '/sys/class/hwmon/hwmon1/', -- default on my system
-   rate = 5, -- poll every 5 seconds
+   poll_rate = 5, -- poll every 5 seconds
    units = 'celsius' -- one of (celsius, kelvin, fahrenheit)
 }
 
@@ -46,7 +46,7 @@ function core_temp:_init(args)
    self:_add_endpoint('name', 0)
    self:_add_endpoint('temp*_label', 0)
    self:_add_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn)
-   self:_add_endpoint('temp*_input', args.rate, filter_fn)
+   self:_add_endpoint('temp*_input', args.poll_rate, filter_fn)
 
    return self
 end
