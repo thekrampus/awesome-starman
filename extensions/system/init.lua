@@ -13,6 +13,7 @@ package.path = package.path .. ';' .. my_path .. "?.lua"
 local system = {}
 system.monitor = require('monitor')
 system.core_temp = require('core_temp')
+system.cpu_usage = require('cpu_usage')
 
 package.path = old_path
 
