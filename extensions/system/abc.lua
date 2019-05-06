@@ -82,7 +82,7 @@ end
 --- Has the given endpoint been defined?
 -- @param name The endpoint name.
 function abc:has(name)
-   return self._state[name] ~= nil
+   return self:get(name) ~= nil
 end
 
 --- Get the current value associated with the given endpoint.
@@ -146,6 +146,20 @@ end
 
 function abc:polls()
    return _kv_iter(self._polls, false)
+end
+
+function abc:matches(pattern)
+   local function _iter(t, name)
+      local value
+      repeat
+         name, value = next(t, name)
+         if not name then
+            return nil
+         end
+      until string.match(name, pattern)
+      return name, value
+   end
+   return _iter, self._state, nil
 end
 
 ------------------------------------------------------------
