@@ -1,7 +1,10 @@
 --- CPU Core temperature sysfs monitor
-local base = require("base")
+local sysfs = require('sysfs_base')
+local nifty = require('nifty')
 
-local core_temp = {}
+local core_temp = sysfs:_subclass{
+   _repr = 'Core Temperature Monitor'
+}
 
 local DEFAULT_ARGS = {
    sysfs_path = '/sys/class/hwmon/hwmon1/', -- default on my system
@@ -34,22 +37,16 @@ local filter_map = {
 }
 
 -- Construct a new core temperature monitor
-function core_temp.new(args)
-   -- merge default args
-   args = args or DEFAULT_ARGS
-   for k, v in pairs(DEFAULT_ARGS) do
-      if args[k] == nil then
-         args[k] = v
-      end
-   end
+function core_temp:_init(args)
+   args = nifty.util.merge_tables(args or {}, DEFAULT_ARGS)
+   sysfs._init(self, args)
 
    local filter_fn = filter_map[args.units:lower()]
 
-   local self = base.new(args.sysfs_path, args.verbose)
-   self:with_endpoint('name', 0)
-   self:with_endpoint('temp*_label', 0)
-   self:with_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn)
-   self:with_endpoint('temp*_input', args.rate, filter_fn)
+   self:_add_endpoint('name', 0)
+   self:_add_endpoint('temp*_label', 0)
+   self:_add_endpoint('temp*_{max,crit,crit_alarm}', 0, filter_fn)
+   self:_add_endpoint('temp*_input', args.rate, filter_fn)
 
    return self
 end

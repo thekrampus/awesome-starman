@@ -15,15 +15,25 @@ local mt = {
 
 local proxy = {}
 
+local function monitors()
+   local k
+   local function it(tbl)
+      local v
+      k,v = next(tbl, k)
+      return v
+   end
+   return it, __monitors, nil
+end
+
 function proxy.start()
-   for _, v in __monitors do
-      v:start()
+   for m in monitors() do
+      m:start()
    end
 end
 
 function proxy.stop()
-   for _, v in _monitors do
-      v:stop()
+   for m in monitors() do
+      m:stop()
    end
 end
 
