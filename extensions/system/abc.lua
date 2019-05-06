@@ -6,7 +6,7 @@ local nifty = require('nifty')
 -- polling interval in seconds for synchronization
 local SYNC_POLL_PERIOD_S = 0.5
 
-local LOG_FMT = "[%s] <%d>: %s"
+local LOG_FMT = "<%d> [%s] %s"
 
 local abc = {
    _repr = 'Monitor'
@@ -61,6 +61,8 @@ function abc:_add_poll(cmd, parser, rate_s, error_handler)
       timer_cb()
    else
       -- create a timer to run polling at the given rate
+      rate_s = rate_s or self.poll_rate
+      self:_log("Will poll "..cmd.." every "..rate_s.." seconds.")
       local poll_timer = gears.timer {
          timeout = rate_s or self.poll_rate,
          callback = timer_cb
@@ -96,7 +98,7 @@ end
 -- @param value The new value to assign to the endpoint.
 function abc:_update(name, value)
    if value ~= self._state[name] then
-      self:_log("New value {"..value.."} for "..name)
+      self:_log("New value {"..tostring(value).."} for "..name)
       self._state[name] = value
       for fn in self:listeners(name) do
          fn(value)
@@ -194,7 +196,7 @@ end
 
 function abc:_log(message)
    if self.verbose then
-      print(LOG_FMT:format(self._repr, os.time(), message))
+      print(LOG_FMT:format(os.time(), self._repr, message))
    end
 end
 
