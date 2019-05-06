@@ -14,6 +14,8 @@ local system = {}
 system.monitor = require('monitor')
 system.core_temp = require('core_temp')
 system.cpu_usage = require('cpu_usage')
+system.mem_usage = require('mem_usage')
+system.disk_usage = require('disk_usage')
 
 package.path = old_path
 

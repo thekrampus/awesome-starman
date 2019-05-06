@@ -91,11 +91,34 @@ function abc:get(name)
    return self._state[name]
 end
 
+--- Is the new value value different from the old?
+local function changed(old, new)
+   if type(old) == "table" then
+      if type(new) == "table" then
+         for k,v in pairs(old) do
+            if changed(v, new[k]) then
+               return true
+            end
+         end
+         for k, _ in pairs(new) do
+            if old[k] == nil then
+               return true
+            end
+         end
+         return false
+      else
+         return true
+      end
+   else
+      return (old ~= new)
+   end
+end
+
 --- Update this monitor's state with a new value for a name
 -- @param name The endpoint name.
 -- @param value The new value to assign to the endpoint.
 function abc:_update(name, value)
-   if value ~= self._state[name] then
+   if changed(self._state[name], value) then
       self:_log("New value {"..tostring(value).."} for "..name)
       self._state[name] = value
       for fn in self:listeners(name) do
