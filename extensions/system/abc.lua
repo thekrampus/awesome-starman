@@ -4,6 +4,7 @@ local gears = require('gears')
 local nifty = require('nifty')
 
 local LOG_FMT = "<%d> [%s] %s"
+local NODE_DEFAULT_HISTORY = 2
 
 local abc = {
    _repr = 'Monitor'
@@ -69,17 +70,30 @@ function abc:_add_poll(cmd, parser, rate_s, error_handler)
    end
 end
 
--- --- Has the given endpoint been defined?
--- -- @param name The endpoint name.
--- function abc:has(name)
---    return self:get(name) ~= nil
--- end
+--- Update this monitor's state with a new value for a name
+-- @param name The endpoint name.
+-- @param value The new value to assign to the endpoint.
+function abc:_update(name, value)
+   if self.state[name]:_update(value) then
+      self:_log("New value {"..tostring(value).."} for "..name)
+   end
+end
 
--- --- Get the current value associated with the given endpoint.
--- -- @param name The endpoint name.
--- function abc:get(name)
---    return self._state[name]
--- end
+--- Start asynchronous polling.
+function abc:start()
+   self:_log("Starting")
+   for timer in self:polls() do
+      timer:start()
+   end
+end
+
+--- Stop asynchronous polling.
+function abc:stop()
+   self:_log("Stopping")
+   for timer in self:polls() do
+      timer:stop()
+   end
+end
 
 ------------------------------------------------------------
 --- Endpoint tree
@@ -90,11 +104,12 @@ local node = {}
 -- Children of a node may be indexed directly from the parent node,
 -- like `parent.child`. Indexing a child which does not exist will
 -- create it. Be careful when iterating!
-function node._new(monitor)
+-- @param n_history Number of values to store in history queue.
+function node._new(n_history)
    local new = {
-      _monitor = monitor,
       _children = {},
-      _listeners = {}
+      _listeners = {},
+      _history = nifty.queue:new(n_history or NODE_DEFAULT_HISTORY)
    }
    setmetatable(
       new,
@@ -106,7 +121,7 @@ function node._new(monitor)
                return nil
             else
                if not t._children[k] then
-                  t._children[k] = node._new(monitor)
+                  t._children[k] = node._new()
                end
                return t._children[k]
             end
@@ -118,7 +133,7 @@ end
 
 --- Has this node been defined?
 function node:defined()
-   if self._value then
+   if self._history:getn() > 0 then
       return true
    else
       for _,v in pairs(self._children) do
@@ -131,13 +146,16 @@ function node:defined()
 end
 
 --- Get the value at this node
-function node:get()
-   if self._value then
-      return self._value
+-- @param history_i Optional index in node history to get.
+--                  Default is 1 (most recent).
+function node:get(history_i)
+   history_i = history_i or 1
+   if self._history:getn() > 0 then
+      return self._history[history_i]
    else
       local tab = {}
       for k, v in pairs(self._children) do
-         tab[k] = v:get()
+         tab[k] = v:get(history_i)
       end
       return tab
    end
@@ -167,9 +185,10 @@ function node:_update(value)
          return false
       end
    else
-      if self._value ~= value then
+      local current = self._history[1]
+      if current ~= value then
          self:_notify_listeners(value)
-         self._value = value
+         self._history:put(value)
          return true
       else
          return false
@@ -181,31 +200,6 @@ end
 -- @param listener Function to call with the new value.
 function node:add_listener(listener)
    table.insert(self._listeners, listener)
-end
-
---- Update this monitor's state with a new value for a name
--- @param name The endpoint name.
--- @param value The new value to assign to the endpoint.
-function abc:_update(name, value)
-   if self.state[name]:_update(value) then
-      self:_log("New value {"..tostring(value).."} for "..name)
-   end
-end
-
---- Start asynchronous polling.
-function abc:start()
-   self:_log("Starting")
-   for timer in self:polls() do
-      timer:start()
-   end
-end
-
---- Stop asynchronous polling.
-function abc:stop()
-   self:_log("Stopping")
-   for timer in self:polls() do
-      timer:stop()
-   end
 end
 
 ------------------------------------------------------------
@@ -283,7 +277,7 @@ function abc:_init(args)
    args = nifty.util.merge_tables(args or {}, DEFAULT_ARGS)
    nifty.util.merge_in_place(self, args)
 
-   self.state = node._new(self)
+   self.state = node._new()
    self._polls = {}
 end
 
