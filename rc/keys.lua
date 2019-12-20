@@ -5,7 +5,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local util          = require("rc.util")
 local tags          = require("rc.tags")
 local var           = require("rc.variables")
-local mainmenu      = require("rc.menu")
+local menu      = require("rc.menu")
 local jammin        = require("jammin")
 
 local keys = {}
@@ -17,21 +17,6 @@ local keys = {}
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 local modkey = var.modkey
--- }}}
-
--- {{{ Helper functions
-local function client_menu_toggle_fn()
-   local instance = nil
-
-   return function ()
-      if instance and instance.wibox.visible then
-         instance:hide()
-         instance = nil
-      else
-         instance = awful.menu.clients({ theme = { width = 250 } })
-      end
-   end
-end
 -- }}}
 
 -- {{{ Global key bindings
@@ -57,8 +42,10 @@ keys.globalkeys = awful.util.table.join(
       end,
       {description = "focus previous by index", group = "client"}
    ),
-   awful.key({ modkey,           }, "w", function () mainmenu:show() end,
+   awful.key({ modkey,           }, "w", function () menu.main:show() end,
       {description = "show main menu", group = "awesome"}),
+   awful.key({ modkey, "Shift"   }, "w", function () menu.freedesktop:show() end,
+      {description = "show freedesktop menu", group = "awesome"}),
 
    -- Layout manipulation
    awful.key({ modkey, "Shift"   }, "Right", function () awful.client.swap.byidx(  1)    end,
@@ -205,7 +192,7 @@ keys.globalkeys = awful.util.table.join(keys.globalkeys, var.globalkeys)
 
 -- {{{ Global mouse bindings
 keys.globalbuttons = awful.util.table.join(
-   awful.button({ }, 3, function () mainmenu:toggle() end),
+   awful.button({ }, 3, function () menu.main:toggle() end),
    awful.button({ }, 8, awful.tag.viewnext),
    awful.button({ }, 9, awful.tag.viewprev)
 )
@@ -336,7 +323,7 @@ keys.tasklist_buttons = awful.util.table.join(
             c:raise()
          end
    end),
-   awful.button({ }, 3, client_menu_toggle_fn()),
+   awful.button({ }, 3, menu.client),
    awful.button({ }, 4, function ()
          awful.client.focus.byidx(1)
    end),

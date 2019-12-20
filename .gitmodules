@@ -1,0 +1,3 @@
+[submodule "freedesktop"]
+	path = freedesktop
+	url = https://github.com/lcpz/awesome-freedesktop.git
