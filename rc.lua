@@ -55,17 +55,17 @@ menubar.utils.terminal = var.terminal -- Set the terminal for applications that 
 -- Load rules
 require("rc.rules")
 
--- Load tag config & set layouts
-local tags = require("rc.tags")
+-- -- Load tag config & set layouts
+-- local tags = require("rc.tags")
 
 -- Load keybindings & set global mappings
 local keys = require("rc.keys")
 root.keys(keys.globalkeys)
 root.buttons(keys.globalbuttons)
 
--- Load widget tray config
-local tray = require("rc.tray")
--- }}}
+-- -- Load widget tray config
+-- local tray = require("rc.tray")
+-- -- }}}
 
 -- {{{ Helper functions
 local function set_wallpaper(s)
@@ -86,61 +86,7 @@ screen.connect_signal("property::geometry", set_wallpaper)
 
 -- {{{ Wibar
 -- Create a wibox for each screen and add it
-awful.screen.connect_for_each_screen(function(s)
-      -- Wallpaper
-      set_wallpaper(s)
-
-      -- Each screen has its own tag table.
-      tags.add_tags_to_screen(s)
-
-      -- Create a promptbox for each screen
-      s.mypromptbox = awful.widget.prompt()
-      -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-      -- We need one layoutbox per screen.
-      s.mylayoutbox = awful.widget.layoutbox(s)
-      s.mylayoutbox:buttons(keys.layoutbox_buttons)
-
-      -- Create patched layouts for taglist and tasklist
-      local tag_layout = wibox.layout.fixed.horizontal()
-      tag_layout.fit = util.fixed_fit
-      local task_layout = wibox.layout.fixed.horizontal()
-      task_layout.fit = util.fixed_fit
-
-      -- Create a taglist widget
-      s.mytaglist = awful.widget.taglist(s,
-                                         awful.widget.taglist.filter.all,
-                                         keys.taglist_buttons,
-                                         nil,
-                                         util.icon_list_update,
-                                         tag_layout
-      )
-
-      -- Create a tasklist widget
-      s.mytasklist = awful.widget.tasklist(s,
-                                           awful.widget.tasklist.filter.currenttags,
-                                           keys.tasklist_buttons,
-                                           nil,
-                                           nil, nil, task_layout)
-
-      -- Widget tray
-      local mytray = (s == screen.primary) and tray.primary(s.mylayoutbox) or tray.secondary(s.mylayoutbox)
-
-      -- Create the wibox
-      s.mywibox = awful.wibar({ position = "top", screen = s })
-
-      -- Add widgets to the wibox
-      s.mywibox:setup {
-         layout = wibox.layout.align.horizontal,
-         expand = "inside",
-         { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            s.mytaglist,
-            s.mypromptbox,
-         },
-         s.mytasklist, -- Middle widget
-         mytray -- Right widgets
-      }
-end)
+awful.screen.connect_for_each_screen(beautiful.at_screen_connect)
 -- }}}
 
 -- {{{ Signals
