@@ -9,6 +9,7 @@ local awful = require("awful")
 local gears = require("gears")
 local wibox = require("wibox")
 local lain  = require("lain")
+local pretty = require("pl.pretty")
 
 local xresources = require("beautiful.xresources")
 local xrdb       = xresources.get_current_theme()
@@ -378,7 +379,17 @@ local _weather_icon_map = {
    ["10d"] = "🌦",
    ["11d"] = "⛈",
    ["13d"] = "❄",
-   ["50d"] = "🌫"
+   ["50d"] = "🌫",
+   ["01n"] = "☀",
+   ["02n"] = "🌤",
+   ["03n"] = "☁",
+   ["04n"] = "☁",
+   ["09n"] = "🌧",
+   ["10n"] = "🌦",
+   ["11n"] = "⛈",
+   ["13n"] = "❄",
+   ["50n"] = "🌫"
+
 }
 local function weather_icon(icon)
    return _weather_icon_map[icon] or "?"
@@ -500,9 +511,116 @@ local weather_report = lain.widget.weather({
 
 
 -- Media
-local musicplayer = jammin()
-musicplayer:add_notify_handler("Spotify")
+local music_glyph = wibox.widget.textbox("⏹")
+local music_status = wibox.widget {
+   wibox.widget {
+      music_glyph,
+      valign="center",
+      halign="center",
+      forced_height = 16,
+      forced_width = 16,
+      widget = wibox.container.place
+   },
+   widget = wibox.container.arcchart,
+   paddings = {
+      top = 2,
+      bottom = 0,
+      left = 0,
+      right = 0
+   },
+   value = 1,
+   max_value = 1,
+   border_color = fg.black,
+   colors = {fg.white},
+   border_width = 0,
+   thickness = 1.5,
+   forced_width = 16,
+   forced_height = 16,
+   start_angle = math.pi
+}
 
+local function music_animate()
+   music_status.start_angle = (music_status.start_angle - 0.3927) % (2 * math.pi)
+   return true
+end
+music_status.timer = gears.timer{
+   timeout = 0.333,
+   callback = music_animate
+}
+
+local function music_status_start()
+   music_status.value = 0.5
+   music_status.timer:again()
+end
+
+local function music_status_stop()
+   music_status.value = 1
+   if music_status.timer.started then
+      music_status.timer:stop()
+   end
+end
+
+local music_update = jammin {
+   tooltip_preset = awful.util.table.join(make_preset(), {delay_show = 2}),
+   playback_handler = function(self, status)
+      if status == "Paused" then
+         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏸", "white")))
+         music_status_stop()
+      elseif status == "Playing" then
+         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏵", "white")))
+         music_status_start()
+      else  -- "Stopped" or otherwise
+         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏹", "white")))
+         music_status_stop()
+      end
+   end,
+   track_handler = function(self, data)
+      local artist = table.concat(data.artists, ", ")
+      self.widget:set_markup(
+         markup.font(
+            theme.font,
+            string.format(
+               "%s " .. colorize("%s", fg.white),
+               data.title, artist
+            )
+         )
+      )
+
+      -- local ttip_text = string.format("%s - %s\nfrom " .. colorize("%s", fg.white),
+      -- data.title, artist, data.album)
+      -- if data.created.year ~= nil then
+      --    ttip_text = ttip_text .. string.format(" (%s)", data.created.year)
+      -- end
+      local ttip_text = pretty.write(data)
+
+      self.tooltip:set_markup(ttip_text)
+   end
+}
+local music = wibox.widget {
+   music_status,
+   music_update.widget,
+   layout = wibox.layout.fixed.horizontal
+}
+local volume_popup = jammin.volumebar {
+   widget = music,
+   bar_color = bg.white,
+   handle_color = "[0]#000000",
+   handle_border_color = fg.white,
+   border_color = bg.black,
+   border_width = dpi(2),
+   background_color = bg.default
+}
+
+music:buttons(awful.util.table.join(
+                 awful.button({ }, 1, function() jammin.playpause(nil) end ),
+                 awful.button({ }, 2, jammin.mute),
+                 awful.button({ }, 3, function() volume_popup:toggle() end ),
+                 awful.button({ }, 4, jammin.vol_up ),
+                 awful.button({ }, 5, jammin.vol_down )
+))
+-- jammin.master_volume_widget = volume_popup
+
+-- musicplayer:add_notify_handler("Spotify")
 -- }}}
 
 
@@ -551,8 +669,8 @@ function theme.at_screen_connect(s)
    -- Different tray (right widgets) for primary screen
    if s == screen.primary then
       s.mytray = {
-         -- musicplayer.wibox, space,
-         space,
+         music, space,
+         -- volumewidget, space,
          bracket_widget(cpuinfo),
          memory,
          bracket_widget(filesystem),
