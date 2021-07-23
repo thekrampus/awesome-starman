@@ -55,9 +55,9 @@ function theme.wallpaper(s)
    if size <= 1280 * 1024 then
       return theme_dir .. "/starman-background-3-small.png"
    elseif size <= 1920 * 1080 then
-      return theme_dir .. "/starman-background-3.png"
+      return theme_dir .. "/starman-background-5.png"
    else
-      return theme_dir .. "/starman-background-3-big.png"
+      return theme_dir .. "/starman-background-5-big.png"
    end
 end
 -- }}}
