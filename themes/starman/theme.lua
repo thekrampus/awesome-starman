@@ -335,6 +335,7 @@ lain.widget.cpu({
 })
 local coretemp_colors = color_level_danger({100, 80, 50})
 local coretemp = lain.widget.temp({
+      tempfile = "/sys/devices/virtual/thermal/thermal_zone2/temp",
       settings = function()
          local color = coretemp_colors(coretemp_now)
          widget:set_markup(
@@ -469,7 +470,8 @@ end
 
 local weather_report = lain.widget.weather({
       -- 5-day forecast (free)
-      forecast_call = "curl -s 'http://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&cnt=%s&APPID=%s'",
+      -- forecast_call = "curl -s 'http://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&cnt=%s&APPID=%s'",
+      forecast_call = "curl -s 'http://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&APPID=%s'",
       APPID = openweather_api_key,
       city_id = 5454711,  -- Albuquerque, NM
       units = "imperial",
@@ -643,28 +645,26 @@ function theme.at_screen_connect(s)
    s.mylayoutbox = awful.widget.layoutbox(s)
    s.mylayoutbox:buttons(keys.layoutbox_buttons)
 
-   -- Create patched layouts for taglist and tasklist
+   -- Create patched layout for taglist
    local tag_layout = wibox.layout.fixed.horizontal()
    tag_layout.fit = util.fixed_fit
-   local task_layout = wibox.layout.fixed.horizontal()
-   task_layout.fit = util.fixed_fit
 
    -- Create a taglist widget
-   s.mytaglist = awful.widget.taglist(s,
-                                      awful.widget.taglist.filter.all,
-                                      keys.taglist_buttons, nil,
-                                      util.icon_list_update,
-                                      tag_layout)
+   s.mytaglist = awful.widget.taglist {
+         screen = s,
+         filter = awful.widget.taglist.filter.all,
+         buttons = keys.taglist_buttons,
+         update_function = util.icon_list_update,
+         layout = tag_layout
+   }
+
 
    -- Create a tasklist widget
-   s.mytasklist = awful.widget.tasklist(s,
-                                        awful.widget.tasklist.filter.currenttags,
-                                        keys.tasklist_buttons, nil,
-                                        nil, nil, task_layout)
-
-   -- -- {{{ Widgets
-   -- local clock = styleclock()
-   -- -- }}}
+   s.mytasklist = awful.widget.tasklist {
+         screen = s,
+         filter = awful.widget.tasklist.filter.currenttags,
+         buttons = keys.tasklist_buttons
+   }
 
    -- Different tray (right widgets) for primary screen
    if s == screen.primary then
@@ -689,7 +689,11 @@ function theme.at_screen_connect(s)
    end
 
    -- Create the wibox
-   s.mywibox = awful.wibar({ position = "top", screen = s })
+   -- s.mywibox = awful.wibar({ position = "top", screen = s })
+   s.mywibox = awful.wibar({
+         screen = s,
+         position = "top"
+   })
 
    -- Populate the wibox with goodies
    s.mywibox:setup {
