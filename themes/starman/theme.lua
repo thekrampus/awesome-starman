@@ -46,7 +46,7 @@ local fg = {
 local theme     = {}
 theme.name      = "starman"
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
-theme.font      = "lemon,profont 10px"
+theme.font      = "lemon,WenQuanYi,profont 10px"
 -- }}}
 
 -- {{{ Wallpaper
@@ -103,12 +103,6 @@ theme.master_fill_policy = "expand"
 -- }}}
 
 -- {{{ Taglist & Tasklist
--- There are other variable sets
--- overriding the default one when
--- defined, the sets are:
--- [taglist|tasklist]_[bg|fg]_[focus|urgent|occupied|empty|volatile]
--- titlebar_[normal|focus]
--- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 theme.taglist_bg_focus       = theme.fg_normal
 theme.taglist_bg_occupied    = theme.bg_focus
 theme.taglist_bg_volatile    = fg.red
@@ -119,29 +113,9 @@ theme.tasklist_shape         = gears.shape.powerline
 
 theme.taglist_spacing        = -6
 theme.tasklist_spacing       = -6
-
--- }}}
-
--- {{{ widgets
--- You can add as many variables as
--- you wish and access them by using
--- beautiful.variable in your rc.lua
---theme.fg_widget        = "#AECF96"
---theme.fg_center_widget = "#88A175"
---theme.fg_end_widget    = "#FF5656"
---theme.bg_widget        = "#494B4F"
---theme.border_widget    = "#3F3F3F"
--- }}}
-
--- {{{ Mouse finder
--- theme.mouse_finder_color = "#CC9393"
--- mouse_finder_[timeout|animate_timeout|radius|factor]
 -- }}}
 
 -- {{{ Menu
--- Variables set for theming the menu:
--- menu_[bg|fg]_[normal|focus]
--- menu_[border_color|border_width]
 theme.menu_height = dpi(15)
 theme.menu_width  = dpi(100)
 -- }}}
@@ -371,29 +345,34 @@ local temperature_color = color_level(
    {100, 90, 85, 75, 65, 50, 32}
  )
 
+-- https://openweathermap.org/weather-conditions
+-- http://fontello.github.io/meteocons.font/demo.html
 local _weather_icon_map = {
-   ["01d"] = "☀",
-   ["02d"] = "🌤",
-   ["03d"] = "☁",
-   ["04d"] = "☁",
-   ["09d"] = "🌧",
-   ["10d"] = "🌦",
-   ["11d"] = "⛈",
-   ["13d"] = "❄",
-   ["50d"] = "🌫",
-   ["01n"] = "☀",
-   ["02n"] = "🌤",
-   ["03n"] = "☁",
-   ["04n"] = "☁",
-   ["09n"] = "🌧",
-   ["10n"] = "🌦",
-   ["11n"] = "⛈",
-   ["13n"] = "❄",
-   ["50n"] = "🌫"
-
+   -- day
+   ["01d"] = "1", -- clear sky
+   ["02d"] = "3", -- few clouds
+   ["03d"] = "5", -- scattered clouds
+   ["04d"] = "%", -- broken clouds
+   ["09d"] = "7", -- shower rain
+   ["10d"] = "8", -- rain
+   ["11d"] = "6", -- thunderstorm
+   ["13d"] = "#", -- snow
+   ["50d"] = "E", -- mist
+   -- night
+   ["01n"] = "2", -- clear sky
+   ["02n"] = "I", -- few clouds
+   ["03n"] = "N", -- scattered clouds
+   ["04n"] = "Y", -- broken clouds
+   ["09n"] = "Q", -- shower rain
+   ["10n"] = "R", -- rain
+   ["11n"] = "P", -- thunderstorm
+   ["13n"] = "W", -- snow
+   ["50n"] = "E", -- mist
 }
+
+
 local function weather_icon(icon)
-   return _weather_icon_map[icon] or "?"
+   return _weather_icon_map[icon] or ")"
 end
 
 local function _wind_description(speed_mph)
@@ -470,7 +449,6 @@ end
 
 local weather_report = lain.widget.weather({
       -- 5-day forecast (free)
-      -- forecast_call = "curl -s 'http://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&cnt=%s&APPID=%s'",
       forecast_call = "curl -s 'http://api.openweathermap.org/data/2.5/forecast?id=%s&units=%s&lang=%s&APPID=%s'",
       APPID = openweather_api_key,
       city_id = 5454711,  -- Albuquerque, NM
@@ -487,16 +465,22 @@ local weather_report = lain.widget.weather({
          end
          widget:set_markup(
             markup.font(
-               "Noto Sans 10",
+               -- "Noto Sans Symbols2 10",
+               "Meteocons 10",
                colorize(symbol, temperature_color(temp))
             )
          )
 
          -- -- Symbol render test
+         -- local _test_string = ""
+         -- for _,v in pairs(_weather_icon_map) do
+         --    _test_string = _test_string .. v
+         -- end
          -- widget:set_markup(
          --    markup.font(
-         --       "Noto Sans 10",
-         --       "☀🌤☁🌧🌦⛈❄🌫"
+         --       "Meteocons 12",
+         --       -- "Noto Sans 10",
+         --       _test_string
          --    )
          -- )
 
@@ -620,9 +604,6 @@ music:buttons(awful.util.table.join(
                  awful.button({ }, 4, jammin.vol_up ),
                  awful.button({ }, 5, jammin.vol_down )
 ))
--- jammin.master_volume_widget = volume_popup
-
--- musicplayer:add_notify_handler("Spotify")
 -- }}}
 
 
@@ -689,7 +670,6 @@ function theme.at_screen_connect(s)
    end
 
    -- Create the wibox
-   -- s.mywibox = awful.wibar({ position = "top", screen = s })
    s.mywibox = awful.wibar({
          screen = s,
          position = "top"
