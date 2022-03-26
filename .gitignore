@@ -2,6 +2,9 @@
 themes/*
 !themes/starman
 
+# Development resources
+develop/
+
 # Editor files
 *~
 \#*\#
@@ -47,4 +50,3 @@ luac.out
 *.i*86
 *.x86_64
 *.hex
-

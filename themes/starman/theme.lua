@@ -47,6 +47,7 @@ local theme     = {}
 theme.name      = "starman"
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
 theme.font      = "lemon,WenQuanYi,profont 10px"
+theme.icon_font = "typicons 15px"
 -- }}}
 
 -- {{{ Wallpaper
@@ -346,33 +347,33 @@ local temperature_color = color_level(
  )
 
 -- https://openweathermap.org/weather-conditions
--- http://fontello.github.io/meteocons.font/demo.html
+-- https://fontello.github.io/typicons.font/demo.html
 local _weather_icon_map = {
    -- day
-   ["01d"] = "1", -- clear sky
-   ["02d"] = "3", -- few clouds
-   ["03d"] = "5", -- scattered clouds
-   ["04d"] = "%", -- broken clouds
-   ["09d"] = "7", -- shower rain
-   ["10d"] = "8", -- rain
-   ["11d"] = "6", -- thunderstorm
-   ["13d"] = "#", -- snow
-   ["50d"] = "E", -- mist
+   ["01d"] = "☼", -- clear sky
+   ["02d"] = "", -- few clouds
+   ["03d"] = "", -- scattered clouds
+   ["04d"] = "", -- broken clouds
+   ["09d"] = "", -- shower rain
+   ["10d"] = "", -- rain
+   ["11d"] = "", -- thunderstorm
+   ["13d"] = "", -- snow
+   ["50d"] = "", -- mist
    -- night
-   ["01n"] = "2", -- clear sky
-   ["02n"] = "I", -- few clouds
-   ["03n"] = "N", -- scattered clouds
-   ["04n"] = "Y", -- broken clouds
-   ["09n"] = "Q", -- shower rain
-   ["10n"] = "R", -- rain
-   ["11n"] = "P", -- thunderstorm
-   ["13n"] = "W", -- snow
-   ["50n"] = "E", -- mist
+   ["01n"] = "", -- clear sky
+   ["02n"] = "", -- few clouds
+   ["03n"] = "", -- scattered clouds
+   ["04n"] = "", -- broken clouds
+   ["09n"] = "", -- shower rain
+   ["10n"] = "", -- rain
+   ["11n"] = "", -- thunderstorm
+   ["13n"] = "", -- snow
+   ["50n"] = "", -- mist
 }
 
 
 local function weather_icon(icon)
-   return _weather_icon_map[icon] or ")"
+   return _weather_icon_map[icon] or ""
 end
 
 local function _wind_description(speed_mph)
@@ -465,8 +466,7 @@ local weather_report = lain.widget.weather({
          end
          widget:set_markup(
             markup.font(
-               -- "Noto Sans Symbols2 10",
-               "Meteocons 10",
+               theme.icon_font,
                colorize(symbol, temperature_color(temp))
             )
          )
@@ -478,8 +478,7 @@ local weather_report = lain.widget.weather({
          -- end
          -- widget:set_markup(
          --    markup.font(
-         --       "Meteocons 12",
-         --       -- "Noto Sans 10",
+         --       theme.icon_font,
          --       _test_string
          --    )
          -- )
@@ -550,13 +549,13 @@ local music_update = jammin {
    tooltip_preset = awful.util.table.join(make_preset(), {delay_show = 2}),
    playback_handler = function(self, status)
       if status == "Paused" then
-         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏸", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
          music_status_stop()
       elseif status == "Playing" then
-         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏵", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
          music_status_start()
       else  -- "Stopped" or otherwise
-         music_glyph:set_markup(markup.font("Noto Sans 10", colorize("⏹", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
          music_status_stop()
       end
    end,
@@ -604,6 +603,17 @@ music:buttons(awful.util.table.join(
                  awful.button({ }, 4, jammin.vol_up ),
                  awful.button({ }, 5, jammin.vol_down )
 ))
+
+-- -- Network Activity
+-- local net_rate_down = wibox.widget.textbox("")
+-- local net = lain.widget.net {
+--    notify = "off",
+--    eth_state = "on",
+--    settings = function()
+--    end
+-- }
+
+-- local netinfo =
 -- }}}
 
 
@@ -672,7 +682,8 @@ function theme.at_screen_connect(s)
    -- Create the wibox
    s.mywibox = awful.wibar({
          screen = s,
-         position = "top"
+         position = "top",
+         height = dpi(15)
    })
 
    -- Populate the wibox with goodies
