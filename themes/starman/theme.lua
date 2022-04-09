@@ -350,30 +350,30 @@ local temperature_color = color_level(
 -- https://fontello.github.io/typicons.font/demo.html
 local _weather_icon_map = {
    -- day
-   ["01d"] = "☼", -- clear sky
-   ["02d"] = "", -- few clouds
-   ["03d"] = "", -- scattered clouds
-   ["04d"] = "", -- broken clouds
-   ["09d"] = "", -- shower rain
-   ["10d"] = "", -- rain
-   ["11d"] = "", -- thunderstorm
-   ["13d"] = "", -- snow
-   ["50d"] = "", -- mist
+   ["01d"] = "\u{e142}", -- clear sky
+   ["02d"] = "\u{e13e}", -- few clouds
+   ["03d"] = "\u{e13b}", -- scattered clouds
+   ["04d"] = "\u{e143}", -- broken clouds
+   ["09d"] = "\u{e13f}", -- shower rain
+   ["10d"] = "\u{e13c}", -- rain
+   ["11d"] = "\u{e141}", -- thunderstorm
+   ["13d"] = "\u{e140}", -- snow
+   ["50d"] = "\u{e144}", -- mist
    -- night
-   ["01n"] = "", -- clear sky
-   ["02n"] = "", -- few clouds
-   ["03n"] = "", -- scattered clouds
-   ["04n"] = "", -- broken clouds
-   ["09n"] = "", -- shower rain
-   ["10n"] = "", -- rain
-   ["11n"] = "", -- thunderstorm
-   ["13n"] = "", -- snow
-   ["50n"] = "", -- mist
+   ["01n"] = "\u{e13d}", -- clear sky
+   ["02n"] = "\u{e13e}", -- few clouds
+   ["03n"] = "\u{e13b}", -- scattered clouds
+   ["04n"] = "\u{e143}", -- broken clouds
+   ["09n"] = "\u{e13f}", -- shower rain
+   ["10n"] = "\u{e13c}", -- rain
+   ["11n"] = "\u{e141}", -- thunderstorm
+   ["13n"] = "\u{e140}", -- snow
+   ["50n"] = "\u{e144}", -- mist
 }
 
 
 local function weather_icon(icon)
-   return _weather_icon_map[icon] or ""
+   return _weather_icon_map[icon] or "\u{e137}"
 end
 
 local function _wind_description(speed_mph)
@@ -496,7 +496,7 @@ local weather_report = lain.widget.weather({
 
 
 -- Media
-local music_glyph = wibox.widget.textbox("⏹")
+local music_glyph = wibox.widget.textbox("\u{23f9}")
 local music_status = wibox.widget {
    wibox.widget {
       music_glyph,
@@ -549,13 +549,13 @@ local music_update = jammin {
    tooltip_preset = awful.util.table.join(make_preset(), {delay_show = 2}),
    playback_handler = function(self, status)
       if status == "Paused" then
-         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("\u{e0ac}", "white")))
          music_status_stop()
       elseif status == "Playing" then
-         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("\u{e0b0}", "white")))
          music_status_start()
       else  -- "Stopped" or otherwise
-         music_glyph:set_markup(markup.font("typicons 12px", colorize("", "white")))
+         music_glyph:set_markup(markup.font("typicons 12px", colorize("\u{e0b6}", "white")))
          music_status_stop()
       end
    end,
