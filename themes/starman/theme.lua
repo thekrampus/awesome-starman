@@ -213,7 +213,7 @@ local color_level_danger = color_level({fg.red, fg.yellow, fg.white}, fg.default
 local clock = awful.widget.watch(
    "date +'%a %b %d %R'", 60,
    function(widget, stdout)
-      widget:set_markup(" " .. markup.font(theme.font, stdout))
+      widget:set_markup(markup.font(theme.font, stdout))
    end
 )
 
@@ -706,7 +706,7 @@ function theme.at_screen_connect(s)
          bracket_widget(filesystem),
          bracket_widget(netinfo),
          bracket_widget(weather_report),
-         clock, space,
+         space, clock, space,
          s.mylayoutbox,
          layout = wibox.layout.fixed.horizontal
       }
