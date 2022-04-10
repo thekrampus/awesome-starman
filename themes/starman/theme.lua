@@ -604,16 +604,55 @@ music:buttons(awful.util.table.join(
                  awful.button({ }, 5, jammin.vol_down )
 ))
 
--- -- Network Activity
--- local net_rate_down = wibox.widget.textbox("")
--- local net = lain.widget.net {
---    notify = "off",
---    eth_state = "on",
---    settings = function()
---    end
--- }
+-- Network Activity
+local icon_net_up = "\u{e09c}"
+local icon_net_down = "\u{e058}"
+local net_device = "enp0s31f6"
+local net_msg_unknown = "Getting network state..."
 
--- local netinfo =
+local netinfo = wibox.widget.textbox()
+
+local net_tooltip = awful.tooltip(
+   awful.util.table.join(
+      make_preset(),
+      {
+         objects = { netinfo },
+         text = net_msg_unknown
+      }
+   )
+)
+
+lain.widget.net {
+   iface = {net_device},
+   notify = "off",
+   wifi_state = "off",
+   eth_state = "on",
+   settings = function()
+      local icon = icon_net_down
+      local color = fg.red
+
+      local dev = net_now.devices[net_device]
+      if dev ~= nil then
+         if dev.carrier == '1' and dev.state == "up" then
+            icon = icon_net_up
+            color = fg.white
+         end
+
+         local carrier_str = dev.carrier == '1' and "carrier" or "no carrier"
+         net_tooltip.text = net_device .. ": " .. carrier_str .. " | " .. dev.state .. " | "  .. dev.sent .. " kb up | " .. dev.received .. " kb down"
+      else
+         net_tooltip.text = net_msg_unknown
+      end
+
+      netinfo:set_markup(
+         markup.font(
+            theme.icon_font,
+            colorize(icon, color)
+         )
+      )
+   end
+}
+
 -- }}}
 
 
@@ -665,6 +704,7 @@ function theme.at_screen_connect(s)
          bracket_widget(cpuinfo),
          memory,
          bracket_widget(filesystem),
+         bracket_widget(netinfo),
          bracket_widget(weather_report),
          clock, space,
          s.mylayoutbox,
