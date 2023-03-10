@@ -48,17 +48,29 @@ theme.name      = "starman"
 local theme_dir = awful.util.get_configuration_dir() .. "/themes/" .. theme.name
 theme.font      = "lemon,WenQuanYi,profont 10px"
 theme.icon_font = "typicons 15px"
+local wall_path = theme_dir .. "/wallpaper/"
 -- }}}
 
 -- {{{ Wallpaper
 function theme.wallpaper(s)
-   local size = s.geometry.width * s.geometry.height
-   if size <= 1280 * 1024 then
-      return theme_dir .. "/starman-background-3-small.png"
-   elseif size <= 1920 * 1080 then
-      return theme_dir .. "/starman-background-5.png"
+   local w = s.geometry.width
+   local h = s.geometry.height
+
+   if w <= 1280 and h <= 1024 then
+      -- SXGA
+      return wall_path .. "sxga.png"
+   elseif w <= 1080 and h <= 1920 then
+      -- FHD (portrait)
+      return wall_path .. "fhd-portrait.png"
+   elseif w <= 1920 and h <= 1080 then
+      -- FHD (landscape)
+      return wall_path .. "fhd.png"
+   elseif w <= 3440 and h <= 1440 then
+      -- UWQHD
+      return wall_path .. "uwqhd.png"
    else
-      return theme_dir .. "/starman-background-5-big.png"
+      -- 4K UHD
+      return wall_path .. "4k.png"
    end
 end
 -- }}}
