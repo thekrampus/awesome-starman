@@ -199,7 +199,7 @@ local function color_level(colors, default_color)
    return function(levels)
       return function(data)
          for i, level in ipairs(levels) do
-            if data >= level then
+            if tonumber(data) >= level then
                return colors[i]
             end
          end
