@@ -17,15 +17,29 @@ local keys = {}
 -- I suggest you to remap Mod4 to another key using xmodmap or other tools.
 -- However, you can use another modifier like Mod1, but it may interact with others.
 local modkey = var.modkey
+
+-- Screens
+local screen_top = 2
+local screen_bottom = 1
+local screen_left = 3
+local screen_right = 1
+-- }}}
+
+-- {{{ Helper functions
+local function client_relative_move_to_tag(c, offset)
+   local new_tag = c.screen.tags[(c.first_tag.index + offset - 1) % #c.screen.tags + 1]
+   c:move_to_tag(new_tag)
+   new_tag:view_only()
+end
 -- }}}
 
 -- {{{ Global key bindings
 keys.globalkeys = awful.util.table.join(
    awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
       {description="show help", group="awesome"}),
-   awful.key({ modkey, "Shift"   }, "[",   awful.tag.viewprev,
+   awful.key({ modkey,           }, "[",   awful.tag.viewprev,
       {description = "view previous", group = "tag"}),
-   awful.key({ modkey, "Shift"   }, "]",  awful.tag.viewnext,
+   awful.key({ modkey,           }, "]",  awful.tag.viewnext,
       {description = "view next", group = "tag"}),
    awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
       {description = "go back", group = "tag"}),
@@ -52,8 +66,6 @@ keys.globalkeys = awful.util.table.join(
       {description = "swap with next client by index", group = "client"}),
    awful.key({ modkey, "Shift"   }, "Left", function () awful.client.swap.byidx( -1)    end,
       {description = "swap with previous client by index", group = "client"}),
-   awful.key({ modkey,           }, "`", function () awful.screen.focus_relative( 1) end,
-      {description = "focus the next screen", group = "screen"}),
    awful.key({ modkey,           }, "/", awful.client.urgent.jumpto,
       {description = "jump to urgent client", group = "client"}),
    awful.key({ modkey, "Control" }, "Tab",
@@ -125,6 +137,18 @@ keys.globalkeys = awful.util.table.join(
       {description = "volume++", group = "media"}),
    awful.key({ modkey, "Shift" }, "-", jammin.vol_down,
       {description = "volume--", group = "media"}),
+
+   -- Screen manipulation
+   awful.key({ modkey,           }, "`", function () awful.screen.focus_relative( 1) end,
+      {description = "focus the next screen", group = "screen"}),
+   awful.key({ modkey, "Control" }, "Up", function () awful.screen.focus(screen_top) end,
+      {description = "focus the top screen", group = "screen"}),
+   awful.key({ modkey, "Control" }, "Down", function () awful.screen.focus(screen_bottom) end,
+      {description = "focus the bottom screen", group = "screen"}),
+   awful.key({ modkey, "Control" }, "Left", function () awful.screen.focus(screen_left) end,
+      {description = "focus the left screen", group = "screen"}),
+   awful.key({ modkey, "Control" }, "Right", function () awful.screen.focus(screen_right) end,
+      {description = "focus the right screen", group = "screen"}),
 
    -- Screencap
    awful.key({ }, "Print", function() awful.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end,
@@ -223,8 +247,6 @@ keys.clientkeys = awful.util.table.join(
       {description = "spawn terminal at current path", group = "client"}),
    awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
       {description = "move to master", group = "client"}),
-   awful.key({ modkey, "Shift"   }, "`",      function (c) c:move_to_screen()               end,
-      {description = "move to screen", group = "client"}),
    awful.key({ modkey, "Shift"   }, "\\",      tags.to_transient_tag,
       {description = "move to transient tag", group = "client"}),
    awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
@@ -264,8 +286,25 @@ keys.clientkeys = awful.util.table.join(
          c.maximized_horizontal = not c.maximized_horizontal
          c:raise()
       end ,
-      {description = "maximize horizontally", group = "client"})
+      {description = "maximize horizontally", group = "client"}),
 
+   -- Tag manipulation
+   awful.key({ modkey, "Shift"   }, "[", function (c) client_relative_move_to_tag(c, -1) end,
+      {description = "move focused client to previous tag", group = "client"}),
+   awful.key({ modkey, "Shift"   }, "]", function (c) client_relative_move_to_tag(c, 1) end,
+      {description = "move focused client to next tag", group = "client"}),
+
+   -- Screen manipulation
+   awful.key({ modkey, "Shift"   }, "`",      function (c) c:move_to_screen() end,
+      {description = "move to screen", group = "client"}),
+   awful.key({ modkey, "Control", "Shift"}, "Up", function (c) c:move_to_screen(screen_top) end,
+      {description = "move to top screen", group = "client"}),
+   awful.key({ modkey, "Control", "Shift"}, "Down", function (c) c:move_to_screen(screen_bottom) end,
+      {description = "move to bottom screen", group = "client"}),
+   awful.key({ modkey, "Control", "Shift"}, "Left", function (c) c:move_to_screen(screen_left) end,
+      {description = "move to left screen", group = "client"}),
+   awful.key({ modkey, "Control", "Shift"}, "Right", function (c) c:move_to_screen(screen_right) end,
+      {description = "move to right screen", group = "client"})
 )
 
 keys.clientkeys = awful.util.table.join(keys.clientkeys, var.clientkeys)
