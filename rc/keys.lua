@@ -152,14 +152,23 @@ keys.globalkeys = awful.util.table.join(
       {description = "focus the right screen", group = "screen"}),
 
    -- Screencap
-   awful.key({ }, "Print", function() scrot.screenshot() end,
-      {description = "capture entire display", group = "screenshot"}),
-   awful.key({ "Mod1" }, "Print", function() scrot.focused() end,
-      {description = "capture focused client", group = "screenshot"}),
-   awful.key({ "Shift" }, "Print", function() scrot.screen() end,
-      {description = "capture focused screen", group = "screenshot"}),
-   awful.key({ modkey }, "Print", function() scrot.select() end,
-      {description = "capture selected region", group = "screenshot"}),
+   awful.key({ }, "Print", function() scrot.screenshot{filename=false} end,
+      {description = "capture entire display to clipboard", group = "screenshot"}),
+   awful.key({ "Mod1" }, "Print", function() scrot.focused{filename=false} end,
+      {description = "capture focused client to clipboard", group = "screenshot"}),
+   awful.key({ "Shift" }, "Print", function() scrot.screen{filename=false} end,
+      {description = "capture focused screen to clipboard", group = "screenshot"}),
+   awful.key({ "Control" }, "Print", function() scrot.select{filename=false} end,
+      {description = "capture selected region to clipboard", group = "screenshot"}),
+
+   awful.key({ modkey }, "Print", function() scrot.screenshot() end,
+      {description = "capture entire display to file", group = "screenshot"}),
+   awful.key({ modkey, "Mod1" }, "Print", function() scrot.focused() end,
+      {description = "capture focused client to file", group = "screenshot"}),
+   awful.key({ modkey, "Shift" }, "Print", function() scrot.screen() end,
+      {description = "capture focused screen to file", group = "screenshot"}),
+   awful.key({ modkey, "Control" }, "Print", function() scrot.select() end,
+      {description = "capture selected region to file", group = "screenshot"}),
 
    -- Etc
    awful.key({ modkey, "Shift" }, "Escape", util.conf_debug,
