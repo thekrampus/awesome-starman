@@ -5,8 +5,9 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local util          = require("rc.util")
 local tags          = require("rc.tags")
 local var           = require("rc.variables")
-local menu      = require("rc.menu")
+local menu          = require("rc.menu")
 local jammin        = require("jammin")
+local scrot         = require("rc.scrot")
 
 local keys = {}
 
@@ -151,8 +152,14 @@ keys.globalkeys = awful.util.table.join(
       {description = "focus the right screen", group = "screen"}),
 
    -- Screencap
-   awful.key({ }, "Print", function() awful.spawn("scrot -e 'mv $f ~/pics/screenshots/ 2>/dev/null'") end,
-      {description = "screenshot", group = "screen"}),
+   awful.key({ }, "Print", function() scrot.screenshot() end,
+      {description = "capture entire display", group = "screenshot"}),
+   awful.key({ "Mod1" }, "Print", function() scrot.focused() end,
+      {description = "capture focused client", group = "screenshot"}),
+   awful.key({ "Shift" }, "Print", function() scrot.screen() end,
+      {description = "capture focused screen", group = "screenshot"}),
+   awful.key({ modkey }, "Print", function() scrot.select() end,
+      {description = "capture selected region", group = "screenshot"}),
 
    -- Etc
    awful.key({ modkey, "Shift" }, "Escape", util.conf_debug,

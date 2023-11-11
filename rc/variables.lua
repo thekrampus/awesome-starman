@@ -81,4 +81,18 @@ variables.clientbuttons    = personal.clientbuttons or {}
 variables.taglist_buttons  = personal.taglist_buttons or {}
 variables.tasklist_buttons = personal.tasklist_buttons or {}
 
+--- Screenshots (used by rc.scrot)
+-- Directory where screenshots will be saved.
+variables.screenshot_path = personal.screenshot_path or "/tmp"
+
+-- Pattern for screenshot filenames. See `man scrot` for info on formatting.
+variables.screenshot_filename_pattern = personal.screenshot_filename_pattern or "%Y-%m-%d-%H%M%S_$wx$h_$a.png"
+
+-- If true, display a notification when saving a screenshot.
+variables.screenshot_notify = personal.screenshot_notify == nil and false or personal.screenshot_notify
+
+-- scrot selection tool line style. See `man scrot` for info on selection style.
+-- Note that using `mode=classic` can cause the selection line to sometimes be visible in the screenshot!
+variables.screenshot_select_style = personal.screenshot_select_style or "mode=edge,width=2"
+
 return variables
