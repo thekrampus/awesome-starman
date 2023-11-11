@@ -8,10 +8,27 @@ local tag_icons = awful.util.get_configuration_dir() .. "/tag_icons/"
 
 -- Add all standard to a screen
 function tags.add_tags_to_screen(s)
+   local default_layout = awful.layout.suit.tile
+   local default_column_count = 1
+   local default_master_count = 1
+   local aspect_ratio = s.geometry.width / s.geometry.height
+
+   if aspect_ratio > 2 then
+      -- Use columnar layout on ultra-wide screens
+      default_layout = awful.layout.suit.tile
+      default_column_count = 4
+      default_master_count = 0
+   elseif aspect_ratio < 1 then
+      -- Use vertically-tiling layout for portrait-orientation screens
+      default_layout = awful.layout.suit.tile.top
+   end
+
    for _, t in ipairs(var.tags) do
       awful.tag.add(t[1] or "tag", {
                        icon = t[2] and tag_icons .. t[2],
-                       layout = t[3] or awful.layout.suit.tile,
+                       layout = t[3] or default_layout,
+                       column_count = default_column_count,
+                       master_count = default_master_count,
                        screen = s
       })
    end
